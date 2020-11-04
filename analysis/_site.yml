@@ -1,7 +1,7 @@
-name: "Frequency-Aware Similarity Calibration"
+name: Frequency-Aware Similarity Calibration
 output_dir: ../docs
 navbar:
-  title: "Frequency-Aware Similarity Calibration"
+  title: Frequency-Aware Similarity Calibration
   left:
   - text: Home
     href: index.html
@@ -9,6 +9,10 @@ navbar:
     href: about.html
   - text: License
     href: license.html
+  right:
+  - icon: fa-github
+    text: Source code
+    href: https://github.com/rgayler/fa_sim_cal
 output:
   workflowr::wflow_html:
     toc: yes
