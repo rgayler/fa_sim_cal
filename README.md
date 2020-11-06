@@ -46,8 +46,8 @@ This project is the joint work of:
 * We are using the {[workflowr][]} [R][] package 
   to structure the project so that the work is computationally reproducible
   and all the materials and outputs are openly accessible.
-  * The project code is shared publicly on GitHub at https://github.com/rgayler/fa_sim_cal
-  * The website automatically generated from the rendered project documents is at https://rgayler.github.io/fa_sim_cal/
+* The project code is shared publicly on GitHub at https://github.com/rgayler/fa_sim_cal
+* The website automatically generated from the rendered project documents is at https://rgayler.github.io/fa_sim_cal/
 
 * [`{workflowr}`](https://github.com/jdblischak/workflowr) only manages a subset of the files,
 so you will need to manually stage and commit any other files
