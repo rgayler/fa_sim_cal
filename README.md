@@ -7,7 +7,7 @@ so the process is forced to rely on record attributes that are associated with i
 but not uniquely determined by identity
 (e.g. height, weight, and eye colour as attributes of persons).
 
-This inference of two records refering to the same entity is inherently probabilistic 
+This inference of two records referring to the same entity is inherently probabilistic 
 because it is always possible that multiple entities
 might have identical values on the available record attributes,
 and are therefore functionally identical.
@@ -26,7 +26,7 @@ such as the frequency in the collection of the record attribute values being com
 and if so, whether that information can be exploited to yield better entity resolution.
 Entity resolution typically uses a small number of fixed similarity functions (e.g. edit distance between strings)
 that are defined without reference to the specific pair of records being compared.
-Incorporation of other predicttors, which are functions of the specific records being compared,
+Incorporation of other predictors, which are functions of the specific records being compared,
 into the calibration function
 can be seen as similar in spirit to having a customised similarity function for every pair of records.
 This parallels the practice of using model calibration functions to better combine ensembles of models.
