@@ -88,6 +88,15 @@ and the files in that directory.
 
 ### Installation
 
+## How to
+
+* All detailed setup instructions and notes go in this project-level `READ.md` file.
+  * The `README.md` files in the subdirectories only state the purpose of each directory
+and the files in that directory.
+
+
+### Installation
+
 
 
 All detailed setup instructions and notes go in this project-level `README.md` file.
@@ -119,11 +128,6 @@ renv::restore()
 
 
 ### Manuscript preparation
-
-
-
-
-
 
 
 
