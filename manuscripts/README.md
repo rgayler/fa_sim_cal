@@ -1,7 +1,8 @@
 # Manuscripts
 
-Store manuscripts here, one directory per manuscript.
-Use the Rstudio 'New R markdown' dialog to start the manuscript from a template.
+Store manuscripts here, in one directory per manuscript.
+Use a package like *bookdown* or *rticles* to create the manuscript.
+For example, use the Rstudio 'New R markdown' dialog to start the manuscript from an *rticles* template.
 This will create the directory for the manuscript and populate it with relevant files.
 
 Symlink the manuscript output file into the docs directory
