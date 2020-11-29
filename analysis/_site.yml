@@ -15,6 +15,7 @@ navbar:
     href: https://github.com/rgayler/fa_sim_cal
 output:
   workflowr::wflow_html:
+    mathjax: "local"
     toc: yes
     toc_float: yes
     theme: cosmo

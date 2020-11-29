@@ -1,0 +1,28 @@
+---
+title: "Central Idea"
+author: "Ross Gayler"
+date: "2020-11-29"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+bibliography: references.bib
+---
+
+This document explains the central idea behind the project.
+
+## Problem setting
+
+## Probability of identity
+
+## Similarity
+
+## Calibrated similarity
+
+## Subpopulation calibration
+
+## Combining calibrated similarity
+
+
+A test citation: [@langeFrequencyawareSimilarityMeasures2011]
+
+# References

@@ -8,4 +8,16 @@ editor_options:
   chunk_output_type: console
 ---
 
-Welcome to my research website.
+This is the research website for the project "VSA operator properties".
+
+This website is rendered locally on your computer in `docs` by `R`
+and also online at https://rgayler.github.io/fa_sim_cal/ by GitHub.
+
+---
+
+# [Central Idea](idea.html)
+
+This notebook explains the central idea behind the project.
+
+---
+
