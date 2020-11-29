@@ -207,8 +207,9 @@
     },
     "renv": {
       "Package": "renv",
-      "Version": "0.12.2",
-      "Source": "Repository"
+      "Version": "0.12.3",
+      "Source": "Repository",
+      "Repository": "CRAN"
     },
     "rlang": {
       "Package": "rlang",
