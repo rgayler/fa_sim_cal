@@ -8,16 +8,28 @@ editor_options:
   chunk_output_type: console
 ---
 
-This is the research website for the project "VSA operator properties".
+This is the research website for the project "Frequency-Aware Similarity Calibration".
 
-This website is rendered locally on your computer in `docs` by `R`
-and also online at https://rgayler.github.io/fa_sim_cal/ by GitHub.
+If you have cloned the project to a local computer
+this website is rendered in the `docs` subdirectory of the project directory.
+
+If you are using `workflowr` to publish the research website
+it will also be rendered online to GitHub pages.
+
+This page acts as a table of contents for the website.
+There are links to the webpages generated from the analysis notebooks
+and to the rendered versions of manuscripts/documents/presentations.
 
 ---
 
-# [Central Idea](idea.html)
-
-This notebook explains the central idea behind the project.
+## [Central Idea](idea.html)  
+   This notebook explains the central idea behind the project.
 
 ---
+
+# Analysis Notebooks
+
+---
+
+# Manuscripts
 
