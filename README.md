@@ -231,12 +231,14 @@ for synchronising package environments between collaborators.
 
 * Each rendered publishable document
   will be created in its subdirectory of `manuscripts`.
-  * The rendered document needs to also exist in the `docs/` directory
-    so that it can be referenced from the generated web pages, locally and on GitHub.
+  * The rendered document *must* be stored in the `docs` directory
+    so that the GitHub website can access it.
     (See https://github.com/jdblischak/workflowr/issues/209)
-  * This can be done by creating a symlink to the rendered document.
-
-
+  * The manuscript subdirectory must contain a symlink 
+    to the rendered document in the `docs` directory.
+    This allows the manuscript rendering process
+    to update the rendered file in the `docs` directory.
+  
 [Ross W. Gayler]: https://www.rossgayler.com/
 [Peter Christen]: https://users.cecs.anu.edu.au/~Peter.Christen/
 
