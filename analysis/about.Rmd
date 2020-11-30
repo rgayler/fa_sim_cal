@@ -7,4 +7,52 @@ editor_options:
   chunk_output_type: console
 ---
 
-Describe your project.
+This is an open, shareable, reproducible, computational research project on entity resolution.
+
+It is the joint work of:
+
+* [Ross W. Gayler][]
+* [Peter Christen][]
+
+Given a collection of records which are each "about" one entity,
+[entity resolution][] is the process of determining which records *probably* refer to the same entity.
+It is used in contexts where there is no uniquely identifying entity key on the records,
+so the process is forced to rely on record attributes that are associated with identity, 
+but not uniquely determined by identity
+(e.g. height, weight, and eye colour as attributes of persons).
+
+This inference of two records referring to the same entity is inherently probabilistic 
+because it is always possible that multiple entities
+might have identical values on the available record attributes,
+and are therefore functionally identical.
+So, given a pair of records, 
+we are interested in the *probability* that they refer to the same entity.
+
+Entity resolution is typically conceptualised in terms of the [similarity][] between records,
+and similarity is *assumed* to be monotonic with the probability of referring to the same entity.
+This project investigates the value of empirically determining 
+the relationship between similarity and probability of co-reference.
+Determining the precise relationship between similarity and probability of co-reference
+can be seen as an example of [calibration][].
+
+We also investigate whether that calibration varies as a function 
+of other measurable quantities of the specific records being compared.
+For example, we could look at the frequency in the collection of the record attribute values being compared,
+and see whether that information can be exploited to yield better entity resolution.
+
+Entity resolution typically uses a small number of fixed similarity functions (e.g. edit distance between strings)
+that are defined without reference to the specific pair of records being compared.
+Incorporation of other predictors, which are functions of the specific records being compared,
+into the calibration function
+can be seen as similar in spirit to having a customised similarity function for every pair of records.
+This parallels the practice of using subpopulation-specific model calibration functions 
+to better combine model estimates across multiple subpopulations.
+
+[Ross W. Gayler]: https://www.rossgayler.com/
+[Peter Christen]: https://users.cecs.anu.edu.au/~Peter.Christen/
+
+[entity resolution]: https://en.wikipedia.org/wiki/Record_linkage
+
+[similarity]: https://en.wikipedia.org/wiki/Similarity_measure
+
+[calibration]: https://en.wikipedia.org/wiki/Calibration_(statistics)
