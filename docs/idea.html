@@ -427,7 +427,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-11-30
+<strong>Last updated:</strong> 2020-12-02
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -458,16 +458,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree680e3286d6da9f15612336c2986d56033256fc48targetblank680e328a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/680e3286d6da9f15612336c2986d56033256fc48" target="_blank">680e328</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree03796806b011bd0249703af5a4e00552f4ae9cc3targetblank0379680a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/03796806b011bd0249703af5a4e00552f4ae9cc3" target="_blank">0379680</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree680e3286d6da9f15612336c2986d56033256fc48targetblank680e328a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree03796806b011bd0249703af5a4e00552f4ae9cc3targetblank0379680a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/680e3286d6da9f15612336c2986d56033256fc48" target="_blank">680e328</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/03796806b011bd0249703af5a4e00552f4ae9cc3" target="_blank">0379680</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -478,16 +478,6 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    .tresorit/
     Ignored:    renv/library/
-
-Untracked files:
-    Untracked:  CITATION
-    Untracked:  LICENSE.md
-
-Unstaged changes:
-    Modified:   README.md
-    Modified:   data/README.md
-    Modified:   manuscripts/README.md
-    Modified:   output/README.md
 
 </code></pre>
 <p>
@@ -526,6 +516,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/03796806b011bd0249703af5a4e00552f4ae9cc3/analysis/idea.Rmd" target="_blank">0379680</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2020-12-02
+</td>
+<td>
+End of day
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/5f37c79afa7365673f113cc93c22be5636178605/docs/idea.html" target="_blank">5f37c79</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2020-11-30
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -587,9 +611,19 @@ end of day
 <p>This document explains the central idea behind the project.</p>
 <div id="problem-setting" class="section level2">
 <h2>Problem setting</h2>
+<p>The problem concerns <a href="https://en.wikipedia.org/wiki/Record_linkage">entity resolution</a> - determining whether multiple records refer to the same entity. For concreteness, we consider a database lookup use case. That is, given a query record (corresponding to an entity) and a dictionary of records (corresponding to unique entities) we want to find the dictionary record (if any) that corresponds to the query record.</p>
+<p>We introduce some more formal notation before considering the implications of the problem setting.</p>
+<p>There is a universe of entities, <span class="math inline">\(e \in E\)</span>. For example, the entities might be persons. Each entity has a unique identity, <span class="math inline">\(id(e)\)</span>, that is not accessible to us.</p>
+<p>There is a dictionary (database) of records, <span class="math inline">\(d \in D\)</span>, each corresponding to an entity. Overloading the meaning of <span class="math inline">\(id()\)</span>, we denote the identity of the entity corresponding to a dictionary record as <span class="math inline">\(id(d)\)</span>. This identity of the entity corresponding to a dictionary record is not available to us.</p>
+<p>We assume that the dictionary records correspond to unique entities, <span class="math inline">\(id(d_i) = id(d_j) \iff i = j\)</span>. In general, the dictionary <span class="math inline">\(D\)</span> only correspond to a subset of the entities.</p>
+<p>There is a set of query records, <span class="math inline">\(q \in Q\)</span>. Once again, overloading the meaning of <span class="math inline">\(id()\)</span>, we denote the identity of the entity corresponding to a query record as <span class="math inline">\(id(q)\)</span>. The set of queries <span class="math inline">\(Q\)</span> is assumed to be representative of the queries that will be encountered in practice.</p>
+<p>Each dictionary record is assumed to be the result of applying some observation process to an entity, <span class="math inline">\(d_i = obs_d(e_i)\)</span>. Likewise, each query record is assumed to be the result of applying some observation process to an entity, <span class="math inline">\(q_j = obs_q(e_j)\)</span>. The observations are usually taken to be tuples of values, e.g. <span class="math inline">\((name, address, age)\)</span>. This is not strictly necessary, but is convenient and will be adopted here. Note that the dictionary and query observation functions are different and may have different codomains. For convenience, we only consider the case where both observation functions have the same codomain.</p>
+<p>If the identities were accessible to us we could define the lookup function <span class="math inline">\(lookup(q, D) = \{ d \in D : id(d) = id(q) \}\)</span>, which is guaranteed to return either a singleton set or the empty set. Unfortunately, the identities are not accessible to us to use in <span class="math inline">\(lookup()\)</span>. Instead, we are forced to define the lookup function in terms of the observation values, which are not guaranteed to uniquely identify the entities. The interesting characteristics of this problem arise from attempting to use the observation values as a proxy for identity.</p>
+<p>Note that the lookup process can be described with respect to a single query <span class="math inline">\(q\)</span>. We aim to define <span class="math inline">\(lookup()\)</span> to be as accurate as possible for every specific query <span class="math inline">\(q\)</span>. The set of queries <span class="math inline">\(Q\)</span> is only relevant in so far as we will summarise the performance of <span class="math inline">\(lookup()\)</span> over <span class="math inline">\(Q\)</span> in order to make claims about the expected performance over queries.</p>
 </div>
 <div id="probability-of-identity" class="section level2">
 <h2>Probability of identity</h2>
+<p>Given that we don’t have access to identity, the general approach taken in this field is to assess the <em>compatibility</em> of each pair of query and dictionary records, where <span class="math inline">\(compat(q_i, d_j)\)</span> is defined in terms of the observed values <span class="math inline">\(q_i\)</span> and <span class="math inline">\(d_i\)</span>. (Remember, <span class="math inline">\(q_i = obs_q(e_i)\)</span> and <span class="math inline">\(d_j = obs_d(e_j)\)</span>.)</p>
 </div>
 <div id="similarity" class="section level2">
 <h2>Similarity</h2>
