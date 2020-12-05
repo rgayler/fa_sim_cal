@@ -13,7 +13,7 @@ output:
 editor_options:
   chunk_output_type: console
 bibliography: references.bib
-
+csl: apa-single-spaced.csl
 ---
 
 ```{r setup, include = FALSE}
@@ -98,7 +98,7 @@ whereas the decision-making implications of some arbitrary similarity metric are
 
 Reverting to using similarity as the compatibility function, what we want to do here is to find the relationship between similarity and probability of identity: $P(id(q) = id(d) \mid sim(q, d))$. This is a [calibration](https://en.wikipedia.org/wiki/Calibration_(statistics)) of the similarity to probability. It yields a function that allows us to translate any similarity into the corresponding probability.
 
-We would expect the probability to be a monotone function of the similarity, but given the heuristic nature of the similarity metrics that is not guaranteed. We can use any functional form that is scientifically justified. In general we will only assume that the relationship is smooth.
+We would expect the probability to be a monotone function of the similarity, but given the heuristic nature of the similarity metrics that is not guaranteed. We can use any functional form that is empirically justified. In general we will only assume that the relationship is smooth.
 
 ```{r calib-one, fig.cap = "Example calibration from similarity to probability."}
 tibble::tribble(
@@ -107,27 +107,90 @@ tibble::tribble(
   1,    1
 ) %>%
   ggplot(aes(x = sim, y = prob)) +
-  xlab("Similarity") + ylab("Probability ( P(id(q) = id(d) | sim(q, d) )") +
-  geom_function(fun = function(x) x^2)
+  xlab("Similarity") + ylab("Probability ( P(id(q) = id(d) | sim(q, d) )") + ylim(0, 1) +
+  geom_function(fun = function(x) (0.9 * x^2 + 0.05) %>% pmax(0) %>% pmin(1)) 
 ```
 
-Figure \@ref(fig:calib-one) shows a hypothetical calibration from probability.
+Figure \@ref(fig:calib-one) shows a hypothetical calibration from similarity to probability.
 Note that this is smooth and nonlinear and estimated from the oracle data.
 
 *There is some problem with captioning of figures to  be sorted out later.*
 
 # Subpopulation calibration
 
-# Combining calibrated similarity
+The probability value of the calibration at any specific value of similarity
+is the expected probability where the expectation is effectively
+over the record pairs having that similarity value.
+Even if those record pairs have distinct, different probabilities
+the estimation of the calibration curve will summarise them to a single probability value.
+
+This raises the possibility that the record pairs could be divided into subpopulations
+such that each subpopulation has a distinct calibration curve.
+If those subpopulations can be defined in terms of features derivable from the record pairs
+this indicates that there is information that could be exploited to make the similarity function more discriminating.
+
+This predictive information could be used to estimate a new more discriminating similarity function.
+However, it may be more transparent to leave the similarity function (say, edit distance) unaltered
+and estimate separate calibration functions for each subpopulation.
+These are used to transform the similarities to probabilities
+and the populations can then be pooled.
+
+```{r calib-multi, fig.cap = "Example calibration of multiple subpopulations, each with a different calibration curve."}
+tibble::tribble(
+  ~sim, ~prob,
+  0,    0,
+  1,    1
+) %>%
+  ggplot(aes(x = sim, y = prob)) +
+  xlab("Similarity") + ylab("Probability ( P(id(q) = id(d) | sim(q, d) )") + ylim(0, 1) +
+  geom_function(fun = function(x) (0.9 * x^2 + -0.1) %>% pmax(0) %>% pmin(1) , colour = "red") +
+  geom_function(fun = function(x) (0.7 * x^2 + 0) %>% pmax(0) %>% pmin(1) , colour = "green") +
+  geom_function(fun = function(x) (1.2 * x^2 + -0.1) %>% pmax(0) %>% pmin(1) , colour = "blue")
+```
+
+Figure \@ref(fig:calib-multi) shows a hypothetical calibration from similarity to probability
+where the calibration  relationship differs between subpopulations of record pairs.
+By applying the appropriate cl\alibration function to each similarity value
+each similarity is transformed to a "true" probability
+so that the values can be pooled without concern for the subpopulation.
+This composition of the calibration and similarity functions can be viewed as 
+yielding a function from record pairs to probability
+that takes similarity and subpopulation into account. 
+
+# Construal as an interaction
+
+The subpopulation-specific calibration can be interpreted as a [statistical interaction][interaction].
+That is, the effect of similarity on probability depends on the value of subpopulation.
+Subpopulation membership is a discrete variable.
+However, interactions can also involve continuous variables.
+If there are any continuous variables derivable from the record pairs
+that have a strong impact on the similarity to probability calibration
+then it will be advantageous to exploit those variables in interactions with similarity.
 
 # Frequency-aware similarity
 
-# Construal as an interaction
+Consider the case where the codomains of the query and dictionary observation functions are the single attribute `family_name`.
+Person names have very skewed distributions,
+a small number of names (e.g. "Smith") are relatively common,
+while most names (e.g. "Schwarzenegger") are relatively rare.
+If the query and dictionary records are both "Smith" and the similarity function is exact equality
+the probability of identity will be quite low because there are multiple "Smith" dictionary records
+and only at most one has the same identity as the query record.
+Thus, the frequency of the value in the dictionary has a very strong effect
+on the probability corresponding to the level of similarity (exact equality).
+This is not a new observation (@langeFrequencyawareSimilarityMeasures2011).
+The novel point here is that frequency can be exploited
+by using it in a statistical interaction with similarity.
+
+*Extension to cover continuous similarity*
+
 
 # Curried similarity functions?
 
 # Logistic regression, log-odds, and naive Bayes?
 
-A test citation: [@langeFrequencyawareSimilarityMeasures2011]
 
 # References
+
+[interaction]: https://en.wikipedia.org/wiki/Interaction_(statistics)
+
