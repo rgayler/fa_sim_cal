@@ -518,16 +518,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreea143fc2bc604c13b18ea93543a6912cddf967b1btargetblanka143fc2a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/a143fc2bc604c13b18ea93543a6912cddf967b1b" target="_blank">a143fc2</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreef9924f76a09000dafe8998cc810a35fb5f3591a5targetblankf9924f7a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/f9924f76a09000dafe8998cc810a35fb5f3591a5" target="_blank">f9924f7</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreea143fc2bc604c13b18ea93543a6912cddf967b1btargetblanka143fc2a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreef9924f76a09000dafe8998cc810a35fb5f3591a5targetblankf9924f7a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/a143fc2bc604c13b18ea93543a6912cddf967b1b" target="_blank">a143fc2</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/f9924f76a09000dafe8998cc810a35fb5f3591a5" target="_blank">f9924f7</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -537,6 +537,8 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    .tresorit/
+    Ignored:    analysis/figure/
+    Ignored:    analysis/site_libs/
     Ignored:    renv/library/
     Ignored:    renv/staging/
 
@@ -577,6 +579,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/f9924f76a09000dafe8998cc810a35fb5f3591a5/analysis/idea.Rmd" target="_blank">f9924f7</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2020-12-05
+</td>
+<td>
+End of day
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/2f9886ae2f49c172f803074098d28768440cd7ba/docs/idea.html" target="_blank">2f9886a</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2020-12-05
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -809,40 +845,86 @@ end of day
 <h1>Calibrated similarity</h1>
 <p>We believe that the probability of identity (<span class="math inline">\(id(q) = id(d)\)</span>) is more useful than the similarity (or, more generally, compatibility). This is because the probability is already in the form most useful for decision-making. Probabilities can be used to weight the costs of the outcomes to optimise decision-making with respect to cost, whereas the decision-making implications of some arbitrary similarity metric are unknown.</p>
 <p>Reverting to using similarity as the compatibility function, what we want to do here is to find the relationship between similarity and probability of identity: <span class="math inline">\(P(id(q) = id(d) \mid sim(q, d))\)</span>. This is a <a href="https://en.wikipedia.org/wiki/Calibration_(statistics)">calibration</a> of the similarity to probability. It yields a function that allows us to translate any similarity into the corresponding probability.</p>
-<p>We would expect the probability to be a monotone function of the similarity, but given the heuristic nature of the similarity metrics that is not guaranteed. We can use any functional form that is scientifically justified. In general we will only assume that the relationship is smooth.</p>
+<p>We would expect the probability to be a monotone function of the similarity, but given the heuristic nature of the similarity metrics that is not guaranteed. We can use any functional form that is empirically justified. In general we will only assume that the relationship is smooth.</p>
 <div class="figure" style="text-align: center">
 <img src="figure/idea.Rmd/calib-one-1.png" alt="Example calibration from similarity to probability." width="672" />
 <p class="caption">
 Example calibration from similarity to probability.
 </p>
 </div>
-<p>Figure @ref(fig:calib-one) shows a hypothetical calibration from probability. Note that this is smooth and nonlinear and estimated from the oracle data.</p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-calib-one-1">
+Past versions of calib-one-1.png
+</button>
+</p>
+<div id="fig-calib-one-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/2f9886ae2f49c172f803074098d28768440cd7ba/docs/figure/idea.Rmd/calib-one-1.png" target="_blank">2f9886a</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2020-12-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Figure @ref(fig:calib-one) shows a hypothetical calibration from similarity to probability. Note that this is smooth and nonlinear and estimated from the oracle data.</p>
 <p><em>There is some problem with captioning of figures to be sorted out later.</em></p>
 </div>
 <div id="subpopulation-calibration" class="section level1">
 <h1>Subpopulation calibration</h1>
+<p>The probability value of the calibration at any specific value of similarity is the expected probability where the expectation is effectively over the record pairs having that similarity value. Even if those record pairs have distinct, different probabilities the estimation of the calibration curve will summarise them to a single probability value.</p>
+<p>This raises the possibility that the record pairs could be divided into subpopulations such that each subpopulation has a distinct calibration curve. If those subpopulations can be defined in terms of features derivable from the record pairs this indicates that there is information that could be exploited to make the similarity function more discriminating.</p>
+<p>This predictive information could be used to estimate a new more discriminating similarity function. However, it may be more transparent to leave the similarity function (say, edit distance) unaltered and estimate separate calibration functions for each subpopulation. These are used to transform the similarities to probabilities and the populations can then be pooled.</p>
+<div class="figure" style="text-align: center">
+<img src="figure/idea.Rmd/calib-multi-1.png" alt="Example calibration of multiple subpopulations, each with a different calibration curve." width="672" />
+<p class="caption">
+Example calibration of multiple subpopulations, each with a different calibration curve.
+</p>
 </div>
-<div id="combining-calibrated-similarity" class="section level1">
-<h1>Combining calibrated similarity</h1>
-</div>
-<div id="frequency-aware-similarity" class="section level1">
-<h1>Frequency-aware similarity</h1>
+<p>Figure @ref(fig:calib-multi) shows a hypothetical calibration from similarity to probability where the calibration relationship differs between subpopulations of record pairs. By applying the appropriate clfunction to each similarity value each similarity is transformed to a “true” probability so that the values can be pooled without concern for the subpopulation. This composition of the calibration and similarity functions can be viewed as yielding a function from record pairs to probability that takes similarity and subpopulation into account.</p>
 </div>
 <div id="construal-as-an-interaction" class="section level1">
 <h1>Construal as an interaction</h1>
+<p>The subpopulation-specific calibration can be interpreted as a <a href="https://en.wikipedia.org/wiki/Interaction_(statistics)">statistical interaction</a>. That is, the effect of similarity on probability depends on the value of subpopulation. Subpopulation membership is a discrete variable. However, interactions can also involve continuous variables. If there are any continuous variables derivable from the record pairs that have a strong impact on the similarity to probability calibration then it will be advantageous to exploit those variables in interactions with similarity.</p>
+</div>
+<div id="frequency-aware-similarity" class="section level1">
+<h1>Frequency-aware similarity</h1>
+<p>Consider the case where the codomains of the query and dictionary observation functions are the single attribute <code>family_name</code>. Person names have very skewed distributions, a small number of names (e.g. “Smith”) are relatively common, while most names (e.g. “Schwarzenegger”) are relatively rare. If the query and dictionary records are both “Smith” and the similarity function is exact equality the probability of identity will be quite low because there are multiple “Smith” dictionary records and only at most one has the same identity as the query record. Thus, the frequency of the value in the dictionary has a very strong effect on the probability corresponding to the level of similarity (exact equality). This is not a new observation (<span class="citation">Lange &amp; Naumann (2011)</span>). The novel point here is that frequency can be exploited by using it in a statistical interaction with similarity.</p>
+<p><em>Extension to cover continuous similarity</em></p>
 </div>
 <div id="curried-similarity-functions" class="section level1">
 <h1>Curried similarity functions?</h1>
 </div>
 <div id="logistic-regression-log-odds-and-naive-bayes" class="section level1">
 <h1>Logistic regression, log-odds, and naive Bayes?</h1>
-<p>A test citation: <span class="citation">(Lange and Naumann 2011)</span></p>
 </div>
 <div id="references" class="section level1">
 <h1>References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-langeFrequencyawareSimilarityMeasures2011" class="csl-entry">
-Lange, Dustin, and Felix Naumann. 2011. <span>“Frequency-Aware Similarity Measures: Why Arnold Schwarzenegger Is Always a Duplicate.”</span> In, 243–48. New York, New York, USA: ACM Press. <a href="https://doi.org/10.1145/2063576.2063616">https://doi.org/10.1145/2063576.2063616</a>.
+Lange, D., &amp; Naumann, F. (2011). <em>Frequency-aware similarity measures: Why arnold schwarzenegger is always a duplicate</em>. 243–248. <a href="https://doi.org/10.1145/2063576.2063616">https://doi.org/10.1145/2063576.2063616</a>
 </div>
 </div>
 <br>
