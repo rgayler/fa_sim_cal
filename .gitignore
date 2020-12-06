@@ -9,3 +9,8 @@ analysis/*png
 analysis/*html
 analysis/*_cache
 analysis/site_libs
+
+# keep tentative documents off GitHub
+analysis/01*
+docs/01*
+
