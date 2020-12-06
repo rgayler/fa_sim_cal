@@ -1,5 +1,5 @@
 ---
-title: "Home"
+title: "Project Home"
 site: workflowr::wflow_site
 output:
   workflowr::wflow_html:
@@ -8,13 +8,13 @@ editor_options:
   chunk_output_type: console
 ---
 
-This is the research website for the project "Frequency-Aware Similarity Calibration".
+This is the website for the research project "Frequency-Aware Similarity Calibration".
 
 If you have cloned the project to a local computer
 this website is rendered in the `docs` subdirectory of the project directory.
 
 If you are using `workflowr` to publish the research website
-it will also be rendered online to GitHub pages.
+it will also be rendered online to GitHub Pages.
 
 This page acts as a table of contents for the website.
 There are links to the webpages generated from the analysis notebooks
@@ -22,8 +22,8 @@ and to the rendered versions of manuscripts/documents/presentations.
 
 ---
 
-## [Central Idea](idea.html)  
-   This notebook explains the central idea behind the project.
+## [Proposal](proposal.html)  
+   This notebook explains the central ideas behind the project.
 
 ---
 
