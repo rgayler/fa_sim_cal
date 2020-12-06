@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Ross Gayler" />
+
+<meta name="date" content="2020-11-29" />
+
+<title>Proposal</title>
+
+<script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Frequency-Aware Similarity Calibration</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/rgayler/fa_sim_cal">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Proposal</h1>
+<h4 class="author">Ross Gayler</h4>
+<h4 class="date">2020-11-29</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2020-12-06
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>fa_sim_cal/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20201104code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20201104)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20201104code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20201104)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreec99ceffb8ecf8c926a7588ff29a0b0a28a08b3aftargetblankc99ceffa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/c99ceffb8ecf8c926a7588ff29a0b0a28a08b3af" target="_blank">c99ceff</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreec99ceffb8ecf8c926a7588ff29a0b0a28a08b3aftargetblankc99ceffa" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/c99ceffb8ecf8c926a7588ff29a0b0a28a08b3af" target="_blank">c99ceff</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    .tresorit/
+    Ignored:    renv/library/
+    Ignored:    renv/staging/
+
+Unstaged changes:
+    Deleted:    analysis/idea.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/proposal.Rmd</code>) and HTML (<code>docs/proposal.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/c99ceffb8ecf8c926a7588ff29a0b0a28a08b3af/analysis/proposal.Rmd" target="_blank">c99ceff</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2020-12-06
+</td>
+<td>
+First draft of proposal
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<p>This document explains the central ideas behind the project. They should be viewed as a hypothesis that approaching the problem in a certain way will be useful. The project will empirically investigate that hypothesis.</p>
+<div id="problem-setting" class="section level1">
+<h1>Problem setting</h1>
+<p>The problem concerns <a href="https://en.wikipedia.org/wiki/Record_linkage">entity resolution</a> - determining whether multiple records, each derived from some entity, refer to the same entity. For concreteness, we consider a database lookup use case. That is, given a query record (corresponding to some entity) and a dictionary of records (corresponding to unique entities) we want to find the dictionary record (if any) that corresponds to the same entity as the query record.</p>
+<p>We introduce some more formal notation before considering the implications of the problem setting.</p>
+<p>There is a universe of entities, <span class="math inline">\(e \in E\)</span>. For example, the entities might be persons. Each entity has a unique identity, <span class="math inline">\(id(e)\)</span>, that is generally not accessible to us.</p>
+<p>There is a dictionary (database) of records, <span class="math inline">\(d \in D\)</span>, each corresponding to an entity. Overloading the meaning of <span class="math inline">\(id()\)</span>, we denote the identity of the entity corresponding to a dictionary record as <span class="math inline">\(id(d)\)</span>. This identity of the entity corresponding to a dictionary record is generally not available to us.</p>
+<p>We assume that the dictionary records correspond to unique entities, <span class="math inline">\(id(d_i) = id(d_j) \iff i = j\)</span>. In general, the dictionary <span class="math inline">\(D\)</span> only corresponds to a subset of the universe of entities <span class="math inline">\(E\)</span>.</p>
+<p>There is a set of query records, <span class="math inline">\(q \in Q\)</span>. Once again, overloading the meaning of <span class="math inline">\(id()\)</span>, we denote the identity of the entity corresponding to a query record as <span class="math inline">\(id(q)\)</span>. The set of queries <span class="math inline">\(Q\)</span> is assumed to be representative of the queries that will be encountered in practice.</p>
+<p>The identities of the entities are not generally available. (If they were, entity resolution would be trivial.) However, we assume that identities are available for the purposes of this project to allow estimation of statistical models (supervised learning) and to allow assessment of the performance of entity resolution. To emphasise the special nature of this project-specific access to identity information we generally refer to it as an oracle.</p>
+<p>Each dictionary record is assumed to be the result of applying some observation process to an entity, <span class="math inline">\(d_i = obs_d(e_i)\)</span>. Likewise, each query record is assumed to be the result of applying some observation process to an entity, <span class="math inline">\(q_j = obs_q(e_j)\)</span>. The observations are usually taken to be tuples of values, e.g. <span class="math inline">\((name, address, age)\)</span>. This is not strictly necessary, but is convenient and will be adopted here. Note that the dictionary and query observation functions are different and may have different codomains. For convenience, we only consider the case where both observation functions have the same codomain.</p>
+<p>If the identities were accessible to us we could define the lookup function <span class="math inline">\(lookup(q, D) = \{ d \in D : id(d) = id(q) \}\)</span>, which is guaranteed to return either a singleton set or the empty set. The key component of this definition is the identity predicate (<span class="math inline">\(id(d) = id(q)\)</span>). Conceptually, this is evaluated for every <span class="math inline">\(d \in D\)</span> to find the required <span class="math inline">\(d\)</span>. Given the assumption that the <span class="math inline">\(d \in D\)</span> are unique, the predicate will be true for either exactly one <span class="math inline">\(d\)</span>, or none in the case that the sought entity is not represented in the dictionary <span class="math inline">\(D\)</span>.</p>
+<p>Unfortunately, the identities are not accessible to us to use in <span class="math inline">\(lookup()\)</span>. Instead, we are forced to define the lookup function in terms of the observation values, which are not guaranteed to uniquely identify the entities. As was the case with the predicate above this can be define in terms of some function <span class="math inline">\(f(q, d)\)</span> of a query record and a dictionary record. The interesting characteristics of this problem arise from attempting to use the observation values as a proxy for identity.</p>
+<p>Note that the lookup process can be described with respect to a single query <span class="math inline">\(q\)</span>. We aim to define <span class="math inline">\(lookup()\)</span> to be as accurate as possible for every specific query <span class="math inline">\(q\)</span>. The set of queries <span class="math inline">\(Q\)</span> is only relevant in so far as we will summarise the performance of <span class="math inline">\(lookup()\)</span> over <span class="math inline">\(Q\)</span> in order to make claims about the expected performance over queries.</p>
+</div>
+<div id="probability-of-identity" class="section level1">
+<h1>Probability of identity</h1>
+<p>Given that we don’t have access to identity, the general approach taken in this field is to assess the <em>compatibility</em> of each dictionary record with the query record, where <span class="math inline">\(compat(q_i, d_j)\)</span> is defined in terms of the observed values <span class="math inline">\(q_i\)</span> and <span class="math inline">\(d_i\)</span>. (Remember, <span class="math inline">\(q_i = obs_q(e_i)\)</span> and <span class="math inline">\(d_j = obs_d(e_j)\)</span>.) This quantifies the extent to which the query and dictionary values are compatible with being observed from the same entity. Ideally, we want the compatibility value be high (say, 1) when the query and dictionary records are referring to the same entity and the compatibility value to be low (say, 0) when the query and dictionary records are referring to different entities.</p>
+<p>To illustrate the point made earlier that the codomains of <span class="math inline">\(obs_d()\)</span> and <span class="math inline">\(obs_q()\)</span> do not have to be identical and to emphasise the nature of <span class="math inline">\(compat()\)</span>, consider a problem domain where the entities are steel spheres. <span class="math inline">\(obs_d()\)</span> measures the diameter of a sphere, and <span class="math inline">\(obs_q()\)</span> measures the mass of a sphere. If the density of steel is fixed it is clearly possible to tell when a dictionary and query record refer to the same sphere.</p>
+<p>Now consider the case where the density of steel varies across spheres, and/or some spheres are of similar size and there is measurement error. The compatibility value may be high for some combinations of query and dictionary records that refer to different spheres, or the compatibility value may be low for query and dictionary records that refer to the same spheres. That is, the lookup process is now fallible and the result of the lookup process is uncertain.</p>
+<p>This is equivalent to stating that the compatibility value can no longer be interpreted as a crisp indicator of identity. Now the best we can do is require that the compatibility be able to take intermediate values, while being higher when the query and dictionary records are likely to be referring to the same entity. Probability is the natural language for quantifying our uncertainty about the identity of the records. We want to know <span class="math inline">\(P(id(q) = id(d) \mid compat(q, d))\)</span>. The compatibility and probability are two distinct quantities, because although the compatibility carries information about the identity of the records it is not constrained to obey the rules of probability. Translating from compatibility to probability makes that information more useful because we can use the laws of probability to draw inferences.</p>
+</div>
+<div id="similarity" class="section level1">
+<h1>Similarity</h1>
+<p>Many entity resolution problems have query and dictionary observation functions defined with the same codomain, such as a tuple of strings. For example, the entities might be persons and the attributes (strings) might be: <code>given_name</code>, <code>family_name</code>, <code>address</code>. Some <a href="https://en.wikipedia.org/wiki/String_metric">string similarity metric</a> is used as the compatibility function for each attribute, comparing the corresponding attribute values from the query and dictionary records. The attribute similarities are then combined somehow to yield a record similarity value, which is used as the compatibility.</p>
+<p>If similarity were defined in terms of exact equality between strings, records with identical values would be treated as compatible and records with any difference would be treated as incompatible. This would be less than ideal if there was measurement error in the observations (e.g. typographical and transcription errors).</p>
+<p>The justification for using string similarity metrics is that they accommodate such transcription errors. However, this is only a <em>heuristic</em> justification. There is no guarantee that all the most likely transcription errors yield the highest similarity metric values. Each string similarity metric implicitly embodies an error generation mechanism and there is no guarantee that any of them precisely correspond to the actual observation generating process.</p>
+</div>
+<div id="estimated-similarity" class="section level1">
+<h1>Estimated similarity</h1>
+<p>Ideally, we want to estimate <span class="math inline">\(P(id(q) = id(d) \mid q, d)\)</span>. Given a small fixed universe of entities, and an oracle for identity it would be possible to calculate the conditional probability by exhaustive enumeration. That’s generally not possible, so we must try to come up with a compatibility function that captures the structure of the relationship to probability of identity from all pairs of query and dictionary records (<span class="math inline">\(P(id(q) = id(d) \mid compat(q, d)\)</span>). The point of using <span class="math inline">\(compat(q, d)\)</span> rather than <span class="math inline">\((q, d)\)</span> is that <span class="math inline">\(compat()\)</span> should be defined in terms of features derived from the the observed values of the query and dictionary records, meaning that it can be applied to previously unencountered records. We also aim for the variance of conditional probability over the space of record pairs to be maximised (i.e. to capture as much as possible of the variation between record pairs) and for the compatibility function to generalise over new entities not encountered during construction of the compatibility function.</p>
+<p>Stated that way, it is clear that construction of a compatibility function can be viewed as estimation of a statistical model (or supervised learning if you prefer ML terminology). If the estimation/optimisation process is fairly generic then our effort needs to be focused on choosing a functional form for the compatibility function. The functional form should emphasise features of the record pairs that are strongly related to probability of identity and suppress features that are irrelevant to probability of identity. That is, construction of the internals of the compatibility function can be viewed as a type of feature engineering in a regression model predicting the probability of identity from only one predictor: the compatibility. (Treating this as a regression problem implies that we have an identity oracle providing the outcome for estimating the model.)</p>
+<p>The compatibility function returns the best synthesis of the evidence given by the features defined on the record pairs. However, the scaling of the compatibility value is arbitrary rather than necessarily being a probability.</p>
+</div>
+<div id="calibrated-similarity" class="section level1">
+<h1>Calibrated similarity</h1>
+<p>We believe that the probability of identity (<span class="math inline">\(id(q) = id(d)\)</span>) is more useful than the similarity (or, more generally, compatibility). This is because the probability is already in the form most useful for decision-making. Probabilities can be used to weight the costs of the outcomes to optimise decision-making with respect to cost, whereas the decision-making implications of some arbitrary similarity metric are unknown.</p>
+<p>Reverting to using similarity as the compatibility function, what we want to do here is to find the relationship between similarity and probability of identity: <span class="math inline">\(P(id(q) = id(d) \mid sim(q, d))\)</span>. This is a <a href="https://en.wikipedia.org/wiki/Calibration_(statistics)">calibration</a> of the similarity to probability. It yields a function that allows us to translate any similarity into the corresponding probability.</p>
+<p>We would expect the probability to be a monotone function of the similarity, but given the heuristic nature of the similarity metrics that is not guaranteed. We can use any functional form that is empirically justified. In general we will only assume that the relationship is smooth.</p>
+<div class="figure" style="text-align: center">
+<img src="figure/proposal.Rmd/calib-one-1.png" alt="Example calibration from similarity to probability." width="672" />
+<p class="caption">
+Example calibration from similarity to probability.
+</p>
+</div>
+<p>Figure @ref(fig:calib-one) shows a hypothetical calibration from similarity to probability. Note that this is smooth and nonlinear and estimated from the oracle data.</p>
+<p><em>There is some problem with captioning of figures to be sorted out later.</em></p>
+</div>
+<div id="subpopulation-calibration" class="section level1">
+<h1>Subpopulation calibration</h1>
+<p>The probability value of the calibration at any specific value of similarity is the expected probability where the expectation is effectively over the record pairs having that similarity value. Even if those record pairs have distinct, different probabilities the estimation of the calibration curve will summarise them to a single probability value.</p>
+<p>This raises the possibility that the record pairs could be divided into subpopulations such that each subpopulation has a distinct calibration curve. If those subpopulations can be defined in terms of features derivable from the record pairs this indicates that there is information that could be exploited to make the similarity function more discriminating.</p>
+<p>This predictive information could be used to estimate a new more discriminating similarity function. However, it may be more transparent to leave the similarity function (say, edit distance) unaltered and estimate separate calibration functions for each subpopulation. These are used to transform the similarities to probabilities and the populations can then be pooled.</p>
+<div class="figure" style="text-align: center">
+<img src="figure/proposal.Rmd/calib-multi-1.png" alt="Example calibration of multiple subpopulations, each with a different calibration curve." width="672" />
+<p class="caption">
+Example calibration of multiple subpopulations, each with a different calibration curve.
+</p>
+</div>
+<p>Figure @ref(fig:calib-multi) shows a hypothetical calibration from similarity to probability where the calibration relationship differs between subpopulations of record pairs. By applying the appropriate calibration function to each similarity value each similarity is transformed to a “true” probability so that the values can be pooled without concern for the subpopulation. This composition of the calibration and similarity functions can be viewed as yielding a function from record pairs to probability that takes similarity and subpopulation into account.</p>
+</div>
+<div id="construal-as-an-interaction" class="section level1">
+<h1>Construal as an interaction</h1>
+<p>The subpopulation-specific calibration can be interpreted as a <a href="https://en.wikipedia.org/wiki/Interaction_(statistics)">statistical interaction</a>. That is, the effect of similarity on probability depends on the value of subpopulation. Subpopulation membership is a discrete variable. However, interactions can also involve continuous variables. If there are any continuous variables derivable from the record pairs that have a strong impact on the similarity to probability calibration then it will be advantageous to exploit those variables in interactions with similarity.</p>
+</div>
+<div id="frequency-aware-similarity" class="section level1">
+<h1>Frequency-aware similarity</h1>
+<p>Consider the case where the codomains of the query and dictionary observation functions are the single attribute <code>family_name</code>. Person names have very skewed distributions, a small number of names (e.g. “Smith”) are relatively common, while most names (e.g. “Schwarzenegger”) are relatively rare. If the query and dictionary records are both “Smith” and the similarity function is exact equality the probability of identity will be quite low because there are multiple “Smith” dictionary records and only at most one has the same identity as the query record. Thus, the frequency of the value in the dictionary has a very strong effect on the probability corresponding to the level of similarity (exact equality). This is not a new observation (<span class="citation">Lange &amp; Naumann (2011)</span>). The novel point here is that frequency can be exploited by using it in a statistical interaction with similarity.</p>
+<p>The prior paragraph only covered the case where the similarity function is exact equality. How do we deal with the more usual case of a similarity function (e.g. edit distance) that returns a range of intermediate similarity values. This requires a digression into the interpretation of the probability <span class="math inline">\(P(id(q) = id(d) \mid q, d)\)</span>. The conditionality on <span class="math inline">\(q\)</span> and <span class="math inline">\(d\)</span> is equivalent to the fallible claim that <span class="math inline">\(q\)</span> and <span class="math inline">\(d\)</span> are observations of the same entity. Thus, <span class="math inline">\(P(id(q) = id(d) \mid q, d)\)</span> can be read as, “Given the claim that <span class="math inline">\(q\)</span> and <span class="math inline">\(d\)</span> are observations of the same entity, what is the probability that claim is correct?” or “What is the probability that <span class="math inline">\(q\)</span> and <span class="math inline">\(d\)</span> are a <em>true match</em>?”</p>
+<p>The probability <span class="math inline">\(P(id(q) = id(d) \mid sim(q, d) )\)</span> treats all record pairs having the same similarity as identical and having an identical probability of being a true match. When using a similarity measure it is assumed that the probability of being a true match increases monotonically with the similarity. Given <span class="math inline">\(q\)</span> and <span class="math inline">\(d\)</span> with similarity <span class="math inline">\(sim(q, d)\)</span> and accepting that match on the basis of similarity implies that we would accept any <span class="math inline">\(d&#39;\)</span> with <span class="math inline">\(sim(q, d&#39;) \ge sim(q, d)\)</span>. So the relevant frequency for frequency-aware similarity given a query record <span class="math inline">\(q\)</span> and dictionary record <span class="math inline">\(d\)</span> is the sum of the frequencies of all dictionary records <span class="math inline">\(d&#39;\)</span> with similarity <span class="math inline">\(sim(q, d&#39;) \ge sim(q, d)\)</span>.</p>
+</div>
+<div id="curried-similarity-functions" class="section level1">
+<h1>Curried similarity functions</h1>
+<p>We don’t know whether this is helpful, but it is at least mildly interesting that this approach can be viewed as creating <a href="https://en.wikipedia.org/wiki/Currying">curried</a>. We are only interested in one query record <span class="math inline">\(q\)</span> at a time, although each query is run over every dictionary record <span class="math inline">\(d\)</span> in <span class="math inline">\(D\)</span>. The frequency-aware calibration can be viewed as creating a modified similarity function <span class="math inline">\(sim_q(d)\)</span> that is specific to the query <span class="math inline">\(q\)</span>, where the modification encodes the information in the relationship between <span class="math inline">\(q\)</span> and all the <span class="math inline">\(d\)</span> in <span class="math inline">\(D\)</span>.</p>
+</div>
+<div id="logistic-regression" class="section level1">
+<h1>Logistic regression</h1>
+<p>The standard statistical approach for modelling probabilities is <a href="https://en.wikipedia.org/wiki/Logistic_regression">logistic regression</a>. Treating entity resolution as a statistical modelling problem allows the introduction of extra predictive variables as needed and gives access to the range of statistical practices and insights.</p>
+<p>We intend to model frequency-aware similarity as a smooth interaction of frequency and similarity. This can be done with a <a href="https://en.wikipedia.org/wiki/Generalized_additive_model">generalised additive model</a>, which is a type of <a href="https://en.wikipedia.org/wiki/Generalized_linear_model">generalised linear model</a>, of which logistic regression is a special case.</p>
+<p>The discussion in earlier sections has been in terms of observations having a single attribute. Treating entity resolution as a regression problem allows for straight-forward generalisation by adding multiple attributes as predictors.</p>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-langeFrequencyawareSimilarityMeasures2011" class="csl-entry">
+Lange, D., &amp; Naumann, F. (2011). <em>Frequency-aware similarity measures: Why arnold schwarzenegger is always a duplicate</em>. 243–248. <a href="https://doi.org/10.1145/2063576.2063616">https://doi.org/10.1145/2063576.2063616</a>
+</div>
+</div>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre><code>R version 4.0.3 (2020-10-10)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 20.10
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.9.0
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.9.0
+
+locale:
+ [1] LC_CTYPE=en_AU.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_AU.UTF-8        LC_COLLATE=en_AU.UTF-8    
+ [5] LC_MONETARY=en_AU.UTF-8    LC_MESSAGES=en_AU.UTF-8   
+ [7] LC_PAPER=en_AU.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_AU.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] ggplot2_3.3.2   magrittr_1.5    workflowr_1.6.2
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.5       highr_0.8        pillar_1.4.6     compiler_4.0.3  
+ [5] later_1.1.0.1    git2r_0.27.1     tools_4.0.3      digest_0.6.27   
+ [9] evaluate_0.14    lifecycle_0.2.0  tibble_3.0.4     gtable_0.3.0    
+[13] pkgconfig_2.0.3  rlang_0.4.8      rstudioapi_0.11  yaml_2.2.1      
+[17] xfun_0.19        withr_2.3.0      stringr_1.4.0    knitr_1.30      
+[21] fs_1.5.0         vctrs_0.3.4      rprojroot_1.3-2  grid_4.0.3      
+[25] glue_1.4.2       R6_2.5.0         rmarkdown_2.5    farver_2.0.3    
+[29] whisker_0.4      backports_1.2.0  scales_1.1.1     promises_1.1.1  
+[33] ellipsis_0.3.1   htmltools_0.5.0  colorspace_2.0-0 renv_0.12.3     
+[37] httpuv_1.5.4     labeling_0.4.2   stringi_1.5.3    munsell_0.5.0   
+[41] crayon_1.3.4    </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "site_libs/mathjax-local/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
