@@ -7,9 +7,170 @@ editor_options:
   chunk_output_type: console
 ---
 
+This is tentative because it uses the North Carolina voter data
+and I am not yet convinced that is appropriate data to share.
+
+Because it is tentative this analysis is excluded from git (proj_root/.gitignore)
+and the data is excluded from git (proj-root/data/.gitignore).
+
 ## Introduction
 
-```{r}
+Read the data, characterise it to understand it, and check for possible gotchas.
 
+```{r setup}
+library(here)
+library(magrittr)
+library(tidyverse)
+library(vroom)
+library(skimr)
+
+d_file <- here::here("data", "VR_20051125.txt.xz")
+d_fst <- here::here("output", "d.fst")
 ```
+
+
+## Read data
+
+The raw file is fixed width format, quite large, and contains many columns that are irrelevant and/or objectionable.
+Read the subset of columns that will be useful.
+
+* Contrary to the documentation, the file appears to be tab delimited rather than fixed width format.
+
+```{r eval=FALSE}
+d <- vroom::vroom(d_file)
+fst::write_fst(d, d_fst, compress = 100)
+```
+
+```{r}
+d <- fst::read_fst(d_fst)
+```
+
+## Characterise data (1)
+
+Concentrate on the columns that have a chance of being useful.
+
+```{r}
+glimpse(d)
+skimr::skim(d)
+```
+
+### county_id
+
+County identification number
+
+```{r}
+summary(d$county_id)
+table(d$county_id)
+```
+
+* Never missing
+* Integer 1 .. 100
+
+### voter_reg_num
+
+Voter registration number (unique by county)
+
+```{r}
+table(d$voter_reg_num) %>% head(15)
+table(d$voter_reg_num) %>% tail(15)
+
+summary(as.integer(d$voter_reg_num))
+```
+
+* ~2.3M unique values
+* Never missing
+* integer 0 .. ~1M
+
+### ncid
+
+North Carolina identification number (NCID) of voter
+
+* Always missing
+
+### status_cd & voter_status_desc
+
+Status code for voter registration
+
+```{r}
+table(d$status_cd, useNA = "always")
+table(d$voter_status_desc, useNA = "always")
+```
+
+* 5 unique nonmissing values
+* 2 missing cases
+
+### reason_cd & voter_status_reason_desc
+
+Reason code for voter registration status
+
+```{r}
+table(d$reason_cd, useNA = "always")
+table(d$voter_status_reason_desc, useNA = "always")
+```
+
+* 26 unique nonmissing values
+* 112 missing cases
+
+```{r}
+table(d$voter_status_reason_desc, d$voter_status_desc, useNA = "always")
+```
+
+* voter_status_desc == "ACTIVE" & voter_status_reason_desc == "VERIFIED"
+  * most likely to be error free and unique
+  * ~2.5M cases
+
+## Characterise data (2)
+
+**From this point on limit cases to: voter_status_desc == "ACTIVE" & voter_status_reason_desc == "VERIFIED"
+
+Only keep columns which might conceivably be of some use. 
+
+```{r}
+d <- d %>% 
+  dplyr::filter(voter_status_desc == "ACTIVE" & voter_status_reason_desc == "VERIFIED") %>% 
+  dplyr::select(
+    county_id, voter_reg_num,
+    last_name : street_sufx_cd, unit_designator : zip_code,
+    area_cd, phone_num,
+    sex : registr_dt
+  )
+```
+
+```{r}
+glimpse(d)
+skimr::skim(d)
+```
+
+* ~2.5M cases
+
+### county_id
+
+County identification number
+
+```{r}
+summary(d$county_id)
+table(d$county_id)
+```
+
+* Never missing
+* Integer 1 .. 100
+
+### voter_reg_num
+
+Voter registration number (unique by county)
+
+```{r}
+table(d$voter_reg_num) %>% head(15)
+table(d$voter_reg_num) %>% tail(15)
+
+summary(as.integer(d$voter_reg_num))
+```
+
+* ~1.3M unique values
+* Never missing
+* integer 0.. ~1M
+
+### last_name
+
+Voter last name
 
