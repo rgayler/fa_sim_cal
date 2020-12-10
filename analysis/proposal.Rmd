@@ -2,14 +2,7 @@
 title: "Proposal"
 author: "Ross Gayler"
 date: "2020-11-29"
-output: 
-  bookdown::html_document2:
-    base_format: workflowr::wflow_html
-    fig_caption: yes
-    toc: yes
-    toc_float: yes
-    theme: cosmo
-    highlight: textmate
+output: workflowr::wflow_html
 editor_options:
   chunk_output_type: console
 bibliography: references.bib
@@ -102,8 +95,6 @@ tibble::tribble(
 ```
 
 Figure \@ref(fig:calib-one) shows a hypothetical calibration from similarity to probability. Note that this is smooth and nonlinear and estimated from the oracle data.
-
-*There is some problem with captioning of figures to be sorted out later.*
 
 # Subpopulation calibration
 
