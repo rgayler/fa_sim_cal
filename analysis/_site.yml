@@ -14,9 +14,10 @@ navbar:
     text: Source code
     href: https://github.com/rgayler/fa_sim_cal
 output:
-  workflowr::wflow_html:
-    mathjax: "local"
+  bookdown::html_document2:
+    base_format: workflowr::wflow_html
     toc: yes
     toc_float: yes
     theme: cosmo
     highlight: textmate
+    mathjax: "local"
