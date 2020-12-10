@@ -11,6 +11,6 @@ analysis/*_cache
 analysis/site_libs
 
 # keep tentative documents off GitHub
-analysis/01*
-docs/01*
+analysis/01*Rmd
+docs/01*html
 

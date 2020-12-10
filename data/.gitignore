@@ -1,6 +1,7 @@
 # keep tentative documents off GitHub
 layout*txt
 test*
+
 # keep large data files off GitHub
 *xz
 
