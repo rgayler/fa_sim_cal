@@ -1,8 +1,11 @@
 ---
 title: "Project Home"
 site: workflowr::wflow_site
+# output:
+#   workflowr::wflow_html:
+#     toc: false
 output:
-  workflowr::wflow_html:
+  bookdown::html_document2:
     toc: false
 editor_options:
   chunk_output_type: console
