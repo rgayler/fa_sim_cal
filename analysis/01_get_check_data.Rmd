@@ -1,0 +1,1193 @@
+---
+title: "01_get_check_data"
+author: "Ross Gayler"
+date: "2020-12-06"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+  markdown: 
+    wrap: 72
+---
+
+```{r setup}
+library(here)
+library(magrittr)
+library(dplyr)
+library(stringr)
+library(vroom)
+library(skimr)
+library(knitr)
+```
+
+# Introduction
+
+Read the data, characterise it to understand it, and check for possible
+gotchas.
+
+This project uses historical voter registration data from the [North
+Carolina State Board of Elections](https://www.ncsbe.gov/). This
+information is made publicly available in accordance with [North
+Carolina state
+law](https://s3.amazonaws.com/dl.ncsbe.gov/ReadMe_PUBLIC_DATA.txt). The
+[Voter Registration Data
+page](https://www.ncsbe.gov/results-data/voter-registration-data) links
+to a [folder of Voter Registration
+snapshots](https://dl.ncsbe.gov/index.html?prefix=data/Snapshots/),
+which contains the snapshot data files and a [metadata file describing
+the layout of the snapshot data
+files](https://s3.amazonaws.com/dl.ncsbe.gov/data/Snapshots/layout_VR_Snapshot.txt).
+At the time of writing the snapshot files cover the years 2005 to 2020
+with at least one snapshot per year. The files are [ZIP
+compressed](https://en.wikipedia.org/wiki/ZIP_(file_format)) and
+relatively large, with the smallest being 572 MB after compression.
+
+The snapshots contains many columns that are irrelevant to this project
+and/or prohibited under Australian privacy law (e.g. political
+affiliation, race). We initially read *all* the columns, because that
+may help debugging the inevitable problems reading the data. Later the
+data set will be restricted to the essential columns for the project.
+
+We use only one snapshot file
+([VR_Snapshot_20051125.zip](https://s3.amazonaws.com/dl.ncsbe.gov/data/Snapshots/VR_Snapshot_20051125.zip))
+because this project does not investigate linkage of records across
+time. We chose the oldest snapshot (2005) because it is the smallest and
+the contents are the most out of date, minimising the current
+information made available. Note that this project will not generate any
+information that is not already directly, publicly available from NCSBE.
+
+# Read data
+
+The snapshot ZIP file was downloaded, uncompressed (5.7 GB), then
+compressed in [XZ format](https://en.wikipedia.org/wiki/XZ_Utils) to
+minimise the size. The compressed snapshot file and the metadata file
+are stored in the `data` directory.
+
+```{r}
+raw_file <- here::here("data", "VR_20051125.txt.xz") # raw input file
+```
+
+The cleaned data is stored as an [`fst`
+format](https://www.fstpackage.org/) file in the `output` directory.
+
+```{r}
+d_fst <- here::here("output", "d.fst") # temporary data file
+clean_fst <- here::here("output", "clean.fst") # parsed and cleaned data as a dataframe
+```
+
+The data is tab-separated, not fixed-width as you might reasonably think
+from reading the metadata. The field widths (interpreted as maximum
+lengths) in the metadata are not accurate. Some fields contain values
+longer than the stated width.
+
+Inspection of the raw data shows that the character fields are unquoted.
+However, at least one character value contains a double-quote character,
+which has the potential to confuse the parsing if it is looking for
+quoted values.
+
+```{r eval=FALSE}
+d <- vroom::vroom( #read raw data; let vroom guess the field types
+  raw_file,
+  delim = "\t", # assume that fields are *only* delimited by tabs
+  col_names = TRUE, # use the column names on the first line of data
+  na = "", # missing fields are empty string or whitespace only (see trim_ws argument)
+  quote = "", # don't allow for quoted strings
+  comment = "", # don't allow for comments
+  trim_ws = TRUE, # trim leading and trailing whitespace
+  escape_double = FALSE, # assume no escaped quotes
+  escape_backslash = FALSE # assume no escaped backslashes
+  )
+fst::write_fst(d, d_fst, compress = 100) # save data frame (cheap-skate caching)
+```
+
+```{r}
+d <- fst::read_fst(d_fst) %>% tibble::as_tibble() # get cached data
+dim(d)
+```
+
+-   Correct number of data rows extracted (external line count of input
+    file = 8,003,294)
+
+# Characterise data (all records)
+
+Take a very quick look at everything then concentrate on the columns
+that have a chance of being useful.
+
+```{r}
+glimpse(d)
+skimr::skim(d)
+```
+
+-   The warning messages from `skim()` indicate that a handful of rows
+    contain unexpected characters. If they are in rows we use they will
+    have to be loacted and dealt with.
+
+## county_id & county_desc
+
+`county_id`: County identification number\
+`county_desc`: County description
+
+```{r}
+summary(d$county_id)
+table(d$county_id)
+```
+
+-   Never missing
+-   Integer 1 .. 100
+
+```{r}
+table(d$county_desc)
+```
+
+-   Never missing
+-   100 unique values
+
+They look reasonable, to the extent that I can tell without knowing
+anything about the counties.
+
+## voter_reg_num
+
+`voter_reg_num`: Voter registration number (unique by county)
+
+```{r}
+table(d$voter_reg_num) %>% head(12)
+table(d$voter_reg_num) %>% tail(12)
+
+summary(as.integer(d$voter_reg_num))
+
+d$voter_reg_num %>% stringr::str_length() %>% table(useNA = "ifany")
+```
+
+-   \~2.7M unique values
+-   Never missing
+-   Integer 0 .. \~1,000M (as strings)
+-   Looks like they should be 12-digit integers with leading zeroes
+-   Exactly one observation is short
+
+Look at the record with the short value.
+
+```{r}
+d %>% 
+  dplyr::filter(stringr::str_length(voter_reg_num) < 12) %>% 
+  dplyr::select(county_id, voter_reg_num, status_cd, voter_status_desc, reason_cd, voter_status_reason_desc) %>% 
+  knitr::kable()
+```
+
+-   There is only one short value which can be ignored because it will
+    later be excluded from the data set because of the observation's
+    status -not active. (I intend to later restrict the data set to only
+    active voters because, to the greatest extent possible, I want to
+    have no duplicate records in the data used for the analyses.)
+
+Check whether `county_id x voter_reg_num` is unique, as claimed.
+
+```{r}
+d %>% 
+  dplyr::select(county_id, voter_reg_num) %>% 
+  dplyr::mutate(id = stringr::str_c(as.character(county_id), ".", voter_reg_num)) %>% 
+  dplyr::count(id) %>% 
+  with(table(n))
+```
+
+-   `county_id x voter_reg_num` is unique, even including observations
+    flagged as duplicates.
+
+## ncid
+
+`ncid`: North Carolina identification number (NCID) of voter
+
+-   Always missing
+
+That's a shame. It would have been useful.
+
+## status_cd & voter_status_desc
+
+`status_cd`: Status code for voter registration\
+`voter_status_desc`: Status code description
+
+```{r}
+table(d$status_cd, useNA = "always")
+table(d$voter_status_desc, useNA = "always")
+```
+
+-   5 unique nonmissing values
+-   2 records with missing values
+-   \~4.9M active records
+
+## reason_cd & voter_status_reason_desc
+
+`reason_cd`: Reason code for voter registration status\
+`voter_status_reason_desc`: Reason code description
+
+```{r}
+table(d$reason_cd, useNA = "always")
+table(d$voter_status_reason_desc, useNA = "always")
+```
+
+-   26 unique nonmissing values
+-   238 records with missing values
+-   \~4.1M verified records
+
+Look at the relationship between status and status reason.
+
+```{r}
+table(
+  stringr::str_trunc(d$voter_status_reason_desc, 25), 
+  stringr::str_trunc(d$voter_status_desc, 8), 
+  useNA = "always"
+)
+```
+
+-   voter_status_desc == "ACTIVE" & voter_status_reason_desc ==
+    "VERIFIED"
+
+    -   Most likely to be error free (based on common-sense
+        interpretation of the labels)
+    -   \~4.1M observations
+
+## Name standardisation
+
+Identify any oddities about the name fields that might benefit from
+standardisation.
+
+I will do this on all the rows, not just the subset to be analysed,
+because I expect the oddities to be much the same independently of
+whether I will exclude the rows from the analyses and the larger sample
+size will be helpful in spotting rare problems.
+
+I will look at the three name fields concurrently because I expect the
+oddities to be similar across the name fields.
+
+-   `last_name`: Voter last name
+-   `first_name`: Voter first name
+-   `midl_name`: Voter middle name
+
+Look for possible anomalies in names.
+
+### Name missing
+
+```{r}
+d %>% with(table(is.na(last_name)))
+d %>% with(table(is.na(first_name)))
+d %>% with(table(is.na(midl_name)))
+```
+
+-   A small fraction of last and first names are missing. We don't
+    expect them to be missing.
+-   A significant fraction of middle names are missing. This is expected
+    as middle names are not mandatory.
+
+Look at the records missing last or first names to see if there is some
+explanation for their absence.
+
+```{r}
+# last name missing
+d %>% 
+  dplyr::filter(is.na(last_name)) %>% 
+  dplyr::select(
+    first_name, midl_name, name_sufx_cd, 
+    sex, age,
+    house_num, street_name, 
+    voter_status_desc, voter_status_reason_desc
+    ) %>% 
+  dplyr::arrange(voter_status_desc, voter_status_reason_desc, first_name) %>% 
+  knitr::kable()
+```
+
+-   All the voters missing `last_name` are REMOVED. Perhaps it's a
+    side-effect of the removal process.
+
+```{r}
+# first name missing
+d %>% 
+  dplyr::filter(is.na(first_name)) %>% 
+  dplyr::select(
+    last_name, midl_name, name_sufx_cd, 
+    sex, age,
+    house_num, street_name, 
+    voter_status_desc, voter_status_reason_desc
+    ) %>% 
+  dplyr::arrange(voter_status_desc, voter_status_reason_desc, midl_name) %>% 
+  knitr::kable()
+```
+
+-   Most are REMOVED, but some are ACTIVE and VERIFIED. That suggests
+    the data entry for this record is done *after* verification.
+-   Some appear to have the first name in the middle name field, e.g. (F
+    M L) ("" "BRENDA" "PARRISH"), ("" "ALEXIS" "BULLARD")
+-   Some appear to have first and middle names appended to the last
+    name, e.g. (F M L) ("" "" "JONES LARRY MALLOR"), ("" ""
+    "AMATO,KATHERINE,M")
+-   Some are missing all the names!
+-   Some appear to be test data, e.g. last name = XXX or "NEW TEST"
+
+There are *very* few records missing first name or last name, and most
+of them are REMOVED status. The easiest thing to do is just get rid of
+those records.
+
+**Exclude records with missing first or last name**
+
+### Check for lower-case letters.
+
+```{r}
+d %>% dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "[a-z]"))
+
+d %>% dplyr::select(first_name) %>%
+  dplyr::filter(stringr::str_detect(first_name, "[a-z]"))
+
+d %>% dplyr::select(midl_name) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "[a-z]"))
+```
+
+-   243 names with lower case letters.
+-   Occur in last, first, and middle names.
+-   Associated with particles where there would optionally be a space,
+    e.g. De VANE.
+
+**Map all letters to upper case**
+
+### Check for digits
+
+```{r}
+d %>% dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "[0-9]"))
+
+d %>% dplyr::select(first_name) %>%
+  dplyr::filter(stringr::str_detect(first_name, "[0-9]"))
+
+d %>% dplyr::select(midl_name) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "[0-9]"))
+```
+
+-   Zero substituted for O, e.g. J0HNSON, BURT0N
+-   Some are obviously generation suffixes, e.g. ARGUS 4TH, LEAK 111
+    (should be LEAK III)
+-   Some are poor parsing into fields, e.g. MV 5/17/95 , MIZELLE25248249
+
+Look at the digits individually.
+
+### Check for zero
+
+```{r}
+x <- d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "0"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::pull(last_name)
+
+x <- d %>% 
+  dplyr::select(first_name) %>%
+  dplyr::filter(stringr::str_detect(first_name, "0"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(first_name) %>% 
+  dplyr::pull(first_name)
+
+x <- d %>% 
+  dplyr::select(midl_name) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "0"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(midl_name) %>% 
+  dplyr::pull(midl_name)
+```
+
+-   270 names with zero
+-   Occur in last, first, and middle names.
+-   Most are zero substituted for O, e.g. J0HNSON, BURT0N
+-   Some are pure numeric, e.g. 0, 01
+-   Some are names with concatenated numeric, e.g. WAYNE030986,
+    WRIGHT2106
+
+**Map zero to O if name contains at least one letter and no digits 1-9**
+
+### Check for one
+
+```{r}
+x <- d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "1"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::pull(last_name)
+
+x <- d %>% 
+  dplyr::select(first_name) %>%
+  dplyr::filter(stringr::str_detect(first_name, "1"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(first_name) %>% 
+  dplyr::pull(first_name)
+
+x <- d %>% 
+  dplyr::select(midl_name) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "1"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(midl_name) %>% 
+  dplyr::pull(midl_name)
+```
+
+-   186 names with one
+-   Occur in last, first, and middle names.
+-   Most are 1 substituted for I in generation suffix, e.g. COX 1V, CARR
+    111
+-   Some are pure numeric, e.g. 01, 971
+-   Some are wrongly parsed, e.g. MV 5/17/95
+-   Some are names with concatenated numeric, e.g. LYNN2513, WRIGHT2106
+
+**Delete generation suffixes where possible**
+
+### Check for two
+
+```{r}
+x <- d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "2"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::pull(last_name)
+
+x <- d %>% 
+  dplyr::select(first_name) %>%
+  dplyr::filter(stringr::str_detect(first_name, "2"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(first_name) %>% 
+  dplyr::pull(first_name)
+
+x <- d %>% 
+  dplyr::select(midl_name) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "2"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(midl_name) %>% 
+  dplyr::pull(midl_name)
+```
+
+-   15 names with two
+-   Some are pure numeric, e.g. 205, 328
+-   Some are names with concatenated numeric, e.g. LYNN1820, WRIGHT2106
+
+### Check for three
+
+```{r}
+x <- d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "3"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::pull(last_name)
+
+x <- d %>% 
+  dplyr::select(first_name) %>%
+  dplyr::filter(stringr::str_detect(first_name, "3"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(first_name) %>% 
+  dplyr::pull(first_name)
+
+x <- d %>% 
+  dplyr::select(midl_name) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "3"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(midl_name) %>% 
+  dplyr::pull(midl_name)
+```
+
+-   14 names with three
+-   Some are pure numeric, e.g. 103, 328
+-   Some are generation suffixes, e.g. 3RD., MACK 3RD
+-   Some are names with concatenated numeric, e.g. LEE3708, SCOTT3450
+
+### Check for four
+
+```{r}
+x <- d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "4"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::pull(last_name)
+
+x <- d %>% 
+  dplyr::select(first_name) %>%
+  dplyr::filter(stringr::str_detect(first_name, "4"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(first_name) %>% 
+  dplyr::pull(first_name)
+
+x <- d %>% 
+  dplyr::select(midl_name) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "4"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(midl_name) %>% 
+  dplyr::pull(midl_name)
+```
+
+-   19 names with four
+-   Some are pure numeric, e.g. 4625, 4932
+-   Some are generation suffixes, e.g. ARGUS 4TH, MCREE 4
+-   Some are names with concatenated numeric, e.g. DALE401, SCOTT3450
+-   Some are intrusions in names, e.g. FR4ANK, MICHA4EL
+
+### Check for five
+
+```{r}
+x <- d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "5"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::pull(last_name)
+
+x <- d %>% 
+  dplyr::select(first_name) %>%
+  dplyr::filter(stringr::str_detect(first_name, "5"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(first_name) %>% 
+  dplyr::pull(first_name)
+
+x <- d %>% 
+  dplyr::select(midl_name) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "5"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(midl_name) %>% 
+  dplyr::pull(midl_name)
+```
+
+-   20 names with five
+-   Some are pure numeric, e.g. 205, 2205
+-   Some are generation suffixes, e.g. (NMN)5TH
+-   Some are names with concatenated numeric, e.g. DALE401, SCOTT3450
+-   Some are wrongly parsed, e.g. MV 5/17/95
+-   Some are intrusions in names, e.g. FR4ANK, MICHA4EL
+-   Some are substitution of 5 for S e.g. ALBER5TSON
+
+### Check for six
+
+```{r}
+x <- d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "6"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::pull(last_name)
+
+x <- d %>% 
+  dplyr::select(first_name) %>%
+  dplyr::filter(stringr::str_detect(first_name, "6"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(first_name) %>% 
+  dplyr::pull(first_name)
+
+x <- d %>% 
+  dplyr::select(midl_name) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "6"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(midl_name) %>% 
+  dplyr::pull(midl_name)
+```
+
+-   9 names with six
+-   Some are pure numeric, e.g. 6, 4625
+-   Some are names with concatenated nmeric, e.g. MICHAEL146, MICHAEL146
+
+### Check for seven
+
+```{r}
+x <- d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "7"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::pull(last_name)
+
+x <- d %>% 
+  dplyr::select(first_name) %>%
+  dplyr::filter(stringr::str_detect(first_name, "7"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(first_name) %>% 
+  dplyr::pull(first_name)
+
+x <- d %>% 
+  dplyr::select(midl_name) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "7"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(midl_name) %>% 
+  dplyr::pull(midl_name)
+```
+
+-   12 names with seven
+-   Some are pure numeric, e.g. 491715, 971
+-   Some are names with concatenated numeric, e.g. DALE401, SCOTT3450
+-   Some are wrongly parsed, e.g. MV 5/17/95
+-   Some are intrusions in names, e.g. JOYCE701, LOUIS7100
+
+### Check for eight
+
+```{r}
+x <- d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "8"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::pull(last_name)
+
+x <- d %>% 
+  dplyr::select(first_name) %>%
+  dplyr::filter(stringr::str_detect(first_name, "8"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(first_name) %>% 
+  dplyr::pull(first_name)
+
+x <- d %>% 
+  dplyr::select(midl_name) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "8"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(midl_name) %>% 
+  dplyr::pull(midl_name)
+```
+
+-   11 names with eight
+-   Some are pure numeric, e.g. 328, 8017
+-   Some are names with concatenated numeric, e.g. LEE3708, LYNN1820
+-   Some are intrusions in names, e.g. J8IMMIE
+-   Some might be substitution of 8 for SE e.g. BEA LOUI8
+
+### Check for nine
+
+```{r}
+x <- d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "9"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::pull(last_name)
+
+x <- d %>% 
+  dplyr::select(first_name) %>%
+  dplyr::filter(stringr::str_detect(first_name, "9"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(first_name) %>% 
+  dplyr::pull(first_name)
+
+x <- d %>% 
+  dplyr::select(midl_name) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "9"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::arrange(midl_name) %>% 
+  dplyr::pull(midl_name)
+```
+
+-   10 names with nine
+-   Some are pure numeric, e.g. 971, 4932
+-   Some are names with concatenated numeric, e.g. ANDERSON9104576,
+    WAYNE030986
+-   Some are wrongly parsed, e.g. MV 5/17/95
+-   Some are intrusions in names, e.g. LO9UIS
+
+### Check for whitespace.
+
+```{r}
+x <- d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "\\s"))
+dim(x)
+x %>%   
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::pull(last_name)
+```
+
+-   \~7k names with whitespace
+-   Some whitespace is because of prefixes, e.g. DE COSTA, VAN DYKE
+-   Some whitespace is instead of a hyphen, e.g. BROWN MAY, JONES MBIYA
+-   Some whitespace is incorrectly inserted, e.g LI NDSEY
+-   Some whitespace is probably variable between people, e.g. MC ADAMS,
+    MC INTOSH
+-   Some whitespace is instead of a single quote, e.g. O KELLY, O NEAL
+
+**Map whitespace to empty string**
+
+### Check for hyphens
+
+```{r}
+x <- d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "-"))
+dim(x)
+x %>%   
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::pull(last_name)
+```
+
+-   \~21k names with hyphens
+-   Look like legitimately hyphenated names
+
+**Map hyphen to empty string**
+
+### Check for single quotes
+
+```{r}
+x <- d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "'"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::pull(last_name)
+```
+
+-   \~5k names with single quotes
+-   Most look like correct names, e.g. O'NEAL, D'AGOSTINO
+-   Some are suspect, e.g. BONE', BOVA'
+
+**Map single quote to empty string**
+
+### Check for double quotes
+
+```{r}
+d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "\""))
+```
+
+-   1 name with double quotes
+-   The backslash in LA"BEE was probably inserted automatically when the
+    data was exported
+-   That name probably should have been LA'BEE
+
+**Map all double quotes to single quotes**
+
+### Check for other characters (1)
+
+```{r}
+x <- d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "[^-\\s'\"a-zA-Z]"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::pull(last_name)
+```
+
+-   73 rows with other characters
+-   five zero period back-tick slash back-slash asterisk comma tilde one
+    percent underscore
+
+Look at those in more detail.
+
+### Check for period
+
+```{r}
+d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "\\."))
+```
+
+-   11 names with period
+-   Most are legitimate abbreviation of SAINT although spacing is
+    inconsistent, e.g. ST.JOHN, ST. JOHN
+-   Some are legitimate abbreviation of Junior, which should be in the
+    `name_sufx_cd` field.
+
+**Map period to empty string**
+
+**Move suffix to suffix field**
+
+### Check for comma
+
+```{r}
+d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, ","))
+```
+
+-   2 names with comma
+-   Both are when a suffix has been incorrectly included in `last_name`
+
+**Map comma to empty string**
+
+**Move suffix to suffix field**
+
+### Check for asterisk
+
+```{r}
+d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "\\*"))
+```
+
+-   7 names with asterisk
+-   Asterisk substituted for single quote, e.g. O*MASTERS, D*AMICO
+
+**Map asterisk to empty string**
+
+### Check for slash
+
+```{r}
+d %>% 
+  dplyr::select(last_name, first_name, sex) %>%
+  dplyr::filter(stringr::str_detect(last_name, "/"))
+```
+
+-   13 names with slash
+-   Being used equivalently to hyphen. (The fact that they are all
+    female suggests they might be women hyphenating their names on
+    marriage.)
+
+**Map slash to empty string**
+
+### Check for backslash
+
+```{r}
+d %>% 
+  dplyr::select(last_name, first_name, sex) %>%
+  dplyr::filter(stringr::str_detect(last_name, "\\\\"))
+```
+
+-   3 names with backslash
+-   No obvious reason for inclusion
+
+**Map backslash to empty string**
+
+### Check for back-tick
+
+```{r}
+d %>% 
+  dplyr::select(last_name, first_name, sex) %>%
+  dplyr::filter(stringr::str_detect(last_name, "`"))
+```
+
+-   4 names with back-tick
+-   No obvious reason for inclusion
+
+**Map back-tick to empty string**
+
+### Check for tilde
+
+```{r}
+d %>% 
+  dplyr::select(last_name, first_name, sex) %>%
+  dplyr::filter(stringr::str_detect(last_name, "~"))
+```
+
+-   1 name with tilde
+-   Being used equivalent to single quote
+
+**Map tilde to empty string**
+
+### Check for underscore
+
+```{r}
+d %>% 
+  dplyr::select(last_name, first_name, sex) %>%
+  dplyr::filter(stringr::str_detect(last_name, "_"))
+```
+
+-   1 name with underscore
+-   Being used equivalent to hyphen
+
+**Map underscore to empty string**
+
+### Check for percent
+
+```{r}
+d %>% 
+  dplyr::select(last_name, first_name, sex) %>%
+  dplyr::filter(stringr::str_detect(last_name, "%"))
+```
+
+-   1 name with percent
+-   Being used equivalent to hyphen
+
+**Map percent to empty string**
+
+### Check for other characters (2)
+
+```{r}
+d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "[^-\\s'\"a-zA-Z015\\.,\\*/\\\\`~_%]"))
+```
+
+**UP TO HERE**
+
+Look at those in more detail.
+
+Look at frequencies of names.
+
+```{r}
+d %>% 
+  dplyr::select(last_name) %>% 
+  dplyr::count(last_name, sort = TRUE)
+```
+
+## name_sufx_cd
+
+`name_sufx_cd`: Voter name suffix
+
+```{r}
+d %>% dplyr::select(name_sufx_cd) %>% skimr::skim()
+table(d$name_sufx_cd, useNA = "ifany")
+```
+
+# Clean name variables
+
+The aggregated cleaning suggestions are:
+
++-------------+-------------+-------------+-------------+-------------+
+| Issue       | `last_name` | `           | `midl_name` | Action      |
+|             |             | first_name` |             |             |
++=============+:===========:+:===========:+:===========:+=============+
+| Missing     | 122         | 254         | 553,015     | Exclude     |
+|             |             |             |             | record if   |
+|             |             |             |             | first or    |
+|             |             |             |             | last name   |
+|             |             |             |             | missing     |
++-------------+-------------+-------------+-------------+-------------+
+| Lower case  | 50          | 24          | 169         | Map all     |
+| letters     |             |             |             | letters to  |
+|             |             |             |             | upper case  |
++-------------+-------------+-------------+-------------+-------------+
+| Digits      | 90          | 81          | 299         | Map digits  |
+|             |             |             |             | to empty    |
+|             |             |             |             | string if   |
+|             |             |             |             | not         |
+|             |             |             |             | otherwise   |
+|             |             |             |             | mapped      |
++-------------+-------------+-------------+-------------+-------------+
+| Zero        | 67          | 73          | 130         | Map zero to |
+|             |             |             |             | O if name   |
+|             |             |             |             | contains at |
+|             |             |             |             | least one   |
+|             |             |             |             | letter and  |
+|             |             |             |             | no digits   |
+|             |             |             |             | 1-9         |
++-------------+-------------+-------------+-------------+-------------+
+| One         | 20          | 3           | 163         |             |
++-------------+-------------+-------------+-------------+-------------+
+| Two         | 1           | 1           | 13          |             |
++-------------+-------------+-------------+-------------+-------------+
+| Three       | 1           | 0           | 13          |             |
++-------------+-------------+-------------+-------------+-------------+
+| Four        | 3           | 1           | 15          |             |
++-------------+-------------+-------------+-------------+-------------+
+| Five        | 3           | 0           | 17          |             |
++-------------+-------------+-------------+-------------+-------------+
+| Six         | 1           | 1           | 7           |             |
++-------------+-------------+-------------+-------------+-------------+
+| Seven       | 4           | 0           | 8           |             |
++-------------+-------------+-------------+-------------+-------------+
+| Eight       | 0           | 2           | 9           |             |
++-------------+-------------+-------------+-------------+-------------+
+| Nine        | 4           | 0           | 6           |             |
++-------------+-------------+-------------+-------------+-------------+
+|             |             |             |             |             |
++-------------+-------------+-------------+-------------+-------------+
+|             |             |             |             |             |
++-------------+-------------+-------------+-------------+-------------+
+|             |             |             |             |             |
++-------------+-------------+-------------+-------------+-------------+
+|             |             |             |             |             |
++-------------+-------------+-------------+-------------+-------------+
+|             |             |             |             |             |
++-------------+-------------+-------------+-------------+-------------+
+
+: Name cleaning suggestions
+
+```{r}
+knitr::knit_exit()
+```
+
+## Upper case
+
+Map all letters to upper case.
+
+```{r}
+d <- d %>% 
+  dplyr::mutate_if(is.character, stringr::str_to_upper)
+```
+
+**Move JR suffix from `last_name` to `name_sufx_cd`**
+
+\*\*Map terminal 1\* in `last_name` to I\*
+
+## Double quotes
+
+Map double quotes to single quotes.
+
+```{r}
+d <- d %>% 
+  dplyr::mutate_if(is.character, function(x) stringr::str_replace_all(x, "\"", "'"))
+```
+
+## Name substitutions
+
+These single character substitutions are only applied in names.
+
+0 ==\> O\
+\* ==\> '\
+. ==\> space\
+, ==\> space\
+[1-9] ==\> null  ==\> null
+
+```{r}
+d <- d %>% 
+  dplyr::mutate_at(
+    vars(ends_with("_name")), 
+    function(x) stringr::str_replace_all(x, c(
+      "0" = "O",
+      "\\*" = "'",
+      "\\." = " ",
+      "," = " ",
+      "[1-9]" = "",
+      "\\\\"= ""
+    ))
+  )
+```
+
+## Excess whitespace
+
+Replace consecutive whitespace with a single space and remove leading
+and trailing spaces.
+
+```{r}
+d <- d %>% 
+  dplyr::mutate_if(is.character, stringr::str_squish())
+```
+
+# Characterise data (active verified records)
+
+**From this point on, limit observations to: `voter_status_desc` ==
+"ACTIVE" & `voter_status_reason_desc` == "VERIFIED"**
+
+Only keep columns which might conceivably be of some use.
+
+```{r}
+d <- d %>% 
+  dplyr::filter(voter_status_desc == "ACTIVE" & voter_status_reason_desc == "VERIFIED") %>% 
+  dplyr::select(
+    county_id, voter_reg_num,
+    last_name : street_sufx_cd, unit_designator : zip_code,
+    area_cd, phone_num,
+    sex : registr_dt
+  )
+```
+
+```{r}
+glimpse(d)
+skimr::skim(d)
+```
+
+-   There are no warning messages from `skim()`, so the records with
+    unusual characters have been excluded.
+-   \~4.1M observations
+
+## county_id
+
+`county_id`: County identification number
+
+```{r}
+d %>% dplyr::select(county_id) %>% skimr::skim()
+```
+
+-   Never missing
+-   Integer 1 .. 100
+
+## voter_reg_num
+
+`voter_reg_num`: Voter registration number (unique by county)
+
+```{r}
+d %>% dplyr::select(voter_reg_num) %>% skimr::skim()
+d %>% dplyr::select(voter_reg_num) %>% dplyr::mutate(voter_reg_num = as.integer(voter_reg_num)) %>% skimr::skim()
+```
+
+-   \~1.8M unique values
+-   Never missing
+-   Integer 1 .. \~400M
+
+## id
+
+`id`: Unique person identifier
+
+Add person `id`. Assume that each record corresponds to a unique person
+because the source is a point-in-time snapshot, the metadata claims
+`voter_reg_num` is unique within `county_id`, electoral officials
+presumably make serious efforts to find and remove duplicates, and we
+have restricted to only active verified records. (In practice, I
+wouldn't be surprised if there were a small number of duplicates.)
+
+```{r}
+d <- d %>% 
+  dplyr::select(-voter_reg_num) %>% # drop voter_reg_num; no longer needed
+  dplyr::mutate(id = sample.int(nrow(d))) %>%  # id is a random permutation of row numbers
+  dplyr::arrange(id) # randomise row order in case it's systematic
+
+d %>% dplyr::select(id) %>% skimr::skim()
+```
+
+-   \~4.1M unique values
+-   Integer 1 .. \~4.1M
+-   No duplicate values

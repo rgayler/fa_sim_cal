@@ -32,6 +32,10 @@ and to the rendered versions of manuscripts/documents/presentations.
 
 # Analysis Notebooks {-}
 
+## [Get, check and clean data](01_get_check_data.html) {-}  
+   Import the raw data, check for anomalies, clean the important attributes, and save the cleaned data for use.
+
+
 ---
 
 # Manuscripts {-}
