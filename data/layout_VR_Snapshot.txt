@@ -1,0 +1,105 @@
+/* *******************************************************************************
+* name:    layout_VR_Snapshot.txt
+* purpose: Layout for the VR_SNAPSHOT_YYYYMMDD file. This file contains a denormalized
+*          point-in-time snapshot of information for active and inactive voters 
+*          as-well-as removed voters going back for a period of ten years.
+* format:  tab delimited column names in first row
+* updated: 06/28/2020
+******************************************************************************* */
+
+
+-- --------------------------------------------------------------------------------
+name                            data type       description
+-- --------------------------------------------------------------------------------
+snapshot_dt			char 10         Date of snapshot
+county_id			char  3         County identification number
+county_desc			char 15         County description
+voter_reg_num			char 12         Voter registration number (unique by county)
+ncid				char 12         North Carolina identification number (NCID) of voter
+status_cd			char  1	        Status code for voter registration
+voter_status_desc		char 10         Satus code descriptions.
+reason_cd			char  2         Reason code for voter registration status
+voter_status_reason_desc	char 60         Reason code description
+absent_ind			char  1         <not used> 
+name_prefx_cd			char  4         <not used> 
+last_name			char 25         Voter last name
+first_name			char 20         Voter first name
+midl_name			char 20         Voter middle name
+name_sufx_cd			char  4         Voter name suffix 
+house_num			char 10         Residential address street number
+half_code			char  1         Residential address street number half code
+street_dir			char  2         Residential address street direction (N,S,E,W,NE,SW, etc.)
+street_name			char 30         Residential address street name
+street_type_cd			char  4         Residential address street type (RD, ST, DR, BLVD, etc.)
+street_sufx_cd			char  4         Residential address street suffix (BUS, EXT, and directional)
+unit_designator			char  4         <not used>
+unit_num			char  7         Residential address unit number
+res_city_desc			char 20         Residential address city name
+state_cd			char  2         Residential address state code
+zip_code			char  9         Residential address zip code
+mail_addr1			char 40         Mailing street address
+mail_addr2			char 40         Mailing address line two
+mail_addr3			char 40         Mailing address line three
+mail_addr4			char 40         Mailing address line four
+mail_city			char 30         Mailing address city name
+mail_state			char  2         Mailing address state code
+mail_zipcode			char  9         Mailing address zip code
+area_cd				char  3         Area code for phone number
+phone_num			char  7         Telephone number
+race_code			char  3         Race code
+race_desc			char 35         Race description
+ethnic_code			char  2         Ethnicity code
+ethnic_desc			char 30         Ethnicity description
+party_cd			char  3         Party affiliation code
+party_desc			char 12         Party affiliation description
+sex_code			char  1         Gender code
+sex				char  6         Gender description
+age				char  3         Age
+birth_place			char  2         Birth place  
+registr_dt			char 10         Voter registration date
+precinct_abbrv			char  6         Precinct abbreviation
+precinct_desc			char 30         Precinct name
+municipality_abbrv		char  4         Municipality abbreviation	
+municipality_desc		char 30         Municipality name
+ward_abbrv			char  4         Ward abbreviation
+ward_desc			char 30         Ward name
+cong_dist_abbrv			char  4         Congressional district abbreviation 
+cong_dist_desc			char 30         Congressional district name
+super_court_abbrv		char  4         Supreme Court abbreviation 
+super_court_desc		char 30         Supreme Court name
+judic_dist_abbrv		char  4         Judicial district abbreviation 
+judic_dist_desc			char 30         Judicial district name
+NC_senate_abbrv			char  4         NC Senate district abbreviation 
+NC_senate_desc			char 30         NC Senate district name
+NC_house_abbrv			char  4         NC House district abbreviation 
+NC_house_desc			char 30         NC House district name
+county_commiss_abbrv		char  4         County Commissioner district abbreviation 
+county_commiss_desc		char 30         County Commissioner district name
+township_abbrv			char  6         Township district abbreviation
+township_desc			char 30         Township district name
+school_dist_abbrv		char  6         School district abbreviation
+school_dist_desc		char 30         School district name
+fire_dist_abbrv			char  4         Fire district abbreviation 
+fire_dist_desc			char 30         Fire district name
+water_dist_abbrv		char  4         Water district abbreviation 
+water_dist_desc			char 30         Water district name
+sewer_dist_abbrv		char  4         Sewer district abbreviation 
+sewer_dist_desc			char 30         Sewer district name
+sanit_dist_abbrv		char  4         Sanitation district abbreviation 
+sanit_dist_desc			char 30         Sanitation district name
+rescue_dist_abbrv		char  4         Rescue district abbreviation 
+rescue_dist_desc		char 30         Rescue district name
+munic_dist_abbrv		char  4         Municipal district abbreviation 
+munic_dist_desc			char 30         Municipal district name
+dist_1_abbrv			char  4         Prosecutorial district abbreviation 
+dist_1_desc			char 30         Prosecutorial district name
+dist_2_abbrv			char  4         <not used>
+dist_2_desc			char 30         <not used>
+confidential_ind		char  1         Confidential indicator
+cancellation_dt			char 10         Cancellation date
+vtd_abbrv			char  6         Voter tabuluation district abbreviation 
+vtd_desc			char 30         Voter tabuluation district name 
+load_dt				char 10         Data load date
+age_group			char 35         Age group range
+-- ---------------------------------------------------------------------------------
+
