@@ -741,6 +741,164 @@ x %>%
 -   Some are wrongly parsed, e.g. MV 5/17/95
 -   Some are intrusions in names, e.g. LO9UIS
 
+### Digits summary
+
+**Map zero to O if there are any letters and no digits 1-9**
+
+**One is sometimes substituted for "I" in generation suffixes. Remove
+these suffixes fro names.**
+
+**Otherwise, map all digits to empty string.**
+
+### Check for hyphens
+
+```{r}
+x <- d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "-"))
+dim(x)
+x %>%   
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::pull(last_name)
+```
+
+-   \~34k last names with hyphens
+-   Look like legitimately hyphenated last names
+-   Some hyphenated last names have an extra space, e.g. "TIPTON-
+    BARNARD"
+
+```{r}
+x <- d %>% 
+  dplyr::select(first_name) %>%
+  dplyr::filter(stringr::str_detect(first_name, "-"))
+dim(x)
+x %>%   
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(first_name) %>% 
+  dplyr::pull(first_name)
+```
+
+-   \~5k first names with hyphens
+-   Look like legitimately hyphenated first names
+
+```{r}
+x <- d %>% 
+  dplyr::select(midl_name) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "-"))
+dim(x)
+x %>%   
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(midl_name) %>% 
+  dplyr::pull(midl_name)
+```
+
+-   \~6k middle names with hyphens
+-   Look like legitimately hyphenated middle names
+-   Some hyphenated middle names have an extra space, e.g. "A - BERTHA",
+    "H - JACK"
+
+I suspect that hyphenation is likely to be a bit unreliable in
+transcription.
+
+**Map hyphen to empty string**
+
+### Check for slash
+
+```{r}
+d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "/"))
+
+d %>% 
+  dplyr::select(first_name) %>%
+  dplyr::filter(stringr::str_detect(first_name, "/"))
+
+d %>% 
+  dplyr::select(midl_name) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "/"))
+
+```
+
+-   46 last names with slash
+-   One obviously badly parsed - MV 5/17/95
+-   Remainder being used equivalently to hyphen or indicating former
+    name, e.g. MORRIS/BLOOM, WATERS/CRUZ
+
+**Map slash to empty string**
+
+### Check for single quotes
+
+```{r}
+x <- d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "'"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::pull(last_name)
+
+x <- d %>% 
+  dplyr::select(first_name) %>%
+  dplyr::filter(stringr::str_detect(first_name, "'"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(first_name) %>% 
+  dplyr::pull(first_name)
+
+x <- d %>% 
+  dplyr::select(midl_name) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "'"))
+dim(x)
+x %>%   
+  dplyr::distinct() %>% 
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(midl_name) %>% 
+  dplyr::pull(midl_name)
+```
+
+-   \~17k names with single quotes
+-   Most look like correct names, e.g. O'NEAL, D'AGOSTINO
+-   Some have a terminal quote, e.g. BONE', BOVA'
+-   Some have extra space and/or a hyphen, e.g. "O' NEAL",
+    "LACHARITE'-OTWELL"
+
+I suspect that quotes are likely to be a bit unreliable in
+transcription.
+
+**Map single quote to empty string**
+
+### Check for double quotes
+
+```{r}
+d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "\""))
+
+d %>% 
+  dplyr::select(first_name) %>%
+  dplyr::filter(stringr::str_detect(first_name, "\""))
+
+d %>% 
+  dplyr::select(midl_name) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "\""))
+```
+
+The backslashes are automatically inserted escaping so that the output
+strings could be read as inputs without getting confused by the double
+quotes.
+
+-   24 names with double quotes
+-   Some substitute double for single quote, e.g. the last name LA"BEE
+    probably should have been LA'BEE
+-   Some appear to be aliases or nicknames, e.g. MARY ("PETE"), "TATER"
+
+**Map all double quotes to empty string**
+
 ### Check for whitespace.
 
 ```{r}
@@ -763,59 +921,6 @@ x %>%
 -   Some whitespace is instead of a single quote, e.g. O KELLY, O NEAL
 
 **Map whitespace to empty string**
-
-### Check for hyphens
-
-```{r}
-x <- d %>% 
-  dplyr::select(last_name) %>%
-  dplyr::filter(stringr::str_detect(last_name, "-"))
-dim(x)
-x %>%   
-  dplyr::slice_head(n = 100) %>% 
-  dplyr::arrange(last_name) %>% 
-  dplyr::pull(last_name)
-```
-
--   \~21k names with hyphens
--   Look like legitimately hyphenated names
-
-**Map hyphen to empty string**
-
-### Check for single quotes
-
-```{r}
-x <- d %>% 
-  dplyr::select(last_name) %>%
-  dplyr::filter(stringr::str_detect(last_name, "'"))
-dim(x)
-x %>%   
-  dplyr::distinct() %>% 
-  dplyr::slice_head(n = 100) %>% 
-  dplyr::arrange(last_name) %>% 
-  dplyr::pull(last_name)
-```
-
--   \~5k names with single quotes
--   Most look like correct names, e.g. O'NEAL, D'AGOSTINO
--   Some are suspect, e.g. BONE', BOVA'
-
-**Map single quote to empty string**
-
-### Check for double quotes
-
-```{r}
-d %>% 
-  dplyr::select(last_name) %>%
-  dplyr::filter(stringr::str_detect(last_name, "\""))
-```
-
--   1 name with double quotes
--   The backslash in LA"BEE was probably inserted automatically when the
-    data was exported
--   That name probably should have been LA'BEE
-
-**Map all double quotes to single quotes**
 
 ### Check for other characters (1)
 
@@ -882,21 +987,6 @@ d %>%
 -   Asterisk substituted for single quote, e.g. O*MASTERS, D*AMICO
 
 **Map asterisk to empty string**
-
-### Check for slash
-
-```{r}
-d %>% 
-  dplyr::select(last_name, first_name, sex) %>%
-  dplyr::filter(stringr::str_detect(last_name, "/"))
-```
-
--   13 names with slash
--   Being used equivalently to hyphen. (The fact that they are all
-    female suggests they might be women hyphenating their names on
-    marriage.)
-
-**Map slash to empty string**
 
 ### Check for backslash
 
@@ -996,63 +1086,30 @@ table(d$name_sufx_cd, useNA = "ifany")
 
 The aggregated cleaning suggestions are:
 
-+-------------+-------------+-------------+-------------+-------------+
-| Issue       | `last_name` | `           | `midl_name` | Action      |
-|             |             | first_name` |             |             |
-+=============+:===========:+:===========:+:===========:+=============+
-| Missing     | 122         | 254         | 553,015     | Exclude     |
-|             |             |             |             | record if   |
-|             |             |             |             | first or    |
-|             |             |             |             | last name   |
-|             |             |             |             | missing     |
-+-------------+-------------+-------------+-------------+-------------+
-| Lower case  | 50          | 24          | 169         | Map all     |
-| letters     |             |             |             | letters to  |
-|             |             |             |             | upper case  |
-+-------------+-------------+-------------+-------------+-------------+
-| Digits      | 90          | 81          | 299         | Map digits  |
-|             |             |             |             | to empty    |
-|             |             |             |             | string if   |
-|             |             |             |             | not         |
-|             |             |             |             | otherwise   |
-|             |             |             |             | mapped      |
-+-------------+-------------+-------------+-------------+-------------+
-| Zero        | 67          | 73          | 130         | Map zero to |
-|             |             |             |             | O if name   |
-|             |             |             |             | contains at |
-|             |             |             |             | least one   |
-|             |             |             |             | letter and  |
-|             |             |             |             | no digits   |
-|             |             |             |             | 1-9         |
-+-------------+-------------+-------------+-------------+-------------+
-| One         | 20          | 3           | 163         |             |
-+-------------+-------------+-------------+-------------+-------------+
-| Two         | 1           | 1           | 13          |             |
-+-------------+-------------+-------------+-------------+-------------+
-| Three       | 1           | 0           | 13          |             |
-+-------------+-------------+-------------+-------------+-------------+
-| Four        | 3           | 1           | 15          |             |
-+-------------+-------------+-------------+-------------+-------------+
-| Five        | 3           | 0           | 17          |             |
-+-------------+-------------+-------------+-------------+-------------+
-| Six         | 1           | 1           | 7           |             |
-+-------------+-------------+-------------+-------------+-------------+
-| Seven       | 4           | 0           | 8           |             |
-+-------------+-------------+-------------+-------------+-------------+
-| Eight       | 0           | 2           | 9           |             |
-+-------------+-------------+-------------+-------------+-------------+
-| Nine        | 4           | 0           | 6           |             |
-+-------------+-------------+-------------+-------------+-------------+
-|             |             |             |             |             |
-+-------------+-------------+-------------+-------------+-------------+
-|             |             |             |             |             |
-+-------------+-------------+-------------+-------------+-------------+
-|             |             |             |             |             |
-+-------------+-------------+-------------+-------------+-------------+
-|             |             |             |             |             |
-+-------------+-------------+-------------+-------------+-------------+
-|             |             |             |             |             |
-+-------------+-------------+-------------+-------------+-------------+
+| Issue              | `last_name` | `first_name` | `midl_name` | Action                                                               |
+|--------------------|:-----------:|:------------:|:-----------:|----------------------------------------------------------------------|
+| Missing            |     122     |     254      |   553,015   | Exclude record if first or last name missing                         |
+| Lower case letters |     50      |      24      |     169     | Map all letters to upper case                                        |
+| Digits             |     90      |      81      |     299     | Map digits to empty string if not otherwise mapped                   |
+| Zero               |     67      |      73      |     130     | Map zero to O if name contains at least one letter and no digits 1-9 |
+| One                |     20      |      3       |     163     |                                                                      |
+| Two                |      1      |      1       |     13      |                                                                      |
+| Three              |      1      |      0       |     13      |                                                                      |
+| Four               |      3      |      1       |     15      |                                                                      |
+| Five               |      3      |      0       |     17      |                                                                      |
+| Six                |      1      |      1       |      7      |                                                                      |
+| Seven              |      4      |      0       |      8      |                                                                      |
+| Eight              |      0      |      2       |      9      |                                                                      |
+| Nine               |      4      |      0       |      6      |                                                                      |
+| Hyphen             |   34,325    |    5,298     |    6,304    | Map hyphen to empty string                                           |
+| Slash              |     46      |      9       |    1,032    | Map slash to empty string                                            |
+| Single quote       |    9,712    |    1,965     |    5,426    | Map single quote to empty string                                     |
+| Double quote       |      1      |      4       |     19      | Map double quote to empty string                                     |
+|                    |             |              |             |                                                                      |
+|                    |             |              |             |                                                                      |
+|                    |             |              |             |                                                                      |
+|                    |             |              |             |                                                                      |
+|                    |             |              |             |                                                                      |
 
 : Name cleaning suggestions
 
