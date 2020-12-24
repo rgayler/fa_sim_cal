@@ -411,7 +411,7 @@ div.tocify {
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
 workflowr
-<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -421,7 +421,7 @@ workflowr
 </li>
 <li>
 <a data-toggle="tab" href="#checks">
-Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
 </a>
 </li>
 <li>
@@ -431,14 +431,14 @@ Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></sp
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-12-23
+<strong>Last updated:</strong> 2020-12-25
 </p>
 <p>
 <strong>Checks:</strong>
 <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-7
+6
 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
-0
+1
 </p>
 <p>
 <strong>Knit directory:</strong>
@@ -461,16 +461,21 @@ The <em>Past versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-<strong>R Markdown file:</strong> up-to-date
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+<strong>R Markdown file:</strong> uncommitted changes
 </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git repository, you
-know the exact version of the code that produced these results.</p>
+<p>The R Markdown file has unstaged changes.
+To know which version of the R Markdown file created these
+results, you’ll want to first commit it to the Git repo. If
+you’re still working on the analysis, you can ignore this
+warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and
+build the HTML.</p>
 </div>
 </div>
 </div>
@@ -559,20 +564,20 @@ makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreec6390cc93e5448c5e105702f7c3f8112ede62731targetblankc6390cca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree2998957becc8e410977f2b15ff14a7d42de661abtargetblank2998957a">
 <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/c6390cc93e5448c5e105702f7c3f8112ede62731" target="_blank">c6390cc</a>
+<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/2998957becc8e410977f2b15ff14a7d42de661ab" target="_blank">2998957</a>
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreec6390cc93e5448c5e105702f7c3f8112ede62731targetblankc6390cca" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree2998957becc8e410977f2b15ff14a7d42de661abtargetblank2998957a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and
 connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/c6390cc93e5448c5e105702f7c3f8112ede62731" target="_blank">c6390cc</a>.
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/2998957becc8e410977f2b15ff14a7d42de661ab" target="_blank">2998957</a>.
 See the <em>Past versions</em> tab to see a history of the changes made to the
 R Markdown and HTML files.
 </p>
@@ -590,18 +595,13 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    .tresorit/
     Ignored:    data/VR_20051125.txt.xz
-    Ignored:    data/test.txt
-    Ignored:    data/test.txt.xz
     Ignored:    output/d.fst
     Ignored:    renv/library/
     Ignored:    renv/staging/
 
-Untracked files:
-    Untracked:  data/layout_VR_Snapshot.txt
-
 Unstaged changes:
-    Modified:   .gitignore
-    Modified:   data/.gitignore
+    Modified:   analysis/01_get_check_data.Rmd
+    Modified:   renv.lock
 
 </code></pre>
 <p>
@@ -646,6 +646,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/838463a34d91a47fe828e93e972685912d317dd9/docs/01_get_check_data.html" target="_blank">838463a</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2020-12-23
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/a618d9e6cf143d6635c252f0de37ce144ff72643/docs/01_get_check_data.html" target="_blank">a618d9e</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2020-12-23
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -7102,8 +7136,383 @@ WAYNE030986</li>
 <li>Some are intrusions in names, e.g. LO9UIS</li>
 </ul>
 </div>
-<div id="check-for-whitespace." class="section level3" number="3.6.14">
-<h3><span class="header-section-number">3.6.14</span> Check for whitespace.</h3>
+<div id="digits-summary" class="section level3" number="3.6.14">
+<h3><span class="header-section-number">3.6.14</span> Digits summary</h3>
+<p><strong>Map zero to O if there are any letters and no digits 1-9</strong></p>
+<p><strong>One is sometimes substituted for “I” in generation suffixes. Remove
+these suffixes fro names.</strong></p>
+<p><strong>Otherwise, map all digits to empty string.</strong></p>
+</div>
+<div id="check-for-hyphens" class="section level3" number="3.6.15">
+<h3><span class="header-section-number">3.6.15</span> Check for hyphens</h3>
+<pre class="r"><code>x &lt;- d %&gt;% 
+  dplyr::select(last_name) %&gt;%
+  dplyr::filter(stringr::str_detect(last_name, &quot;-&quot;))
+dim(x)</code></pre>
+<pre><code>[1] 34325     1</code></pre>
+<pre class="r"><code>x %&gt;%   
+  dplyr::slice_head(n = 100) %&gt;% 
+  dplyr::arrange(last_name) %&gt;% 
+  dplyr::pull(last_name)</code></pre>
+<pre><code>  [1] &quot;AB-HUGH&quot;           &quot;AB-HUGH&quot;           &quot;ABDUL-GHAFFAR&quot;    
+  [4] &quot;ABDUL-GHAFFAR&quot;     &quot;ABDUL-KARRIEM&quot;     &quot;ABDUL-RABB&quot;       
+  [7] &quot;ABDUL-RAHIM&quot;       &quot;ABDUL-RAHIN&quot;       &quot;ABDUL-RAHMAN&quot;     
+ [10] &quot;ABDUL-SALAAM&quot;      &quot;ABDUL-SALAM&quot;       &quot;ABDUL-WAHID&quot;      
+ [13] &quot;ABDUR-RAHIM&quot;       &quot;ABDUR-RAHMAN&quot;      &quot;ABU-DAMES&quot;        
+ [16] &quot;ABU-SABA&quot;          &quot;ABU-SABA&quot;          &quot;ABU-SABA&quot;         
+ [19] &quot;ADAMS-CASKIE&quot;      &quot;ADAMS-MYERS&quot;       &quot;AFRICA-FLOYD&quot;     
+ [22] &quot;AL-AWAR&quot;           &quot;AL-AWAR&quot;           &quot;AL-AWAR&quot;          
+ [25] &quot;AL-KURDI&quot;          &quot;AL-SAADI&quot;          &quot;AL-SAADI&quot;         
+ [28] &quot;ALBERT-KEULAN&quot;     &quot;ALSTON-EATMON&quot;     &quot;ANDERSON-TESH&quot;    
+ [31] &quot;APPLEWHITE-LEWIS&quot;  &quot;ARDITO-BARLETTA&quot;   &quot;ARMSTRONG-VANN&quot;   
+ [34] &quot;ARTHUR-CORNETT&quot;    &quot;ASKINS-MYRICK&quot;     &quot;AWTREY-KIRKMAN&quot;   
+ [37] &quot;BAILEY-BROOKS&quot;     &quot;BARNARD-BAILEY&quot;    &quot;BENNETT-CLOWNEY&quot;  
+ [40] &quot;BENTLEY-HALE&quot;      &quot;BIBB-FREEMAN&quot;      &quot;BLAKE-HASKINS&quot;    
+ [43] &quot;BLEKFELD-SZTRAKY&quot;  &quot;BLEVINS-SPRINKLE&quot;  &quot;BLUE-SWANN&quot;       
+ [46] &quot;BRADY-WILSON&quot;      &quot;BROWN-CORNELIUS&quot;   &quot;BRUCE-ROSS&quot;       
+ [49] &quot;BUCKLEY-MOORE&quot;     &quot;CLARK-BARKER&quot;      &quot;CLAUDIO-DIAZ&quot;     
+ [52] &quot;CLAUDIO-DIAZ&quot;      &quot;CLAUDIO-DIAZ&quot;      &quot;CLAUDIO-DIAZ&quot;     
+ [55] &quot;COLE-MORGAN&quot;       &quot;CROWELL-SMITH&quot;     &quot;DAVIS-BOYD&quot;       
+ [58] &quot;DAVIS-PARKER&quot;      &quot;DAVIS-ROBINSON&quot;    &quot;DUFFER-LEECHFORD&quot; 
+ [61] &quot;EATON-ALSTON&quot;      &quot;ELLIS-WALLACE&quot;     &quot;ENGEL-BAKER&quot;      
+ [64] &quot;GILLIS-HENDELL&quot;    &quot;GORDON-WICKER&quot;     &quot;GREEN-HOLLEY&quot;     
+ [67] &quot;GUPTA-THOMAS&quot;      &quot;HARGETT-LILLY&quot;     &quot;HIATT-CRIBBS&quot;     
+ [70] &quot;JONES-ALEXANDER&quot;   &quot;JONES-SUTTON&quot;      &quot;KELLER-HULL&quot;      
+ [73] &quot;KOSKI-PONTON&quot;      &quot;KUCERA-HOFFMANN&quot;   &quot;LAWS-GRIFFIN&quot;     
+ [76] &quot;LEARY-SMITH&quot;       &quot;LIDE-GRANT&quot;        &quot;LITTON-MCKENZIE&quot;  
+ [79] &quot;LOCKLEAR-CASEY&quot;    &quot;LOCKLEAR-CRABTREE&quot; &quot;MANESS-LITTLE&quot;    
+ [82] &quot;MAYNOR-BOWEN&quot;      &quot;MILLS- KHARBAT&quot;    &quot;MURPHY-GRAY&quot;      
+ [85] &quot;PARKER-LOWE&quot;       &quot;PARRA-ASH&quot;         &quot;POOLE-JENKINS&quot;    
+ [88] &quot;POPISH-SMITH&quot;      &quot;RAY-LEAZER&quot;        &quot;REDFEARN- SHELTON&quot;
+ [91] &quot;RIDDICK-HARRELL&quot;   &quot;RIVERA-MONTORO&quot;    &quot;SEVORES-AMMONS&quot;   
+ [94] &quot;SORRELLS-COOPER&quot;   &quot;STEPHENS-HORTON&quot;   &quot;TIPTON- BARNARD&quot;  
+ [97] &quot;TOMBLIN-WELLMAN&quot;   &quot;WALLIS-JOHNSON&quot;    &quot;WATKINS-AKERS&quot;    
+[100] &quot;WHITAKER-LINDSAY&quot; </code></pre>
+<ul>
+<li>~34k last names with hyphens</li>
+<li>Look like legitimately hyphenated last names</li>
+<li>Some hyphenated last names have an extra space, e.g. “TIPTON-
+BARNARD”</li>
+</ul>
+<pre class="r"><code>x &lt;- d %&gt;% 
+  dplyr::select(first_name) %&gt;%
+  dplyr::filter(stringr::str_detect(first_name, &quot;-&quot;))
+dim(x)</code></pre>
+<pre><code>[1] 5298    1</code></pre>
+<pre class="r"><code>x %&gt;%   
+  dplyr::slice_head(n = 100) %&gt;% 
+  dplyr::arrange(first_name) %&gt;% 
+  dplyr::pull(first_name)</code></pre>
+<pre><code>  [1] &quot;ABDU-JAMIA&quot;      &quot;ABDUL-RAHEEM&quot;    &quot;AMIE-EMILY&quot;      &quot;AMY-MARIE&quot;      
+  [5] &quot;ANNE-MARIE&quot;      &quot;ANNIE-BERT&quot;      &quot;ANNIE-MARIE&quot;     &quot;AR-RASHIED&quot;     
+  [9] &quot;BARBARA-ANN&quot;     &quot;BESSIE-RUTH&quot;     &quot;BILLIE-JOE&quot;      &quot;CHARLOTTE-ANN&quot;  
+ [13] &quot;CHRISTI-JO&quot;      &quot;DONNA-F&quot;         &quot;E-LEARN&quot;         &quot;EASTER-MAE&quot;     
+ [17] &quot;ELLER-WEASE&quot;     &quot;EMILY-GAY&quot;       &quot;EMMA-LEE&quot;        &quot;ETHEL-MAE&quot;      
+ [21] &quot;EUPHUR-MAE&quot;      &quot;GLO-LINDA&quot;       &quot;GRACE-EVELYN&quot;    &quot;HATTIE-BELL&quot;    
+ [25] &quot;HENRY-ETTA&quot;      &quot;IMO-JEAN&quot;        &quot;INGA-LISA&quot;       &quot;JA-NET&quot;         
+ [29] &quot;JANE-TTE&quot;        &quot;JEAN-ANN&quot;        &quot;JO-ANN&quot;          &quot;JO-ANN&quot;         
+ [33] &quot;JO-ANN&quot;          &quot;JO-ANN&quot;          &quot;JO-ANN&quot;          &quot;JO-ANNE&quot;        
+ [37] &quot;JO-DEAN&quot;         &quot;JO-LYNN&quot;         &quot;JOHN-EDWARD&quot;     &quot;JON-MARK&quot;       
+ [41] &quot;JOSEPHA-JUANITA&quot; &quot;JUDITH-ANN&quot;      &quot;KRIS-TINA&quot;       &quot;LA-RITA&quot;        
+ [45] &quot;LO-ETTA&quot;         &quot;LORI-ANN&quot;        &quot;LORI-ANN&quot;        &quot;LOU-ANN&quot;        
+ [49] &quot;LOU-ANNE&quot;        &quot;LU-ANN&quot;          &quot;LUE-MYRTLE&quot;      &quot;LULA-MAE&quot;       
+ [53] &quot;MAE-BELLE&quot;       &quot;MAE-WILLIE&quot;      &quot;MAMIE-LEE&quot;       &quot;MAN-SHUN&quot;       
+ [57] &quot;MARI-AN&quot;         &quot;MARI-MARTHA&quot;     &quot;MARY-AGNES&quot;      &quot;MARY-ANN&quot;       
+ [61] &quot;MARY-CELESTE&quot;    &quot;MARY-E&quot;          &quot;MARY-ELLEN&quot;      &quot;MARY-JO&quot;        
+ [65] &quot;MARY-KATHERINE&quot;  &quot;MARY-KELLAM&quot;     &quot;MARY-LIZZIE&quot;     &quot;MARY-LOUISE&quot;    
+ [69] &quot;MARY-M&quot;          &quot;MARY-RUTH&quot;       &quot;MEI-HSUEH&quot;       &quot;OK-CHA&quot;         
+ [73] &quot;PATRICIA-GAY&quot;    &quot;PATSY-DAWN&quot;      &quot;PORTER-C&quot;        &quot;RICHARD-OLIVE G&quot;
+ [77] &quot;ROSA-BELLE&quot;      &quot;SALLIE-MAE&quot;      &quot;SALLY-MARIE&quot;     &quot;SARA-LATRIC&quot;    
+ [81] &quot;SARAH-E&quot;         &quot;SHAE-LYNN&quot;       &quot;SHELIA-RENE&quot;     &quot;SHERRY-ANN&quot;     
+ [85] &quot;SHIRLEY-JEA&quot;     &quot;SHIRLEY-MAE&quot;     &quot;SONJA-KAYE&quot;      &quot;STACY-LYNN&quot;     
+ [89] &quot;STUART-MORGAN&quot;   &quot;SUE-ELLEN&quot;       &quot;TA-TANISHA&quot;      &quot;TAMELA-LYNN&quot;    
+ [93] &quot;TESSIE-MAE&quot;      &quot;TINA-DIANNE&quot;     &quot;TONI-PAT&quot;        &quot;VITA-JOAN&quot;      
+ [97] &quot;W M-MRS&quot;         &quot;WANDA-D&quot;         &quot;WANDA-SUE&quot;       &quot;WILLIE-P&quot;       </code></pre>
+<ul>
+<li>~5k first names with hyphens</li>
+<li>Look like legitimately hyphenated first names</li>
+</ul>
+<pre class="r"><code>x &lt;- d %&gt;% 
+  dplyr::select(midl_name) %&gt;%
+  dplyr::filter(stringr::str_detect(midl_name, &quot;-&quot;))
+dim(x)</code></pre>
+<pre><code>[1] 6304    1</code></pre>
+<pre class="r"><code>x %&gt;%   
+  dplyr::slice_head(n = 100) %&gt;% 
+  dplyr::arrange(midl_name) %&gt;% 
+  dplyr::pull(midl_name)</code></pre>
+<pre><code>  [1] &quot;A - BERTHA&quot;      &quot;ADELL-CARTER&quot;    &quot;AL-MUHJA&quot;        &quot;ALICE-BROOKS&quot;   
+  [5] &quot;ANN-MARIE&quot;       &quot;ANN-RICE&quot;        &quot;ANN-SCOTT&quot;       &quot;ANN-SIGMON&quot;     
+  [9] &quot;ANNE-&quot;           &quot;ANNE-GIBSON&quot;     &quot;ANNE-SANDQUIST&quot;  &quot;ANNIE-J&quot;        
+ [13] &quot;ARNESSIA-VENISS&quot; &quot;ARTHEA-HOKE&quot;     &quot;BEANE-BROWN&quot;     &quot;BING-YUEN&quot;      
+ [17] &quot;BRICKHOUSE-&quot;     &quot;BRYANT-&quot;         &quot;CAROL-LAWS&quot;      &quot;CAROL-ODOM&quot;     
+ [21] &quot;CAROLINE-BR&quot;     &quot;CARY-ELWEIS&quot;     &quot;CULPEPPER-MCNAY&quot; &quot;DE-RAY&quot;         
+ [25] &quot;DEE-ANN&quot;         &quot;DENEASE-THO&quot;     &quot;DENISE--WINDE&quot;   &quot;DERRICK-PATRICK&quot;
+ [29] &quot;DIANE-HENSLEY&quot;   &quot;DIANE-WEBSTER&quot;   &quot;DILLARD-COLLIER&quot; &quot;E-CLINTON&quot;      
+ [33] &quot;EDITH-MORGAN&quot;    &quot;EDNA-RAMSEY&quot;     &quot;ELAINE-BROOKS&quot;   &quot;EMMA-DIXON&quot;     
+ [37] &quot;F-CRIBB&quot;         &quot;GAIL-QUEEN&quot;      &quot;GLENN - RUTH&quot;    &quot;GWEN-WILSON&quot;    
+ [41] &quot;H - JACK&quot;        &quot;IRENE-HIGGIN&quot;    &quot;JANET-HOUGH&quot;     &quot;JEAN-BANKS&quot;     
+ [45] &quot;JEAN-HANEY&quot;      &quot;JEAN-TIPTON&quot;     &quot;JEAN-WILLIS&quot;     &quot;JEANNEANE-BRYSO&quot;
+ [49] &quot;JENENE-FENDER&quot;   &quot;JO-FREEMAN&quot;      &quot;JO-HAWKINS&quot;      &quot;JO-MACE&quot;        
+ [53] &quot;JOSEPH-LEE&quot;      &quot;KAREN-RIDDLE&quot;    &quot;KAY-BYERS&quot;       &quot;KAY-WORDEN&quot;     
+ [57] &quot;L-LEWIS&quot;         &quot;LA-SHONDA&quot;       &quot;LA-TISHA&quot;        &quot;LA-VETTA&quot;       
+ [61] &quot;LAHOCINSKY-C&quot;    &quot;LANETTE-JORDAN&quot;  &quot;LE-ANN&quot;          &quot;LEE-FOX&quot;        
+ [65] &quot;LEIGH-HENSLE&quot;    &quot;LIDDY-SILVERS&quot;   &quot;LORETTA-FENDER&quot;  &quot;LOU-BALLEW&quot;     
+ [69] &quot;LOUISE-LOWMAN&quot;   &quot;LU-BRUCE&quot;        &quot;LYNN-AMMONS&quot;     &quot;LYNN-BOONE&quot;     
+ [73] &quot;LYNN-DEYTON&quot;     &quot;LYNN-HOPSON&quot;     &quot;MAE-LUCAS&quot;       &quot;MALIQK-MUHAM&quot;   
+ [77] &quot;MARIE-HILEMO&quot;    &quot;MARIE-JONES&quot;     &quot;MARIE-KNESS&quot;     &quot;MARIE-ROBINSON&quot; 
+ [81] &quot;MARY-ALLEN&quot;      &quot;MAUD-MANIS&quot;      &quot;MAY-OVERMYER&quot;    &quot;MICHELLE-BARTLE&quot;
+ [85] &quot;MING-LI&quot;         &quot;PEAKE-STEPHENS&quot;  &quot;R-ALICE&quot;         &quot;REBECCA-ANN&quot;    
+ [89] &quot;REE-NORTON&quot;      &quot;RENEE-BUCHANAN&quot;  &quot;RICHARD-LEE&quot;     &quot;RIDER-HALL&quot;     
+ [93] &quot;RITA-MESSER&quot;     &quot;ROBERTS-BROWN&quot;   &quot;RUTH-WILSON&quot;     &quot;S-WOODBY&quot;       
+ [97] &quot;SHIRL-LYNN&quot;      &quot;SYBIL-ADAMS&quot;     &quot;WILLIAM-DEMO&quot;    &quot;WILLIS-BRADSHER&quot;</code></pre>
+<ul>
+<li>~6k middle names with hyphens</li>
+<li>Look like legitimately hyphenated middle names</li>
+<li>Some hyphenated middle names have an extra space, e.g. “A - BERTHA”,
+“H - JACK”</li>
+</ul>
+<p>I suspect that hyphenation is likely to be a bit unreliable in
+transcription.</p>
+<p><strong>Map hyphen to empty string</strong></p>
+</div>
+<div id="check-for-slash" class="section level3" number="3.6.16">
+<h3><span class="header-section-number">3.6.16</span> Check for slash</h3>
+<pre class="r"><code>d %&gt;% 
+  dplyr::select(last_name) %&gt;%
+  dplyr::filter(stringr::str_detect(last_name, &quot;/&quot;))</code></pre>
+<pre><code># A tibble: 46 x 1
+   last_name        
+   &lt;chr&gt;            
+ 1 GARNER/MCGRAW    
+ 2 RHONEY/PETERS    
+ 3 MV 5/17/95       
+ 4 SIDI/HIDA        
+ 5 STUTLER/JAGGERS  
+ 6 MORRIS/BLOOM     
+ 7 BRINKLEY/BAGGS   
+ 8 RAMSEY/DOBERT    
+ 9 WATERS/CRUZ      
+10 BRITTAIN/SPRINKLE
+# … with 36 more rows</code></pre>
+<pre class="r"><code>d %&gt;% 
+  dplyr::select(first_name) %&gt;%
+  dplyr::filter(stringr::str_detect(first_name, &quot;/&quot;))</code></pre>
+<pre><code># A tibble: 9 x 1
+  first_name  
+  &lt;chr&gt;       
+1 MARY/LISA   
+2 LINDA SUSAN/
+3 MARVIN/HENRY
+4 JU/WANE     
+5 TINA /LEA   
+6 BRENDA KAY/ 
+7 LISA MARIE/ 
+8 MARY SUSAN/ 
+9 LISA/MELISSA</code></pre>
+<pre class="r"><code>d %&gt;% 
+  dplyr::select(midl_name) %&gt;%
+  dplyr::filter(stringr::str_detect(midl_name, &quot;/&quot;))</code></pre>
+<pre><code># A tibble: 1,032 x 1
+   midl_name   
+   &lt;chr&gt;       
+ 1 ANNE/MORGAN 
+ 2 WILLIAM/MCKO
+ 3 F./MARTIN   
+ 4 LEANN/STYLES
+ 5 LEE/ DEBBY  
+ 6 LOUISE/MORRI
+ 7 BENGE/CRAIG 
+ 8 LEE/FALLS   
+ 9 SHELTON/DEW 
+10 PEARL/CARR  
+# … with 1,022 more rows</code></pre>
+<ul>
+<li>46 last names with slash</li>
+<li>One obviously badly parsed - MV 5/17/95</li>
+<li>Remainder being used equivalently to hyphen or indicating former name, e.g. MORRIS/BLOOM, WATERS/CRUZ</li>
+</ul>
+<p><strong>Map slash to empty string</strong></p>
+</div>
+<div id="check-for-single-quotes" class="section level3" number="3.6.17">
+<h3><span class="header-section-number">3.6.17</span> Check for single quotes</h3>
+<pre class="r"><code>x &lt;- d %&gt;% 
+  dplyr::select(last_name) %&gt;%
+  dplyr::filter(stringr::str_detect(last_name, &quot;&#39;&quot;))
+dim(x)</code></pre>
+<pre><code>[1] 9712    1</code></pre>
+<pre class="r"><code>x %&gt;%   
+  dplyr::distinct() %&gt;% 
+  dplyr::slice_head(n = 100) %&gt;% 
+  dplyr::arrange(last_name) %&gt;% 
+  dplyr::pull(last_name)</code></pre>
+<pre><code>  [1] &quot;BOURR&#39;E&quot;           &quot;BOVE&#39;&quot;             &quot;D&#39;ALPHE&quot;          
+  [4] &quot;D&#39;AMBROSIO&quot;        &quot;D&#39;AMICO&quot;           &quot;D&#39;ANGELO&quot;         
+  [7] &quot;D&#39;ANGIO&quot;           &quot;D&#39;ANNUNZIO&quot;        &quot;D&#39;ANTIGNAC&quot;       
+ [10] &quot;D&#39;ARCO&quot;            &quot;D&#39;ARMOND&quot;          &quot;D&#39;ARVILLE&quot;        
+ [13] &quot;D&#39;ASCOLI&quot;          &quot;D&#39;AUGUSTA&quot;         &quot;D&#39;AURIA&quot;          
+ [16] &quot;D&#39;AUTRECHY&quot;        &quot;D&#39;AVANZO&quot;          &quot;D&#39;EMPAIRE&quot;        
+ [19] &quot;D&#39;ERCOLE&quot;          &quot;D&#39;HEMECOURT&quot;       &quot;D&#39;IGNAZIO&quot;        
+ [22] &quot;D&#39;INDIA&quot;           &quot;D&#39;ONOFRIO&quot;         &quot;D&#39;SANT&quot;           
+ [25] &quot;DEBELL-O&#39;NEAL&quot;     &quot;DEL RE&#39;&quot;           &quot;DELL&#39;OSSO&quot;        
+ [28] &quot;DUARTE&#39;&quot;           &quot;L&#39;ETOILE&quot;          &quot;L&#39;HUILLIER&quot;       
+ [31] &quot;LACHARITE&#39;-OTWELL&quot; &quot;O&#39; NEAL&quot;           &quot;O&#39;BANION&quot;         
+ [34] &quot;O&#39;BANNON&quot;          &quot;O&#39;BERRY&quot;           &quot;O&#39;BRIAN&quot;          
+ [37] &quot;O&#39;BRIANT&quot;          &quot;O&#39;BRIEN&quot;           &quot;O&#39;BRYAN&quot;          
+ [40] &quot;O&#39;BRYANT&quot;          &quot;O&#39;BRYON&quot;           &quot;O&#39;BYRNE&quot;          
+ [43] &quot;O&#39;CARROLL&quot;         &quot;O&#39;CONNEL&quot;          &quot;O&#39;CONNELL&quot;        
+ [46] &quot;O&#39;CONNER&quot;          &quot;O&#39;CONNOR&quot;          &quot;O&#39;CONWELL&quot;        
+ [49] &quot;O&#39;DANIEL&quot;          &quot;O&#39;DEA&quot;             &quot;O&#39;DEAR&quot;           
+ [52] &quot;O&#39;DEAR BROOKS&quot;     &quot;O&#39;DELL&quot;            &quot;O&#39;DOM&quot;            
+ [55] &quot;O&#39;DONALD&quot;          &quot;O&#39;DONNEL&quot;          &quot;O&#39;DONNELL&quot;        
+ [58] &quot;O&#39;DRISCOLL&quot;        &quot;O&#39;FARRELL&quot;         &quot;O&#39;FERRELL&quot;        
+ [61] &quot;O&#39;GARA&quot;            &quot;O&#39;GEARY&quot;           &quot;O&#39;GRADY&quot;          
+ [64] &quot;O&#39;GUIN&quot;            &quot;O&#39;GWYNN&quot;           &quot;O&#39;HARA&quot;           
+ [67] &quot;O&#39;HERN&quot;            &quot;O&#39;KANE&quot;            &quot;O&#39;KEEFE&quot;          
+ [70] &quot;O&#39;KELLEY&quot;          &quot;O&#39;KELLY&quot;           &quot;O&#39;KONEK&quot;          
+ [73] &quot;O&#39;LAUGHLIN&quot;        &quot;O&#39;LEARY&quot;           &quot;O&#39;MAHONY&quot;         
+ [76] &quot;O&#39;MARA&quot;            &quot;O&#39;NEAL&quot;            &quot;O&#39;NEAL-BIGGS&quot;     
+ [79] &quot;O&#39;NEAL-CLEMENTS&quot;   &quot;O&#39;NEAL-WRIGHT&quot;     &quot;O&#39;NEIL&quot;           
+ [82] &quot;O&#39;NEILL&quot;           &quot;O&#39;PHARROW&quot;         &quot;O&#39;QUIN&quot;           
+ [85] &quot;O&#39;QUINN&quot;           &quot;O&#39;REAR&quot;            &quot;O&#39;REILLY&quot;         
+ [88] &quot;O&#39;RILEY&quot;           &quot;O&#39;RORK&quot;            &quot;O&#39;ROUKE&quot;          
+ [91] &quot;O&#39;ROURKE&quot;          &quot;O&#39;SHAUGHNESSY&quot;     &quot;O&#39;SHEA&quot;           
+ [94] &quot;O&#39;SHIELD&quot;          &quot;O&#39;SHIELDS&quot;         &quot;O&#39;STEEN&quot;          
+ [97] &quot;O&#39;SULLIVAN&quot;        &quot;O&#39;TOOLE&quot;           &quot;O&#39;TUEL&quot;           
+[100] &quot;SOLLE&#39;&quot;           </code></pre>
+<pre class="r"><code>x &lt;- d %&gt;% 
+  dplyr::select(first_name) %&gt;%
+  dplyr::filter(stringr::str_detect(first_name, &quot;&#39;&quot;))
+dim(x)</code></pre>
+<pre><code>[1] 1965    1</code></pre>
+<pre class="r"><code>x %&gt;%   
+  dplyr::distinct() %&gt;% 
+  dplyr::slice_head(n = 100) %&gt;% 
+  dplyr::arrange(first_name) %&gt;% 
+  dplyr::pull(first_name)</code></pre>
+<pre><code>  [1] &quot;ANDR&#39;E&quot;         &quot;ANDRE&#39;&quot;         &quot;ANDRE&#39;A&quot;        &quot;ANDRE&#39;DEVON&quot;   
+  [5] &quot;AR&#39;RECOZELL&quot;    &quot;B&#39;LINDA&quot;        &quot;CE&#39;MONIA&quot;       &quot;CHARLA&#39;&quot;       
+  [9] &quot;CHERYL RENE&#39;&quot;   &quot;CHIMENE&#39;&quot;       &quot;CHOUV&#39;ON&quot;       &quot;CHRISTINE&#39;&quot;    
+ [13] &quot;D&#39;ANDRE&quot;        &quot;D&#39;ANDREA&quot;       &quot;D&#39;ANNA&quot;         &quot;D&#39;ANNE&quot;        
+ [17] &quot;D&#39;AYANA&quot;        &quot;D&#39;CRAYTON&quot;      &quot;D&#39;ETTA&quot;         &quot;D&#39;ETTE&quot;        
+ [21] &quot;D&#39;JUAN&quot;         &quot;D&#39;NISE&quot;         &quot;DA&#39;QUON&quot;        &quot;DANTE&#39;&quot;        
+ [25] &quot;DE&#39;ALLO&quot;        &quot;DE&#39;ONDRA&quot;       &quot;DE&#39;QUAN&quot;        &quot;DE&#39;SHUN&quot;       
+ [29] &quot;DE&#39;VONNA&quot;       &quot;DEAN&#39;NA&quot;        &quot;DENA&#39;&quot;          &quot;DESIRE&#39;&quot;       
+ [33] &quot;DONTE&#39;&quot;         &quot;EL&#39;MIRA&quot;        &quot;EL&#39;VERTA&quot;       &quot;ENDRE&#39;&quot;        
+ [37] &quot;HONORE&#39;&quot;        &quot;J&#39;MEKA&quot;         &quot;JA&#39;COBIE&quot;       &quot;JA&#39;NET&quot;        
+ [41] &quot;JANA&#39;&quot;          &quot;JE&#39;CISKEN&quot;      &quot;JE&#39;KEITH&quot;       &quot;JO&#39;AN&quot;         
+ [45] &quot;JOSE&#39;&quot;          &quot;KA&#39;AUNNE&quot;       &quot;KA&#39;TINA&quot;        &quot;KIELEE&#39;&quot;       
+ [49] &quot;L&#39;AMARI&quot;        &quot;L&#39;CRISH&quot;        &quot;L&#39;LENA&quot;         &quot;L&#39;TANJA&quot;       
+ [53] &quot;L&#39;TANYA&quot;        &quot;L&#39;TASHA&quot;        &quot;L&#39;VON&quot;          &quot;LA&#39;TISHA&quot;      
+ [57] &quot;LE&#39;RON&quot;         &quot;LE&#39;TRINA&quot;       &quot;LU&#39;SHELL&quot;       &quot;MARE&#39;&quot;         
+ [61] &quot;MARIA-JOSE&#39;&quot;    &quot;MONCHE&#39;&quot;        &quot;O&#39;BERA&quot;         &quot;O&#39;BERRY&quot;       
+ [65] &quot;O&#39;BRYANT&quot;       &quot;O&#39;DELL&quot;         &quot;O&#39;DELLA&quot;        &quot;O&#39;DEYNE&quot;       
+ [69] &quot;O&#39;GENE&quot;         &quot;O&#39;JAY&quot;          &quot;O&#39;KEITHA&quot;       &quot;O&#39;KELLY&quot;       
+ [73] &quot;O&#39;LEMA&quot;         &quot;O&#39;NEAL&quot;         &quot;O&#39;NEIL&quot;         &quot;O&#39;NEILL&quot;       
+ [77] &quot;O&#39;NICA&quot;         &quot;O&#39;NICHOLUS&quot;     &quot;O&#39;RITA&quot;         &quot;O&#39;TIKA&quot;        
+ [81] &quot;R&#39;DELL&quot;         &quot;RENA&#39;&quot;          &quot;RENE&#39;&quot;          &quot;RENEE&#39;&quot;        
+ [85] &quot;RENNA&#39;&quot;         &quot;SA&#39;MAAD&quot;        &quot;SADE&#39;&quot;          &quot;SHA&#39;RON&quot;       
+ [89] &quot;SHANA&#39;&quot;         &quot;SHANEE&#39;&quot;        &quot;SHARON RE&#39;NEE&quot;  &quot;SHAUN&#39;DERRIC&quot;  
+ [93] &quot;SHAWNTA&#39;&quot;       &quot;SHELE&#39;&quot;         &quot;SHEREA&#39;&quot;        &quot;T&#39;KISHA&quot;       
+ [97] &quot;TA&#39;AISHA&quot;       &quot;TA&#39;MAIRA&quot;       &quot;TA&#39;RE&quot;          &quot;VIVIAN &#39;VIKKI&#39;&quot;</code></pre>
+<pre class="r"><code>x &lt;- d %&gt;% 
+  dplyr::select(midl_name) %&gt;%
+  dplyr::filter(stringr::str_detect(midl_name, &quot;&#39;&quot;))
+dim(x)</code></pre>
+<pre><code>[1] 5426    1</code></pre>
+<pre class="r"><code>x %&gt;%   
+  dplyr::distinct() %&gt;% 
+  dplyr::slice_head(n = 100) %&gt;% 
+  dplyr::arrange(midl_name) %&gt;% 
+  dplyr::pull(midl_name)</code></pre>
+<pre><code>  [1] &quot;AIME&#39;&quot;        &quot;ANDRE&#39;&quot;       &quot;ANSHAWNA&#39;&quot;    &quot;BOVA&#39;&quot;        &quot;BRECK&#39;RIDG&quot;  
+  [6] &quot;D&#39;ABBRACCI&quot;   &quot;D&#39;AGOSTINO&quot;   &quot;D&#39;ANNA&quot;       &quot;D&#39;EMILIO&quot;     &quot;D&#39;NELL&quot;      
+ [11] &quot;DA&#39;NANT&quot;      &quot;DANTE&#39;&quot;       &quot;DE&#39;NANG&quot;      &quot;DE&#39;QUAN&quot;      &quot;DEANDRE&#39;&quot;    
+ [16] &quot;DEE O&#39;NEAL&quot;   &quot;DENE&#39;&quot;        &quot;DENEE&#39;&quot;       &quot;DU&#39;WANN&quot;      &quot;HARDR&#39;E&quot;     
+ [21] &quot;JA&#39;NELLE&quot;     &quot;JA&#39;NET&quot;       &quot;JAU&#39;CONNIE&quot;   &quot;JEANNE&#39;&quot;      &quot;JENEE&#39;&quot;      
+ [26] &quot;JERNIQUE&#39;&quot;    &quot;JOAN O&#39;GRADY&quot; &quot;JOSE&#39;&quot;        &quot;L&#39;REE&quot;        &quot;L&#39;VONNE&quot;     
+ [31] &quot;LA&#39;RONDA&quot;     &quot;LA&#39;SHAUN  A&quot;  &quot;LA&#39;TESE&quot;      &quot;LA&#39;VETTE&quot;     &quot;LA&#39;VONNE&quot;    
+ [36] &quot;LE&#39;SHON&quot;      &quot;LE&#39;VELLE&quot;     &quot;LE&#39;VONE&quot;      &quot;LEON&#39;&quot;        &quot;MAR&#39;CEL&quot;     
+ [41] &quot;O&#39;B.&quot;         &quot;O&#39;BERRY&quot;      &quot;O&#39;BOYLE&quot;      &quot;O&#39;BREIN&quot;      &quot;O&#39;BRIAN&quot;     
+ [46] &quot;O&#39;BRIEN&quot;      &quot;O&#39;BRIN&quot;       &quot;O&#39;BRYAN&quot;      &quot;O&#39;BRYANT&quot;     &quot;O&#39;BRYHIM&quot;    
+ [51] &quot;O&#39;BRYON&quot;      &quot;O&#39;CARROLL&quot;    &quot;O&#39;CONNELL&quot;    &quot;O&#39;CONNER&quot;     &quot;O&#39;CONNOR&quot;    
+ [56] &quot;O&#39;DANIEL&quot;     &quot;O&#39;DAY&quot;        &quot;O&#39;DELL&quot;       &quot;O&#39;DIEAR&quot;      &quot;O&#39;GAIL&quot;      
+ [61] &quot;O&#39;GEARY&quot;      &quot;O&#39;GRADY&quot;      &quot;O&#39;HANLON&quot;     &quot;O&#39;HARA&quot;       &quot;O&#39;HARROLD&quot;   
+ [66] &quot;O&#39;KEITH&quot;      &quot;O&#39;LERA&quot;       &quot;O&#39;MALLEY&quot;     &quot;O&#39;MARY&quot;       &quot;O&#39;MAX&quot;       
+ [71] &quot;O&#39;MICHAEL&quot;    &quot;O&#39;NEAL&quot;       &quot;O&#39;NEATHA&quot;     &quot;O&#39;NEIL&quot;       &quot;O&#39;NEILL&quot;     
+ [76] &quot;O&#39;NETRUSE&quot;    &quot;O&#39;NIEL&quot;       &quot;O&#39;QUINN&quot;      &quot;O&#39;REILLY&quot;     &quot;O&#39;RILEY&quot;     
+ [81] &quot;O&#39;RONALD&quot;     &quot;O&#39;SHEA&quot;       &quot;O&#39;SHEAL&quot;      &quot;O&#39;SHIELDS&quot;    &quot;O&#39;STEEN&quot;     
+ [86] &quot;O&#39;TUEL&quot;       &quot;REN&#39;EE&quot;       &quot;RENA&#39;&quot;        &quot;RENE&#39;&quot;        &quot;RENE&#39;/WRIGHT&quot;
+ [91] &quot;RENE&#39;E&quot;       &quot;RENEE&#39;&quot;       &quot;RENEE&#39;/WILSO&quot; &quot;RENEE&#39;BROWN&quot;  &quot;RUNEE&#39;&quot;      
+ [96] &quot;SHANTRE&#39;&quot;     &quot;TRENNE&#39;&quot;      &quot;U&#39;TAY&quot;        &quot;VANAE&#39;&quot;       &quot;VELINA&#39;&quot;     </code></pre>
+<ul>
+<li>~17k names with single quotes</li>
+<li>Most look like correct names, e.g. O’NEAL, D’AGOSTINO</li>
+<li>Some have a terminal quote, e.g. BONE’, BOVA’</li>
+<li>Some have extra space and/or a hyphen, e.g. “O’ NEAL”,
+“LACHARITE’-OTWELL”</li>
+</ul>
+<p>I suspect that quotes are likely to be a bit unreliable in
+transcription.</p>
+<p><strong>Map single quote to empty string</strong></p>
+</div>
+<div id="check-for-double-quotes" class="section level3" number="3.6.18">
+<h3><span class="header-section-number">3.6.18</span> Check for double quotes</h3>
+<pre class="r"><code>d %&gt;% 
+  dplyr::select(last_name) %&gt;%
+  dplyr::filter(stringr::str_detect(last_name, &quot;\&quot;&quot;))</code></pre>
+<pre><code># A tibble: 1 x 1
+  last_name
+  &lt;chr&gt;    
+1 &quot;LA\&quot;BEE&quot;</code></pre>
+<pre class="r"><code>d %&gt;% 
+  dplyr::select(first_name) %&gt;%
+  dplyr::filter(stringr::str_detect(first_name, &quot;\&quot;&quot;))</code></pre>
+<pre><code># A tibble: 4 x 1
+  first_name       
+  &lt;chr&gt;            
+1 &quot;HENRYL\&quot;&quot;       
+2 &quot;MARY (\&quot;PETE\&quot;)&quot;
+3 &quot;\&quot;C\&quot;&quot;          
+4 &quot;GEMES \&quot;BO\&quot;&quot;   </code></pre>
+<pre class="r"><code>d %&gt;% 
+  dplyr::select(midl_name) %&gt;%
+  dplyr::filter(stringr::str_detect(midl_name, &quot;\&quot;&quot;))</code></pre>
+<pre><code># A tibble: 19 x 1
+   midl_name       
+   &lt;chr&gt;           
+ 1 &quot;\&quot;ED\&quot;&quot;        
+ 2 &quot;\&quot;YVONNE\&quot;&quot;    
+ 3 &quot;\&quot;WALANIA\&quot;&quot;   
+ 4 &quot;\&quot;DREW\&quot;&quot;      
+ 5 &quot;\&quot;TATER\&quot;&quot;     
+ 6 &quot;\&quot;JOHNNY\&quot;&quot;    
+ 7 &quot;\&quot;HICK\&quot;&quot;      
+ 8 &quot;\&quot;LOY\&quot;&quot;       
+ 9 &quot;CARL  \&quot;PETE\&quot;&quot;
+10 &quot;\&quot;DIANE\&quot;&quot;     
+11 &quot;R \&quot;FRANCES\&quot;&quot; 
+12 &quot;\&quot;CECIL\&quot;&quot;     
+13 &quot;\&quot;SCOTT\&quot;&quot;     
+14 &quot;\&quot;ALICIA\&quot;&quot;    
+15 &quot;\&quot;SHARON\&quot;&quot;    
+16 &quot;W \&quot;BETSY\&quot;&quot;   
+17 &quot;\&quot;NEEL\&quot;&quot;      
+18 &quot;\&quot;RENA\&quot; NEWSO&quot;
+19 &quot;ALLEN \&quot;JAKE\&quot;&quot;</code></pre>
+<p>The backslashes are automatically inserted escaping so that the output
+strings could be read as inputs without getting confused by the double
+quotes.</p>
+<ul>
+<li>24 names with double quotes</li>
+<li>Some substitute double for single quote, e.g. the last name LA"BEE
+probably should have been LA’BEE</li>
+<li>Some appear to be aliases or nicknames, e.g. MARY (“PETE”), “TATER”</li>
+</ul>
+<p><strong>Map all double quotes to empty string</strong></p>
+</div>
+<div id="check-for-whitespace." class="section level3" number="3.6.19">
+<h3><span class="header-section-number">3.6.19</span> Check for whitespace.</h3>
 <pre class="r"><code>x &lt;- d %&gt;% 
   dplyr::select(last_name) %&gt;%
   dplyr::filter(stringr::str_detect(last_name, &quot;\\s&quot;))
@@ -7158,129 +7567,8 @@ MC INTOSH</li>
 </ul>
 <p><strong>Map whitespace to empty string</strong></p>
 </div>
-<div id="check-for-hyphens" class="section level3" number="3.6.15">
-<h3><span class="header-section-number">3.6.15</span> Check for hyphens</h3>
-<pre class="r"><code>x &lt;- d %&gt;% 
-  dplyr::select(last_name) %&gt;%
-  dplyr::filter(stringr::str_detect(last_name, &quot;-&quot;))
-dim(x)</code></pre>
-<pre><code>[1] 34325     1</code></pre>
-<pre class="r"><code>x %&gt;%   
-  dplyr::slice_head(n = 100) %&gt;% 
-  dplyr::arrange(last_name) %&gt;% 
-  dplyr::pull(last_name)</code></pre>
-<pre><code>  [1] &quot;AB-HUGH&quot;           &quot;AB-HUGH&quot;           &quot;ABDUL-GHAFFAR&quot;    
-  [4] &quot;ABDUL-GHAFFAR&quot;     &quot;ABDUL-KARRIEM&quot;     &quot;ABDUL-RABB&quot;       
-  [7] &quot;ABDUL-RAHIM&quot;       &quot;ABDUL-RAHIN&quot;       &quot;ABDUL-RAHMAN&quot;     
- [10] &quot;ABDUL-SALAAM&quot;      &quot;ABDUL-SALAM&quot;       &quot;ABDUL-WAHID&quot;      
- [13] &quot;ABDUR-RAHIM&quot;       &quot;ABDUR-RAHMAN&quot;      &quot;ABU-DAMES&quot;        
- [16] &quot;ABU-SABA&quot;          &quot;ABU-SABA&quot;          &quot;ABU-SABA&quot;         
- [19] &quot;ADAMS-CASKIE&quot;      &quot;ADAMS-MYERS&quot;       &quot;AFRICA-FLOYD&quot;     
- [22] &quot;AL-AWAR&quot;           &quot;AL-AWAR&quot;           &quot;AL-AWAR&quot;          
- [25] &quot;AL-KURDI&quot;          &quot;AL-SAADI&quot;          &quot;AL-SAADI&quot;         
- [28] &quot;ALBERT-KEULAN&quot;     &quot;ALSTON-EATMON&quot;     &quot;ANDERSON-TESH&quot;    
- [31] &quot;APPLEWHITE-LEWIS&quot;  &quot;ARDITO-BARLETTA&quot;   &quot;ARMSTRONG-VANN&quot;   
- [34] &quot;ARTHUR-CORNETT&quot;    &quot;ASKINS-MYRICK&quot;     &quot;AWTREY-KIRKMAN&quot;   
- [37] &quot;BAILEY-BROOKS&quot;     &quot;BARNARD-BAILEY&quot;    &quot;BENNETT-CLOWNEY&quot;  
- [40] &quot;BENTLEY-HALE&quot;      &quot;BIBB-FREEMAN&quot;      &quot;BLAKE-HASKINS&quot;    
- [43] &quot;BLEKFELD-SZTRAKY&quot;  &quot;BLEVINS-SPRINKLE&quot;  &quot;BLUE-SWANN&quot;       
- [46] &quot;BRADY-WILSON&quot;      &quot;BROWN-CORNELIUS&quot;   &quot;BRUCE-ROSS&quot;       
- [49] &quot;BUCKLEY-MOORE&quot;     &quot;CLARK-BARKER&quot;      &quot;CLAUDIO-DIAZ&quot;     
- [52] &quot;CLAUDIO-DIAZ&quot;      &quot;CLAUDIO-DIAZ&quot;      &quot;CLAUDIO-DIAZ&quot;     
- [55] &quot;COLE-MORGAN&quot;       &quot;CROWELL-SMITH&quot;     &quot;DAVIS-BOYD&quot;       
- [58] &quot;DAVIS-PARKER&quot;      &quot;DAVIS-ROBINSON&quot;    &quot;DUFFER-LEECHFORD&quot; 
- [61] &quot;EATON-ALSTON&quot;      &quot;ELLIS-WALLACE&quot;     &quot;ENGEL-BAKER&quot;      
- [64] &quot;GILLIS-HENDELL&quot;    &quot;GORDON-WICKER&quot;     &quot;GREEN-HOLLEY&quot;     
- [67] &quot;GUPTA-THOMAS&quot;      &quot;HARGETT-LILLY&quot;     &quot;HIATT-CRIBBS&quot;     
- [70] &quot;JONES-ALEXANDER&quot;   &quot;JONES-SUTTON&quot;      &quot;KELLER-HULL&quot;      
- [73] &quot;KOSKI-PONTON&quot;      &quot;KUCERA-HOFFMANN&quot;   &quot;LAWS-GRIFFIN&quot;     
- [76] &quot;LEARY-SMITH&quot;       &quot;LIDE-GRANT&quot;        &quot;LITTON-MCKENZIE&quot;  
- [79] &quot;LOCKLEAR-CASEY&quot;    &quot;LOCKLEAR-CRABTREE&quot; &quot;MANESS-LITTLE&quot;    
- [82] &quot;MAYNOR-BOWEN&quot;      &quot;MILLS- KHARBAT&quot;    &quot;MURPHY-GRAY&quot;      
- [85] &quot;PARKER-LOWE&quot;       &quot;PARRA-ASH&quot;         &quot;POOLE-JENKINS&quot;    
- [88] &quot;POPISH-SMITH&quot;      &quot;RAY-LEAZER&quot;        &quot;REDFEARN- SHELTON&quot;
- [91] &quot;RIDDICK-HARRELL&quot;   &quot;RIVERA-MONTORO&quot;    &quot;SEVORES-AMMONS&quot;   
- [94] &quot;SORRELLS-COOPER&quot;   &quot;STEPHENS-HORTON&quot;   &quot;TIPTON- BARNARD&quot;  
- [97] &quot;TOMBLIN-WELLMAN&quot;   &quot;WALLIS-JOHNSON&quot;    &quot;WATKINS-AKERS&quot;    
-[100] &quot;WHITAKER-LINDSAY&quot; </code></pre>
-<ul>
-<li>~21k names with hyphens</li>
-<li>Look like legitimately hyphenated names</li>
-</ul>
-<p><strong>Map hyphen to empty string</strong></p>
-</div>
-<div id="check-for-single-quotes" class="section level3" number="3.6.16">
-<h3><span class="header-section-number">3.6.16</span> Check for single quotes</h3>
-<pre class="r"><code>x &lt;- d %&gt;% 
-  dplyr::select(last_name) %&gt;%
-  dplyr::filter(stringr::str_detect(last_name, &quot;&#39;&quot;))
-dim(x)</code></pre>
-<pre><code>[1] 9712    1</code></pre>
-<pre class="r"><code>x %&gt;%   
-  dplyr::distinct() %&gt;% 
-  dplyr::slice_head(n = 100) %&gt;% 
-  dplyr::arrange(last_name) %&gt;% 
-  dplyr::pull(last_name)</code></pre>
-<pre><code>  [1] &quot;BOURR&#39;E&quot;           &quot;BOVE&#39;&quot;             &quot;D&#39;ALPHE&quot;          
-  [4] &quot;D&#39;AMBROSIO&quot;        &quot;D&#39;AMICO&quot;           &quot;D&#39;ANGELO&quot;         
-  [7] &quot;D&#39;ANGIO&quot;           &quot;D&#39;ANNUNZIO&quot;        &quot;D&#39;ANTIGNAC&quot;       
- [10] &quot;D&#39;ARCO&quot;            &quot;D&#39;ARMOND&quot;          &quot;D&#39;ARVILLE&quot;        
- [13] &quot;D&#39;ASCOLI&quot;          &quot;D&#39;AUGUSTA&quot;         &quot;D&#39;AURIA&quot;          
- [16] &quot;D&#39;AUTRECHY&quot;        &quot;D&#39;AVANZO&quot;          &quot;D&#39;EMPAIRE&quot;        
- [19] &quot;D&#39;ERCOLE&quot;          &quot;D&#39;HEMECOURT&quot;       &quot;D&#39;IGNAZIO&quot;        
- [22] &quot;D&#39;INDIA&quot;           &quot;D&#39;ONOFRIO&quot;         &quot;D&#39;SANT&quot;           
- [25] &quot;DEBELL-O&#39;NEAL&quot;     &quot;DEL RE&#39;&quot;           &quot;DELL&#39;OSSO&quot;        
- [28] &quot;DUARTE&#39;&quot;           &quot;L&#39;ETOILE&quot;          &quot;L&#39;HUILLIER&quot;       
- [31] &quot;LACHARITE&#39;-OTWELL&quot; &quot;O&#39; NEAL&quot;           &quot;O&#39;BANION&quot;         
- [34] &quot;O&#39;BANNON&quot;          &quot;O&#39;BERRY&quot;           &quot;O&#39;BRIAN&quot;          
- [37] &quot;O&#39;BRIANT&quot;          &quot;O&#39;BRIEN&quot;           &quot;O&#39;BRYAN&quot;          
- [40] &quot;O&#39;BRYANT&quot;          &quot;O&#39;BRYON&quot;           &quot;O&#39;BYRNE&quot;          
- [43] &quot;O&#39;CARROLL&quot;         &quot;O&#39;CONNEL&quot;          &quot;O&#39;CONNELL&quot;        
- [46] &quot;O&#39;CONNER&quot;          &quot;O&#39;CONNOR&quot;          &quot;O&#39;CONWELL&quot;        
- [49] &quot;O&#39;DANIEL&quot;          &quot;O&#39;DEA&quot;             &quot;O&#39;DEAR&quot;           
- [52] &quot;O&#39;DEAR BROOKS&quot;     &quot;O&#39;DELL&quot;            &quot;O&#39;DOM&quot;            
- [55] &quot;O&#39;DONALD&quot;          &quot;O&#39;DONNEL&quot;          &quot;O&#39;DONNELL&quot;        
- [58] &quot;O&#39;DRISCOLL&quot;        &quot;O&#39;FARRELL&quot;         &quot;O&#39;FERRELL&quot;        
- [61] &quot;O&#39;GARA&quot;            &quot;O&#39;GEARY&quot;           &quot;O&#39;GRADY&quot;          
- [64] &quot;O&#39;GUIN&quot;            &quot;O&#39;GWYNN&quot;           &quot;O&#39;HARA&quot;           
- [67] &quot;O&#39;HERN&quot;            &quot;O&#39;KANE&quot;            &quot;O&#39;KEEFE&quot;          
- [70] &quot;O&#39;KELLEY&quot;          &quot;O&#39;KELLY&quot;           &quot;O&#39;KONEK&quot;          
- [73] &quot;O&#39;LAUGHLIN&quot;        &quot;O&#39;LEARY&quot;           &quot;O&#39;MAHONY&quot;         
- [76] &quot;O&#39;MARA&quot;            &quot;O&#39;NEAL&quot;            &quot;O&#39;NEAL-BIGGS&quot;     
- [79] &quot;O&#39;NEAL-CLEMENTS&quot;   &quot;O&#39;NEAL-WRIGHT&quot;     &quot;O&#39;NEIL&quot;           
- [82] &quot;O&#39;NEILL&quot;           &quot;O&#39;PHARROW&quot;         &quot;O&#39;QUIN&quot;           
- [85] &quot;O&#39;QUINN&quot;           &quot;O&#39;REAR&quot;            &quot;O&#39;REILLY&quot;         
- [88] &quot;O&#39;RILEY&quot;           &quot;O&#39;RORK&quot;            &quot;O&#39;ROUKE&quot;          
- [91] &quot;O&#39;ROURKE&quot;          &quot;O&#39;SHAUGHNESSY&quot;     &quot;O&#39;SHEA&quot;           
- [94] &quot;O&#39;SHIELD&quot;          &quot;O&#39;SHIELDS&quot;         &quot;O&#39;STEEN&quot;          
- [97] &quot;O&#39;SULLIVAN&quot;        &quot;O&#39;TOOLE&quot;           &quot;O&#39;TUEL&quot;           
-[100] &quot;SOLLE&#39;&quot;           </code></pre>
-<ul>
-<li>~5k names with single quotes</li>
-<li>Most look like correct names, e.g. O’NEAL, D’AGOSTINO</li>
-<li>Some are suspect, e.g. BONE’, BOVA’</li>
-</ul>
-<p><strong>Map single quote to empty string</strong></p>
-</div>
-<div id="check-for-double-quotes" class="section level3" number="3.6.17">
-<h3><span class="header-section-number">3.6.17</span> Check for double quotes</h3>
-<pre class="r"><code>d %&gt;% 
-  dplyr::select(last_name) %&gt;%
-  dplyr::filter(stringr::str_detect(last_name, &quot;\&quot;&quot;))</code></pre>
-<pre><code># A tibble: 1 x 1
-  last_name
-  &lt;chr&gt;    
-1 &quot;LA\&quot;BEE&quot;</code></pre>
-<ul>
-<li>1 name with double quotes</li>
-<li>The backslash in LA"BEE was probably inserted automatically when the
-data was exported</li>
-<li>That name probably should have been LA’BEE</li>
-</ul>
-<p><strong>Map all double quotes to single quotes</strong></p>
-</div>
-<div id="check-for-other-characters-1" class="section level3" number="3.6.18">
-<h3><span class="header-section-number">3.6.18</span> Check for other characters (1)</h3>
+<div id="check-for-other-characters-1" class="section level3" number="3.6.20">
+<h3><span class="header-section-number">3.6.20</span> Check for other characters (1)</h3>
 <pre class="r"><code>x &lt;- d %&gt;% 
   dplyr::select(last_name) %&gt;%
   dplyr::filter(stringr::str_detect(last_name, &quot;[^-\\s&#39;\&quot;a-zA-Z]&quot;))
@@ -7332,8 +7620,8 @@ percent underscore</li>
 </ul>
 <p>Look at those in more detail.</p>
 </div>
-<div id="check-for-period" class="section level3" number="3.6.19">
-<h3><span class="header-section-number">3.6.19</span> Check for period</h3>
+<div id="check-for-period" class="section level3" number="3.6.21">
+<h3><span class="header-section-number">3.6.21</span> Check for period</h3>
 <pre class="r"><code>d %&gt;% 
   dplyr::select(last_name) %&gt;%
   dplyr::filter(stringr::str_detect(last_name, &quot;\\.&quot;))</code></pre>
@@ -7361,8 +7649,8 @@ inconsistent, e.g. ST.JOHN, ST. JOHN</li>
 <p><strong>Map period to empty string</strong></p>
 <p><strong>Move suffix to suffix field</strong></p>
 </div>
-<div id="check-for-comma" class="section level3" number="3.6.20">
-<h3><span class="header-section-number">3.6.20</span> Check for comma</h3>
+<div id="check-for-comma" class="section level3" number="3.6.22">
+<h3><span class="header-section-number">3.6.22</span> Check for comma</h3>
 <pre class="r"><code>d %&gt;% 
   dplyr::select(last_name) %&gt;%
   dplyr::filter(stringr::str_detect(last_name, &quot;,&quot;))</code></pre>
@@ -7387,8 +7675,8 @@ inconsistent, e.g. ST.JOHN, ST. JOHN</li>
 <p><strong>Map comma to empty string</strong></p>
 <p><strong>Move suffix to suffix field</strong></p>
 </div>
-<div id="check-for-asterisk" class="section level3" number="3.6.21">
-<h3><span class="header-section-number">3.6.21</span> Check for asterisk</h3>
+<div id="check-for-asterisk" class="section level3" number="3.6.23">
+<h3><span class="header-section-number">3.6.23</span> Check for asterisk</h3>
 <pre class="r"><code>d %&gt;% 
   dplyr::select(last_name) %&gt;%
   dplyr::filter(stringr::str_detect(last_name, &quot;\\*&quot;))</code></pre>
@@ -7408,35 +7696,8 @@ inconsistent, e.g. ST.JOHN, ST. JOHN</li>
 </ul>
 <p><strong>Map asterisk to empty string</strong></p>
 </div>
-<div id="check-for-slash" class="section level3" number="3.6.22">
-<h3><span class="header-section-number">3.6.22</span> Check for slash</h3>
-<pre class="r"><code>d %&gt;% 
-  dplyr::select(last_name, first_name, sex) %&gt;%
-  dplyr::filter(stringr::str_detect(last_name, &quot;/&quot;))</code></pre>
-<pre><code># A tibble: 46 x 3
-   last_name         first_name sex   
-   &lt;chr&gt;             &lt;chr&gt;      &lt;chr&gt; 
- 1 GARNER/MCGRAW     JOANN      FEMALE
- 2 RHONEY/PETERS     DONNA      FEMALE
- 3 MV 5/17/95        &lt;NA&gt;       MALE  
- 4 SIDI/HIDA         DEBORAH    FEMALE
- 5 STUTLER/JAGGERS   MELANIE    FEMALE
- 6 MORRIS/BLOOM      TERESA     FEMALE
- 7 BRINKLEY/BAGGS    MICHELLE   FEMALE
- 8 RAMSEY/DOBERT     AMY        FEMALE
- 9 WATERS/CRUZ       ELIZABETH  FEMALE
-10 BRITTAIN/SPRINKLE SANDRA     FEMALE
-# … with 36 more rows</code></pre>
-<ul>
-<li>13 names with slash</li>
-<li>Being used equivalently to hyphen. (The fact that they are all
-female suggests they might be women hyphenating their names on
-marriage.)</li>
-</ul>
-<p><strong>Map slash to empty string</strong></p>
-</div>
-<div id="check-for-backslash" class="section level3" number="3.6.23">
-<h3><span class="header-section-number">3.6.23</span> Check for backslash</h3>
+<div id="check-for-backslash" class="section level3" number="3.6.24">
+<h3><span class="header-section-number">3.6.24</span> Check for backslash</h3>
 <pre class="r"><code>d %&gt;% 
   dplyr::select(last_name, first_name, sex) %&gt;%
   dplyr::filter(stringr::str_detect(last_name, &quot;\\\\&quot;))</code></pre>
@@ -7453,8 +7714,8 @@ marriage.)</li>
 </ul>
 <p><strong>Map backslash to empty string</strong></p>
 </div>
-<div id="check-for-back-tick" class="section level3" number="3.6.24">
-<h3><span class="header-section-number">3.6.24</span> Check for back-tick</h3>
+<div id="check-for-back-tick" class="section level3" number="3.6.25">
+<h3><span class="header-section-number">3.6.25</span> Check for back-tick</h3>
 <pre class="r"><code>d %&gt;% 
   dplyr::select(last_name, first_name, sex) %&gt;%
   dplyr::filter(stringr::str_detect(last_name, &quot;`&quot;))</code></pre>
@@ -7477,8 +7738,8 @@ marriage.)</li>
 </ul>
 <p><strong>Map back-tick to empty string</strong></p>
 </div>
-<div id="check-for-tilde" class="section level3" number="3.6.25">
-<h3><span class="header-section-number">3.6.25</span> Check for tilde</h3>
+<div id="check-for-tilde" class="section level3" number="3.6.26">
+<h3><span class="header-section-number">3.6.26</span> Check for tilde</h3>
 <pre class="r"><code>d %&gt;% 
   dplyr::select(last_name, first_name, sex) %&gt;%
   dplyr::filter(stringr::str_detect(last_name, &quot;~&quot;))</code></pre>
@@ -7492,8 +7753,8 @@ marriage.)</li>
 </ul>
 <p><strong>Map tilde to empty string</strong></p>
 </div>
-<div id="check-for-underscore" class="section level3" number="3.6.26">
-<h3><span class="header-section-number">3.6.26</span> Check for underscore</h3>
+<div id="check-for-underscore" class="section level3" number="3.6.27">
+<h3><span class="header-section-number">3.6.27</span> Check for underscore</h3>
 <pre class="r"><code>d %&gt;% 
   dplyr::select(last_name, first_name, sex) %&gt;%
   dplyr::filter(stringr::str_detect(last_name, &quot;_&quot;))</code></pre>
@@ -7507,8 +7768,8 @@ marriage.)</li>
 </ul>
 <p><strong>Map underscore to empty string</strong></p>
 </div>
-<div id="check-for-percent" class="section level3" number="3.6.27">
-<h3><span class="header-section-number">3.6.27</span> Check for percent</h3>
+<div id="check-for-percent" class="section level3" number="3.6.28">
+<h3><span class="header-section-number">3.6.28</span> Check for percent</h3>
 <pre class="r"><code>d %&gt;% 
   dplyr::select(last_name, first_name, sex) %&gt;%
   dplyr::filter(stringr::str_detect(last_name, &quot;%&quot;))</code></pre>
@@ -7522,8 +7783,8 @@ marriage.)</li>
 </ul>
 <p><strong>Map percent to empty string</strong></p>
 </div>
-<div id="check-for-other-characters-2" class="section level3" number="3.6.28">
-<h3><span class="header-section-number">3.6.28</span> Check for other characters (2)</h3>
+<div id="check-for-other-characters-2" class="section level3" number="3.6.29">
+<h3><span class="header-section-number">3.6.29</span> Check for other characters (2)</h3>
 <pre class="r"><code>d %&gt;% 
   dplyr::select(last_name) %&gt;%
   dplyr::filter(stringr::str_detect(last_name, &quot;[^-\\s&#39;\&quot;a-zA-Z015\\.,\\*/\\\\`~_%]&quot;))</code></pre>
@@ -7568,7 +7829,7 @@ marriage.)</li>
 <p><code>name_sufx_cd</code>: Voter name suffix</p>
 <pre class="r"><code>d %&gt;% dplyr::select(name_sufx_cd) %&gt;% skimr::skim()</code></pre>
 <table>
-<caption><span id="tab:unnamed-chunk-45">Table 3.2: </span>Data summary</caption>
+<caption><span id="tab:unnamed-chunk-47">Table 3.2: </span>Data summary</caption>
 <tbody>
 <tr class="odd">
 <td align="left">Name</td>
@@ -7811,6 +8072,46 @@ no digits
 <td align="center">0</td>
 <td align="center">6</td>
 <td></td>
+</tr>
+<tr class="even">
+<td>Hyphen</td>
+<td align="center">34,325</td>
+<td align="center">5,298</td>
+<td align="center">6,304</td>
+<td>Map hyphen
+to empty
+string</td>
+</tr>
+<tr class="odd">
+<td>Slash</td>
+<td align="center">46</td>
+<td align="center">9</td>
+<td align="center">1,032</td>
+<td>Map slash
+to empty
+string</td>
+</tr>
+<tr class="even">
+<td>Single
+quote</td>
+<td align="center">9,712</td>
+<td align="center">1,965</td>
+<td align="center">5,426</td>
+<td>Map single
+quote to
+empty
+string</td>
+</tr>
+<tr class="odd">
+<td>Double
+quote</td>
+<td align="center">1</td>
+<td align="center">4</td>
+<td align="center">19</td>
+<td>Map double
+quote to
+empty
+string</td>
 </tr>
 <tr class="even">
 <td></td>
