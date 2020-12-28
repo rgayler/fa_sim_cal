@@ -746,7 +746,7 @@ x %>%
 **Map zero to O if there are any letters and no digits 1-9**
 
 **One is sometimes substituted for "I" in generation suffixes. Remove
-these suffixes fro names.**
+these suffixes from names.**
 
 **Otherwise, map all digits to empty string.**
 
@@ -827,6 +827,52 @@ d %>%
 
 **Map slash to empty string**
 
+### Check for underscore
+
+```{r}
+d %>% 
+  dplyr::select(last_name, first_name, midl_name, sex) %>%
+  dplyr::filter(stringr::str_detect(last_name, "_"))
+
+d %>% 
+  dplyr::select(last_name, first_name, midl_name, sex) %>%
+  dplyr::filter(stringr::str_detect(first_name, "_"))
+
+d %>% 
+  dplyr::select(last_name, first_name, midl_name, sex) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "_"))
+```
+
+-   21 names with underscore
+-   Being used equivalent to hyphen in one last name: SOLARZ_VOJDANI
+-   Mostly used as equivalent of space in other names, e.g. KEVIN_C,
+    DEAN\_\_ALAN
+
+**Map underscore to empty string**
+
+### Check for percent
+
+```{r}
+d %>% 
+  dplyr::select(last_name, first_name, midl_name, sex) %>%
+  dplyr::filter(stringr::str_detect(last_name, "%"))
+
+d %>% 
+  dplyr::select(last_name, first_name, midl_name, sex) %>%
+  dplyr::filter(stringr::str_detect(first_name, "%"))
+
+d %>% 
+  dplyr::select(last_name, first_name, midl_name, sex) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "%"))
+```
+
+-   5 names with percent
+-   Being used equivalent to hyphen in one last name: SCHERM%MARTIN
+-   Possibly being used as substitute for E, e.g. DAV%, ANN%
+-   Sometimes appears to be a pointless suffix, e.g. P%, EVE%
+
+**Map percent to empty string**
+
 ### Check for single quotes
 
 ```{r}
@@ -899,26 +945,113 @@ quotes.
 
 **Map all double quotes to empty string**
 
+### Check for asterisk
+
+```{r}
+d %>% 
+  dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "\\*"))
+
+d %>% 
+  dplyr::select(first_name) %>%
+  dplyr::filter(stringr::str_detect(first_name, "\\*"))
+
+d %>% 
+  dplyr::select(midl_name) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "\\*"))
+```
+
+-   31 names with asterisk
+-   Asterisk substituted for single quote in last names, e.g. O*NEALS,
+    D*AMICO
+-   Asterisk used as a suffix in first and middle names
+
+**Map asterisk to empty string**
+
+### Check for back-tick
+
+```{r}
+d %>% 
+  dplyr::select(last_name, first_name, midl_name, sex) %>%
+  dplyr::filter(stringr::str_detect(last_name, "`"))
+
+d %>% 
+  dplyr::select(last_name, first_name, midl_name, sex) %>%
+  dplyr::filter(stringr::str_detect(first_name, "`"))
+
+d %>% 
+  dplyr::select(last_name, first_name, midl_name, sex) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "`"))
+```
+
+-   114 names with back-tick
+-   Some back ticks are substituted for single quotes, e.g.
+    O`BRIANT, O`NEAL
+-   Others are affixes for no obvious reason, e.g. CASEY`, ANNA`
+
+**Map back-tick to empty string**
+
+### Check for tilde
+
+```{r}
+d %>% 
+  dplyr::select(last_name, first_name, midl_name, sex) %>%
+  dplyr::filter(stringr::str_detect(last_name, "~"))
+
+d %>% 
+  dplyr::select(last_name, first_name, midl_name, sex) %>%
+  dplyr::filter(stringr::str_detect(first_name, "~"))
+
+d %>% 
+  dplyr::select(last_name, first_name, midl_name, sex) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "~"))
+```
+
+-   1 name with tilde
+-   Being used equivalent to single quote, e.g. O\~CONNOR
+
+**Map tilde to empty string**
+
 ### Check for whitespace.
 
 ```{r}
 x <- d %>% 
-  dplyr::select(last_name) %>%
+  dplyr::select(last_name, first_name, midl_name, sex, age) %>%
   dplyr::filter(stringr::str_detect(last_name, "\\s"))
 dim(x)
 x %>%   
   dplyr::slice_head(n = 100) %>% 
-  dplyr::arrange(last_name) %>% 
-  dplyr::pull(last_name)
+  dplyr::arrange(last_name, first_name, midl_name) %>% 
+  knitr::kable()
+
+x <- d %>% 
+  dplyr::select(last_name, first_name, midl_name, sex, age) %>%
+  dplyr::filter(stringr::str_detect(first_name, "\\s"))
+dim(x)
+x %>%   
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(last_name, first_name, midl_name) %>% 
+  knitr::kable()
+
+x <- d %>% 
+  dplyr::select(last_name, first_name, midl_name, sex, age) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "\\s"))
+dim(x)
+x %>%   
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(last_name, first_name, midl_name) %>% 
+  knitr::kable()
 ```
 
--   \~7k names with whitespace
--   Some whitespace is because of prefixes, e.g. DE COSTA, VAN DYKE
--   Some whitespace is instead of a hyphen, e.g. BROWN MAY, JONES MBIYA
--   Some whitespace is incorrectly inserted, e.g LI NDSEY
--   Some whitespace is probably variable between people, e.g. MC ADAMS,
-    MC INTOSH
--   Some whitespace is instead of a single quote, e.g. O KELLY, O NEAL
+-   111,836 names with whitespace
+-   Some whitespace is because of prefixes, e.g. DA SILVA, LE BLANC
+-   Some whitespace is separating generation suffixes, e.g. BENDER JR, HOLLERS 111
+-   Some whitespace is instead of a hyphen, e.g. KROMIS BRESNIHAN, WATTS ST PIERREE 
+-   Some whitespace is incorrectly inserted, e.g MILLS- KHARBAT, REDFEARN- SHELTON
+-   Some whitespace is probably variable between people, e.g. MC CADEN,
+    MC COY
+-   Some whitespace separates alias/nick/former names, e.g. PARISH (RAMON), SYKES (BRICKHOUSE)
+-   Some whitespace is instead of a single quote, e.g. O BRIEN, O NEAL
 
 **Map whitespace to empty string**
 
@@ -975,19 +1108,6 @@ d %>%
 
 **Move suffix to suffix field**
 
-### Check for asterisk
-
-```{r}
-d %>% 
-  dplyr::select(last_name) %>%
-  dplyr::filter(stringr::str_detect(last_name, "\\*"))
-```
-
--   7 names with asterisk
--   Asterisk substituted for single quote, e.g. O*MASTERS, D*AMICO
-
-**Map asterisk to empty string**
-
 ### Check for backslash
 
 ```{r}
@@ -1000,58 +1120,6 @@ d %>%
 -   No obvious reason for inclusion
 
 **Map backslash to empty string**
-
-### Check for back-tick
-
-```{r}
-d %>% 
-  dplyr::select(last_name, first_name, sex) %>%
-  dplyr::filter(stringr::str_detect(last_name, "`"))
-```
-
--   4 names with back-tick
--   No obvious reason for inclusion
-
-**Map back-tick to empty string**
-
-### Check for tilde
-
-```{r}
-d %>% 
-  dplyr::select(last_name, first_name, sex) %>%
-  dplyr::filter(stringr::str_detect(last_name, "~"))
-```
-
--   1 name with tilde
--   Being used equivalent to single quote
-
-**Map tilde to empty string**
-
-### Check for underscore
-
-```{r}
-d %>% 
-  dplyr::select(last_name, first_name, sex) %>%
-  dplyr::filter(stringr::str_detect(last_name, "_"))
-```
-
--   1 name with underscore
--   Being used equivalent to hyphen
-
-**Map underscore to empty string**
-
-### Check for percent
-
-```{r}
-d %>% 
-  dplyr::select(last_name, first_name, sex) %>%
-  dplyr::filter(stringr::str_detect(last_name, "%"))
-```
-
--   1 name with percent
--   Being used equivalent to hyphen
-
-**Map percent to empty string**
 
 ### Check for other characters (2)
 
@@ -1150,6 +1218,36 @@ The aggregated cleaning suggestions are:
 | quote       |             |             |             | quote to    |
 |             |             |             |             | empty       |
 |             |             |             |             | string      |
++-------------+-------------+-------------+-------------+-------------+
+| Asterisk    | 7           | 1           | 23          | Map         |
+|             |             |             |             | asterisk to |
+|             |             |             |             | empty       |
+|             |             |             |             | string      |
++-------------+-------------+-------------+-------------+-------------+
+| Back tick   | 10          | 71          | 33          | Map back    |
+|             |             |             |             | tick to     |
+|             |             |             |             | empty       |
+|             |             |             |             | string      |
++-------------+-------------+-------------+-------------+-------------+
+| Tilde       | 1           | 0           | 0           | Map tilde   |
+|             |             |             |             | to empty    |
+|             |             |             |             | string      |
++-------------+-------------+-------------+-------------+-------------+
+| Underscore  | 1           | 17          | 3           | Map         |
+|             |             |             |             | underscore  |
+|             |             |             |             | to empty    |
+|             |             |             |             | string      |
++-------------+-------------+-------------+-------------+-------------+
+| Percent     | 1           | 4           | 0           | Map percent |
+|             |             |             |             | to empty    |
+|             |             |             |             | string      |
++-------------+-------------+-------------+-------------+-------------+
+| Whitespace  | 13,637      | 23,789      | 74,410      | Map         |
+|             |             |             |             | whitespace  |
+|             |             |             |             | to empty    |
+|             |             |             |             | string      |
++-------------+-------------+-------------+-------------+-------------+
+|             |             |             |             |             |
 +-------------+-------------+-------------+-------------+-------------+
 |             |             |             |             |             |
 +-------------+-------------+-------------+-------------+-------------+
