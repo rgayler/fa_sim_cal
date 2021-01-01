@@ -17,6 +17,7 @@ library(stringr)
 library(vroom)
 library(skimr)
 library(knitr)
+library(glue)
 ```
 
 # Introduction
@@ -99,6 +100,12 @@ d <- vroom::vroom( #read raw data; let vroom guess the field types
 fst::write_fst(d, d_fst, compress = 100) # save data frame (cheap-skate caching)
 ```
 
+Some of the analyses have been done on a laptop with 16GB of RAM. The
+data set is almost too big for that laptop, so for different sections of
+the analysis I read a subset of the columns from the temporary data
+file, delete the dataframes after use and clean up the RAM with a
+garbage collection.
+
 ```{r}
 d <- fst::read_fst(d_fst) %>% tibble::as_tibble() # get cached data
 dim(d)
@@ -119,7 +126,22 @@ skimr::skim(d)
 
 -   The warning messages from `skim()` indicate that a handful of rows
     contain unexpected characters. If they are in rows we use they will
-    have to be loacted and dealt with.
+    have to be located and dealt with.
+
+```{r}
+# clean up
+rm(d)
+gc()
+
+# get data for next section of analyses
+d <- fst::read_fst(
+  d_fst,
+  columns = c("county_id", "county_desc", "voter_reg_num", "ncid", "status_cd", 
+              "voter_status_desc", "reason_cd", "voter_status_reason_desc")
+  ) %>% 
+  tibble::as_tibble()
+dim(d)
+```
 
 ## county_id & county_desc
 
@@ -263,6 +285,23 @@ oddities to be similar across the name fields.
 
 Look for possible anomalies in names.
 
+```{r}
+# clean up
+rm(d)
+gc()
+
+# get data for next section of analyses
+d <- fst::read_fst(
+  d_fst,
+  columns = c(
+    "last_name", "first_name", "midl_name", "name_sufx_cd", 
+    "sex", "age", "voter_status_desc", "voter_status_reason_desc"
+  )
+) %>% 
+  tibble::as_tibble()
+dim(d)
+```
+
 ### Name missing
 
 ```{r}
@@ -286,7 +325,6 @@ d %>%
   dplyr::select(
     first_name, midl_name, name_sufx_cd, 
     sex, age,
-    house_num, street_name, 
     voter_status_desc, voter_status_reason_desc
     ) %>% 
   dplyr::arrange(voter_status_desc, voter_status_reason_desc, first_name) %>% 
@@ -303,7 +341,6 @@ d %>%
   dplyr::select(
     last_name, midl_name, name_sufx_cd, 
     sex, age,
-    house_num, street_name, 
     voter_status_desc, voter_status_reason_desc
     ) %>% 
   dplyr::arrange(voter_status_desc, voter_status_reason_desc, midl_name) %>% 
@@ -346,7 +383,9 @@ d %>% dplyr::select(midl_name) %>%
 
 **Map all letters to upper case**
 
-### Check for digits
+### Digits
+
+#### Check for digits
 
 ```{r}
 d %>% dplyr::select(last_name) %>%
@@ -366,7 +405,7 @@ d %>% dplyr::select(midl_name) %>%
 
 Look at the digits individually.
 
-### Check for zero
+#### Check for zero
 
 ```{r}
 x <- d %>% 
@@ -406,7 +445,7 @@ x %>%
 
 **Map zero to O if name contains at least one letter and no digits 1-9**
 
-### Check for one
+#### Check for one
 
 ```{r}
 x <- d %>% 
@@ -447,7 +486,7 @@ x %>%
 
 **Delete generation suffixes where possible**
 
-### Check for two
+#### Check for two
 
 ```{r}
 x <- d %>% 
@@ -482,7 +521,7 @@ x %>%
 -   Some are pure numeric, e.g. 205, 328
 -   Some are names with concatenated numeric, e.g. LYNN1820, WRIGHT2106
 
-### Check for three
+#### Check for three
 
 ```{r}
 x <- d %>% 
@@ -518,7 +557,7 @@ x %>%
 -   Some are generation suffixes, e.g. 3RD., MACK 3RD
 -   Some are names with concatenated numeric, e.g. LEE3708, SCOTT3450
 
-### Check for four
+#### Check for four
 
 ```{r}
 x <- d %>% 
@@ -555,7 +594,7 @@ x %>%
 -   Some are names with concatenated numeric, e.g. DALE401, SCOTT3450
 -   Some are intrusions in names, e.g. FR4ANK, MICHA4EL
 
-### Check for five
+#### Check for five
 
 ```{r}
 x <- d %>% 
@@ -594,7 +633,7 @@ x %>%
 -   Some are intrusions in names, e.g. FR4ANK, MICHA4EL
 -   Some are substitution of 5 for S e.g. ALBER5TSON
 
-### Check for six
+#### Check for six
 
 ```{r}
 x <- d %>% 
@@ -629,7 +668,7 @@ x %>%
 -   Some are pure numeric, e.g. 6, 4625
 -   Some are names with concatenated nmeric, e.g. MICHAEL146, MICHAEL146
 
-### Check for seven
+#### Check for seven
 
 ```{r}
 x <- d %>% 
@@ -666,7 +705,7 @@ x %>%
 -   Some are wrongly parsed, e.g. MV 5/17/95
 -   Some are intrusions in names, e.g. JOYCE701, LOUIS7100
 
-### Check for eight
+#### Check for eight
 
 ```{r}
 x <- d %>% 
@@ -703,7 +742,7 @@ x %>%
 -   Some are intrusions in names, e.g. J8IMMIE
 -   Some might be substitution of 8 for SE e.g. BEA LOUI8
 
-### Check for nine
+#### Check for nine
 
 ```{r}
 x <- d %>% 
@@ -741,7 +780,7 @@ x %>%
 -   Some are wrongly parsed, e.g. MV 5/17/95
 -   Some are intrusions in names, e.g. LO9UIS
 
-### Digits summary
+#### Digit summary
 
 **Map zero to O if there are any letters and no digits 1-9**
 
@@ -750,7 +789,9 @@ these suffixes from names.**
 
 **Otherwise, map all digits to empty string.**
 
-### Check for hyphens
+### Characters
+
+#### Check for hyphens
 
 ```{r}
 x <- d %>% 
@@ -803,7 +844,7 @@ transcription.
 
 **Map hyphen to empty string**
 
-### Check for slash
+#### Check for slash
 
 ```{r}
 d %>% 
@@ -827,7 +868,7 @@ d %>%
 
 **Map slash to empty string**
 
-### Check for underscore
+#### Check for underscore
 
 ```{r}
 d %>% 
@@ -850,7 +891,7 @@ d %>%
 
 **Map underscore to empty string**
 
-### Check for percent
+#### Check for percent
 
 ```{r}
 d %>% 
@@ -873,7 +914,7 @@ d %>%
 
 **Map percent to empty string**
 
-### Check for single quotes
+#### Check for single quotes
 
 ```{r}
 x <- d %>% 
@@ -918,7 +959,7 @@ transcription.
 
 **Map single quote to empty string**
 
-### Check for double quotes
+#### Check for double quotes
 
 ```{r}
 d %>% 
@@ -945,7 +986,7 @@ quotes.
 
 **Map all double quotes to empty string**
 
-### Check for asterisk
+#### Check for asterisk
 
 ```{r}
 d %>% 
@@ -968,7 +1009,7 @@ d %>%
 
 **Map asterisk to empty string**
 
-### Check for back-tick
+#### Check for back-tick
 
 ```{r}
 d %>% 
@@ -991,7 +1032,7 @@ d %>%
 
 **Map back-tick to empty string**
 
-### Check for tilde
+#### Check for tilde
 
 ```{r}
 d %>% 
@@ -1012,7 +1053,7 @@ d %>%
 
 **Map tilde to empty string**
 
-### Check for whitespace.
+#### Check for whitespace.
 
 ```{r}
 x <- d %>% 
@@ -1045,110 +1086,344 @@ x %>%
 
 -   111,836 names with whitespace
 -   Some whitespace is because of prefixes, e.g. DA SILVA, LE BLANC
--   Some whitespace is separating generation suffixes, e.g. BENDER JR, HOLLERS 111
--   Some whitespace is instead of a hyphen, e.g. KROMIS BRESNIHAN, WATTS ST PIERREE 
--   Some whitespace is incorrectly inserted, e.g MILLS- KHARBAT, REDFEARN- SHELTON
+-   Some whitespace is separating generation suffixes, e.g. BENDER JR,
+    HOLLERS 111
+-   Some whitespace is instead of a hyphen, e.g. KROMIS BRESNIHAN, WATTS
+    ST PIERREE
+-   Some whitespace is incorrectly inserted, e.g MILLS- KHARBAT,
+    REDFEARN- SHELTON
 -   Some whitespace is probably variable between people, e.g. MC CADEN,
     MC COY
--   Some whitespace separates alias/nick/former names, e.g. PARISH (RAMON), SYKES (BRICKHOUSE)
+-   Some whitespace separates alias/nick/former names, e.g. PARISH
+    (RAMON), SYKES (BRICKHOUSE)
 -   Some whitespace is instead of a single quote, e.g. O BRIEN, O NEAL
+-   Some whitespace is separating an honorific title, e.g. MRS CLAUD,
+    MRS THEODORE
+-   Some whitespace is separating a final honorific title, e.g. D MS
 
 **Map whitespace to empty string**
 
-### Check for other characters (1)
+#### Check for period
 
 ```{r}
 x <- d %>% 
-  dplyr::select(last_name) %>%
-  dplyr::filter(stringr::str_detect(last_name, "[^-\\s'\"a-zA-Z]"))
+  dplyr::filter(stringr::str_detect(last_name, "\\."))
 dim(x)
 x %>%   
-  dplyr::distinct() %>% 
   dplyr::slice_head(n = 100) %>% 
-  dplyr::arrange(last_name) %>% 
-  dplyr::pull(last_name)
+  dplyr::arrange(last_name, first_name, midl_name) %>% 
+  knitr::kable()
+
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(first_name, "\\."))
+dim(x)
+x %>%   
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(last_name, first_name, midl_name) %>% 
+  knitr::kable()
+
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, "\\."))
+dim(x)
+x %>%   
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(last_name, first_name, midl_name) %>% 
+  knitr::kable()
 ```
 
--   73 rows with other characters
--   five zero period back-tick slash back-slash asterisk comma tilde one
-    percent underscore
-
-Look at those in more detail.
-
-### Check for period
-
-```{r}
-d %>% 
-  dplyr::select(last_name) %>%
-  dplyr::filter(stringr::str_detect(last_name, "\\."))
-```
-
--   11 names with period
--   Most are legitimate abbreviation of SAINT although spacing is
-    inconsistent, e.g. ST.JOHN, ST. JOHN
--   Some are legitimate abbreviation of Junior, which should be in the
-    `name_sufx_cd` field.
+-   10,017 names with period
+-   Some are abbreviations of SAINT although spacing is inconsistent,
+    e.g. ST. CLAIR, ST.CLAIR
+-   Some are abbreviation of generation suffix, e.g. JR.
+-   Some are substituted for whitespace, e.g. BRICE.MICHAEL ARTHUR
+-   Some appear to be a random termination, e.g. PENDLETON-S. , SHIELDS.
+-   Some indicate initials, e.g. W., J.C.
+-   Some indicate a contraction, e.g. MARY ELIZ.
+-   Some appear to substitute for a single quote, e.g. L.ORUNE OLDS
 
 **Map period to empty string**
 
-**Move suffix to suffix field**
-
-### Check for comma
+#### Check for comma
 
 ```{r}
-d %>% 
-  dplyr::select(last_name) %>%
+x <- d %>% 
   dplyr::filter(stringr::str_detect(last_name, ","))
+dim(x)
+x %>%   
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(last_name, first_name, midl_name) %>% 
+  knitr::kable()
+
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(first_name, ","))
+dim(x)
+x %>%   
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(last_name, first_name, midl_name) %>% 
+  knitr::kable()
+
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, ","))
+dim(x)
+x %>%   
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(last_name, first_name, midl_name) %>% 
+  knitr::kable()
 ```
 
--   2 names with comma
--   Both are when a suffix has been incorrectly included in `last_name`
+-   172 names with comma
+-   Many commas are when multiple name components have been included in
+    the last name, e.g. "AMATO,KATHERINE,M" "HODNETT,DORGIE,JR"
+-   Some commas are when multiple name components have been included in
+    the first name, e.g. "EUGENE, JR", ",JR"
+-   Some commas are when multiple name components have been included in
+    the first name, e.g. "MARY, D", "JAMES, II", "MAE, MRS", "W., SR.,"
 
 **Map comma to empty string**
 
-**Move suffix to suffix field**
-
-### Check for backslash
+#### Check for backslash
 
 ```{r}
-d %>% 
-  dplyr::select(last_name, first_name, sex) %>%
+x <- d %>% 
   dplyr::filter(stringr::str_detect(last_name, "\\\\"))
+dim(x)
+x %>%   
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(last_name, first_name, midl_name) %>% 
+  knitr::kable()
+
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(first_name, "\\\\"))
+dim(x)
+x %>%   
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(last_name, first_name, midl_name) %>% 
+  knitr::kable()
+
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, "\\\\"))
+dim(x)
+x %>%   
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(last_name, first_name, midl_name) %>% 
+  knitr::kable()
 ```
 
--   3 names with backslash
--   No obvious reason for inclusion
+-   74 names with backslash
+-   Some appear to be terminal markers, e.g. BUFFKIN\\, KEVIN\\
+-   Some are used as substitutes for whitespace, e.g. WILLIAM\\BOND,
+    ROSE\\MERSON
 
 **Map backslash to empty string**
 
-### Check for other characters (2)
+#### Check for parentheses
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(last_name, "[()]"))
+dim(x)
+x %>%   
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(last_name, first_name, midl_name) %>% 
+  knitr::kable()
+
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(first_name, "[()]"))
+dim(x)
+x %>%   
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(last_name, first_name, midl_name) %>% 
+  knitr::kable()
+
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, "[()]"))
+dim(x)
+x %>%   
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(last_name, first_name, midl_name) %>% 
+  knitr::kable()
+```
+
+-   2,234 names with parentheses
+-   Some appear to be maiden names, e.g. CARSON (WADE), MOCCIA (SMITH)
+-   Some appear to be explanatory notes, e.g. NEESE (BLIND VOTER,
+    JOHNSON (BLIND VOT
+-   Some appear to indicate absence of a name, e.g. L(NN) = L (no name),
+    (NMN) = (no middle name)
+-   Some appear to be for honorific titles, e.g. FEE (SISTER), JOE (DR),
+    (MRS)
+
+**Map parentheses to empty string**
+
+#### Check for braces
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(last_name, "[{}]"))
+dim(x)
+x %>%   
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(last_name, first_name, midl_name) %>% 
+  knitr::kable()
+
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(first_name, "[{}]"))
+dim(x)
+x %>%   
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(last_name, first_name, midl_name) %>% 
+  knitr::kable()
+
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, "[{}]"))
+dim(x)
+x %>%   
+  dplyr::slice_head(n = 100) %>% 
+  dplyr::arrange(last_name, first_name, midl_name) %>% 
+  knitr::kable()
+```
+
+-   5 names with braces
+-   Some appear to be nicknames, e.g. MARY {HOLLY}, {ALEX}ANDER
+-   Some might be OCR errors, e.g. D}\@IS = DENIS
+
+**Map braces to empty string**
+
+#### Check for other characters
 
 ```{r}
 d %>% 
   dplyr::select(last_name) %>%
-  dplyr::filter(stringr::str_detect(last_name, "[^-\\s'\"a-zA-Z015\\.,\\*/\\\\`~_%]"))
-```
+  dplyr::filter(stringr::str_detect(last_name, "[^-a-zA-Z0-9/_%\'\"\\\\*\`~ \\.,\\\\(){}]"))
 
-**UP TO HERE**
-
-Look at those in more detail.
-
-Look at frequencies of names.
-
-```{r}
 d %>% 
-  dplyr::select(last_name) %>% 
-  dplyr::count(last_name, sort = TRUE)
+  dplyr::select(first_name) %>%
+  dplyr::filter(stringr::str_detect(first_name, "[^-a-zA-Z0-9/_%\'\"\\\\*\`~ \\.,\\\\(){}]"))
+
+d %>% 
+  dplyr::select(midl_name) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "[^-a-zA-Z0-9/_%\'\"\\\\*\`~ \\.,\\\\(){}]"))
 ```
 
-## name_sufx_cd
+-   31 names with other characters
+-   Some appear to substitute for single quote, e.g. O;NEAL, O=BOZOVICH
+-   Some might be OCR errors, e.g. STAN;EY, E;OZABETH
+-   Some are explanatory notes, e.g. "MERLE ATTN!!", "L!!!hold for",
+    ""(DECEASED ??"
+-   Some appear to be random junk, e.g. FRED\#, RORY], ";", "G\^"
+
+**Map other characters to empty string**
+
+#### Character summary
+
+**Map non-alphanumeric characters to empty string**
+
+### Words
+
+Look for words that shouldn't be in names.
+
+#### name_sufx_cd
 
 `name_sufx_cd`: Voter name suffix
+
+I am not going to use name suffix in entity resolution
+because age should be sufficient and is much better quality.
+
+Just look at what turns up in the name suffix
+in order to see what occurs,
+so that the same values can be removed from the other name fields
+where they shouldn't occur but do.
 
 ```{r}
 d %>% dplyr::select(name_sufx_cd) %>% skimr::skim()
 table(d$name_sufx_cd, useNA = "ifany")
+
+# get a better look at the cleaned suffixes
+d %>% 
+  dplyr::mutate(
+    sufx = name_sufx_cd %>% 
+      stringr::str_to_upper() %>% 
+      stringr::str_remove_all(pattern = "[^A-Z0-9]") %>% # remove non-alphanumeric
+      dplyr::na_if("") 
+  ) %>% 
+  dplyr::count(sufx) %>% 
+  dplyr::arrange(desc(n), sufx) %>% 
+  knitr::kable()
 ```
+
+* There are honorific titles: MRS, MR, MS, REV, MD, DR, JD
+* There are generation suffixes: JR, SR, I (1, J, L), II (2, 2ND, 11, LL), III (3RD, 111, IIL, ILI, LLL), IV, V (5TH), VI, VII, 8TH
+
+#### Honorific in name
+
+Look for honorifics that have been put in name fields.
+
+```{r}
+# last name
+hons <- c(
+  "MR", "MISTER", "MASTER", "MRS", "MS", "MISS", 
+  "REV", "REVEREND", "SR", "SISTER", "BR", "BROTHER",
+  "DR", "DOCTOR", "MD", "JD", "PROF", "PROFESSOR"
+  ) %>% 
+  glue::glue(x = . , "\\b{x}\\b") %>%  # honorifics must be words
+  glue::glue_collapse(sep = "|") %>% 
+  glue::glue(x = . , "({x})")
+
+x <- d %>% 
+  dplyr::filter(
+    last_name %>% 
+      stringr::str_to_upper() %>% 
+      stringr::str_remove_all(pattern = "[^ A-Z]") %>% 
+      stringr::str_squish() %>% 
+      stringr::str_detect(pattern = hons)
+  ) %>% 
+  dplyr::arrange(last_name, sex, first_name)
+nrow(x)
+x %>% knitr::kable()
+```
+
+Last name
+
+* BROTHER, CAPTAIN, COLONEL, DOCTOR, MASTER, MISS, MISTER appear to be legitimate last names
+* MR is the only prefix: MR FEWEL
+* SR, MD, SISTER, DR are suffixes
+
+```{r}
+# first name
+hons <- c(
+  "MR", "MISTER", "MASTER", "MRS", "MS", "MISS", 
+  "REV", "REVEREND", "SR", "SISTER", "BR", "BROTHER",
+  "DR", "DOCTOR", "MD", "JD", "PROF", "PROFESSOR"
+  ) %>% 
+  glue::glue(x = . , "\\b{x}\\b") %>%  # honorifics must be words
+  glue::glue_collapse(sep = "|") %>% 
+  glue::glue(x = . , "({x})")
+
+x <- d %>% 
+  dplyr::filter(
+    first_name %>% 
+      stringr::str_to_upper() %>% 
+      stringr::str_remove_all(pattern = "[^ A-Z]") %>% 
+      stringr::str_detect(pattern = hons)
+  ) %>% 
+  dplyr::arrange(first_name, sex, last_name)
+nrow(x)
+x %>% knitr::kable()
+```
+
+First name
+
+* MRS, appear to be honorifics put in as first names
+* MRS, REV are prefixes
+* SR, MD, SISTER, DR are suffixes
+
+### No name
+
+nn, nmn, no name, no middle name
+
+### Unknown etc.
+
+unk, unknown, aka, known as, also known as, alias 
 
 # Clean name variables
 
@@ -1247,24 +1522,49 @@ The aggregated cleaning suggestions are:
 |             |             |             |             | to empty    |
 |             |             |             |             | string      |
 +-------------+-------------+-------------+-------------+-------------+
-|             |             |             |             |             |
+| Period      | 44          | 651         | 9,322       | Map period  |
+|             |             |             |             | to empty    |
+|             |             |             |             | string      |
 +-------------+-------------+-------------+-------------+-------------+
-|             |             |             |             |             |
+| Comma       | 63          | 51          | 58          | Map comma   |
+|             |             |             |             | to empty    |
+|             |             |             |             | string      |
 +-------------+-------------+-------------+-------------+-------------+
-|             |             |             |             |             |
+| Backslash   | 4           | 3           | 67          | Map         |
+|             |             |             |             | backslash   |
+|             |             |             |             | to empty    |
+|             |             |             |             | string      |
 +-------------+-------------+-------------+-------------+-------------+
-|             |             |             |             |             |
+| Parentheses | 22          | 105         | 2,107       | Map         |
+|             |             |             |             | parentheses |
+|             |             |             |             | to empty    |
+|             |             |             |             | string      |
 +-------------+-------------+-------------+-------------+-------------+
-|             |             |             |             |             |
+| Braces      | 0           | 1           | 4           | Map braces  |
+|             |             |             |             | to empty    |
+|             |             |             |             | string      |
 +-------------+-------------+-------------+-------------+-------------+
-|             |             |             |             |             |
+| Other       | 8           | 8           | 15          | Map other   |
+| characters  |             |             |             | characters  |
+|             |             |             |             | to empty    |
+|             |             |             |             | string      |
 +-------------+-------------+-------------+-------------+-------------+
 
 : Name cleaning suggestions
 
+upcase\
+map non-alphanumeric to space\
+remove nn, nmn, etc.  
+remove terminal generation suffixes\
+remove honorific prefixes and suffixes\
+map all space to null
+
+
+
 ```{r}
 knitr::knit_exit()
 ```
+
 
 ## Upper case
 
