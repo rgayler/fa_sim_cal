@@ -133,7 +133,7 @@ The probability $P(id(q) = id(d) \mid sim(q, d) )$ treats all record pairs havin
 
 # Curried similarity functions
 
-We don't know whether this is helpful, but it is at least mildly interesting that this approach can be viewed as creating [curried](https://en.wikipedia.org/wiki/Currying). We are only interested in one query record $q$ at a time, although each query is run over every dictionary record $d$ in $D$. The frequency-aware calibration can be viewed as creating a modified similarity function $sim_q(d)$ that is specific to the query $q$, where the modification encodes the information in the relationship between $q$ and all the $d$ in $D$.
+We don't know whether this is helpful, but it is at least mildly interesting that this approach can be viewed as creating [curried](https://en.wikipedia.org/wiki/Currying) similarity functions. We are only interested in one query record $q$ at a time, although each query is run over every dictionary record $d$ in $D$. The frequency-aware calibration can be viewed as creating a modified similarity function $sim_q(d)$ that is specific to the query $q$, where the modification encodes the information in the relationship between $q$ and all the $d$ in $D$.
 
 # Logistic regression
 
