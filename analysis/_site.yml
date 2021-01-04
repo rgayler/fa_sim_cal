@@ -18,6 +18,7 @@ output:
     base_format: workflowr::wflow_html
     toc: yes
     toc_float: yes
+    toc_depth: 5
     theme: cosmo
     highlight: textmate
     mathjax: "local"

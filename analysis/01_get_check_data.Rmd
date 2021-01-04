@@ -1373,7 +1373,7 @@ x <- d %>%
   dplyr::filter(
     last_name %>% 
       stringr::str_to_upper() %>% 
-      stringr::str_remove_all(pattern = "[^ A-Z]") %>% 
+      stringr::str_replace_all(pattern = "[^ A-Z]", replacement = " ") %>% 
       stringr::str_squish() %>% 
       stringr::str_detect(pattern = hons)
   ) %>% 
@@ -1403,7 +1403,8 @@ x <- d %>%
   dplyr::filter(
     first_name %>% 
       stringr::str_to_upper() %>% 
-      stringr::str_remove_all(pattern = "[^ A-Z]") %>% 
+      stringr::str_replace_all(pattern = "[^ A-Z]", replacement = " ") %>% 
+      stringr::str_squish() %>% 
       stringr::str_detect(pattern = hons)
   ) %>% 
   dplyr::arrange(first_name, sex, last_name)
@@ -1413,17 +1414,227 @@ x %>% knitr::kable()
 
 First name
 
-* MRS, appear to be honorifics put in as first names
-* MRS, REV are prefixes
-* SR, MD, SISTER, DR are suffixes
+* Apparently legitimate first names: BROTHER, DOCTOR, MASTER
+* As entire first name: MRS, REV, DR, MISS, MISTER, PROFESSOR, SISTER, SR
+* Prefixes: MRS, REV, DR, SISTER
+* Suffixes: MRS, SR
+
+```{r}
+# middle name
+hons <- c(
+  "MR", "MISTER", "MASTER", "MRS", "MS", "MISS", 
+  "REV", "REVEREND", "SR", "SISTER", "BR", "BROTHER",
+  "DR", "DOCTOR", "MD", "JD", "PROF", "PROFESSOR"
+  ) %>% 
+  glue::glue(x = . , "\\b{x}\\b") %>%  # honorifics must be words
+  glue::glue_collapse(sep = "|") %>% 
+  glue::glue(x = . , "({x})")
+
+x <- d %>% 
+  dplyr::filter(
+    midl_name %>% 
+      stringr::str_to_upper() %>% 
+      stringr::str_replace_all(pattern = "[^ A-Z]", replacement = " ") %>% 
+      stringr::str_squish() %>% 
+      stringr::str_detect(pattern = hons)
+  ) %>% 
+  dplyr::arrange(midl_name, sex, last_name)
+nrow(x)
+x %>% knitr::kable()
+```
+
+First name
+
+* Apparently legitimate middle names: 
+* As entire middle name: 
+* Prefixes: 
+* Suffixes: 
 
 ### No name
 
 nn, nmn, no name, no middle name
 
+```{r}
+# last name
+hons <- c(
+  "NN", "NMN", "NAME"
+  ) %>% 
+  glue::glue(x = . , "\\b{x}\\b") %>%  # honorifics must be words
+  glue::glue_collapse(sep = "|") %>% 
+  glue::glue(x = . , "({x})")
+
+x <- d %>% 
+  dplyr::filter(
+    last_name %>% 
+      stringr::str_to_upper() %>% 
+      stringr::str_replace_all(pattern = "[^ A-Z]", replacement = " ") %>% 
+      stringr::str_squish() %>% 
+      stringr::str_detect(pattern = hons)
+  ) %>% 
+  dplyr::arrange(last_name, sex, first_name)
+nrow(x)
+x %>% knitr::kable()
+```
+
+Last name
+
+* Apparently legitimate middle names: 
+* As entire middle name: 
+* Prefixes: 
+* Suffixes: 
+
+
+```{r}
+# first name
+hons <- c(
+  "NN", "NMN", "NAME"
+  ) %>% 
+  glue::glue(x = . , "\\b{x}\\b") %>%  # honorifics must be words
+  glue::glue_collapse(sep = "|") %>% 
+  glue::glue(x = . , "({x})")
+
+x <- d %>% 
+  dplyr::filter(
+    first_name %>% 
+      stringr::str_to_upper() %>% 
+      stringr::str_replace_all(pattern = "[^ A-Z]", replacement = " ") %>% 
+      stringr::str_squish() %>% 
+      stringr::str_detect(pattern = hons)
+  ) %>% 
+  dplyr::arrange(first_name, sex, last_name)
+nrow(x)
+x %>% knitr::kable()
+```
+
+First name
+
+* Apparently legitimate middle names: 
+* As entire middle name: 
+* Prefixes: 
+* Suffixes: 
+
+```{r}
+# middle name
+hons <- c(
+  "NN", "NMN", "NAME"
+  ) %>% 
+  glue::glue(x = . , "\\b{x}\\b") %>%  # honorifics must be words
+  glue::glue_collapse(sep = "|") %>% 
+  glue::glue(x = . , "({x})")
+
+x <- d %>% 
+  dplyr::filter(
+    midl_name %>% 
+      stringr::str_to_upper() %>% 
+      stringr::str_replace_all(pattern = "[^ A-Z]", replacement = " ") %>% 
+      stringr::str_squish() %>% 
+      stringr::str_detect(pattern = hons)
+  ) %>% 
+  dplyr::arrange(midl_name, sex, last_name)
+nrow(x)
+x %>% knitr::kable()
+```
+
+Middle name
+
+* Apparently legitimate middle names: 
+* As entire middle name: 
+* Prefixes: 
+* Suffixes: 
+
+
 ### Unknown etc.
 
 unk, unknown, aka, known as, also known as, alias 
+
+```{r}
+# last name
+hons <- c(
+  "UNK", "UNKNOWN", "AKA", "KNOWN AS", "ALSO KNOWN AS", "ALIAS"
+  ) %>% 
+  glue::glue(x = . , "\\b{x}\\b") %>%  # honorifics must be words
+  glue::glue_collapse(sep = "|") %>% 
+  glue::glue(x = . , "({x})")
+
+x <- d %>% 
+  dplyr::filter(
+    last_name %>% 
+      stringr::str_to_upper() %>% 
+      stringr::str_replace_all(pattern = "[^ A-Z]", replacement = " ") %>% 
+      stringr::str_squish() %>% 
+      stringr::str_detect(pattern = hons)
+  ) %>% 
+  dplyr::arrange(last_name, sex, first_name)
+nrow(x)
+x %>% knitr::kable()
+```
+
+Last name
+
+* Apparently legitimate middle names: 
+* As entire middle name: 
+* Prefixes: 
+* Suffixes: 
+
+```{r}
+# first name
+hons <- c(
+  "UNK", "UNKNOWN", "AKA", "KNOWN AS", "ALSO KNOWN AS", "ALIAS"
+  ) %>% 
+  glue::glue(x = . , "\\b{x}\\b") %>%  # honorifics must be words
+  glue::glue_collapse(sep = "|") %>% 
+  glue::glue(x = . , "({x})")
+
+x <- d %>% 
+  dplyr::filter(
+    first_name %>% 
+      stringr::str_to_upper() %>% 
+      stringr::str_replace_all(pattern = "[^ A-Z]", replacement = " ") %>% 
+      stringr::str_squish() %>% 
+      stringr::str_detect(pattern = hons)
+  ) %>% 
+  dplyr::arrange(first_name, sex, last_name)
+nrow(x)
+x %>% knitr::kable()
+```
+
+First name
+
+* Apparently legitimate middle names: 
+* As entire middle name: 
+* Prefixes: 
+* Suffixes: 
+
+```{r}
+# middle name
+hons <- c(
+  "UNK", "UNKNOWN", "AKA", "KNOWN AS", "ALSO KNOWN AS", "ALIAS"
+  ) %>% 
+  glue::glue(x = . , "\\b{x}\\b") %>%  # honorifics must be words
+  glue::glue_collapse(sep = "|") %>% 
+  glue::glue(x = . , "({x})")
+
+x <- d %>% 
+  dplyr::filter(
+    midl_name %>% 
+      stringr::str_to_upper() %>% 
+      stringr::str_replace_all(pattern = "[^ A-Z]", replacement = " ") %>% 
+      stringr::str_squish() %>% 
+      stringr::str_detect(pattern = hons)
+  ) %>% 
+  dplyr::arrange(midl_name, sex, last_name)
+nrow(x)
+x %>% knitr::kable()
+```
+
+Middle name
+
+* Apparently legitimate middle names: 
+* As entire middle name: 
+* Prefixes: 
+* Suffixes: 
+
+
 
 # Clean name variables
 
