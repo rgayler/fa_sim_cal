@@ -9,9 +9,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
+<meta name="author" content="Ross Gayler" />
 
 
-<title>Project Home</title>
+<title>Notes</title>
 
 <script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
@@ -20,6 +21,9 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -272,6 +276,69 @@ $(document).ready(function () {
 
 
 
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
 
 </head>
 
@@ -279,6 +346,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -322,7 +399,8 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Project Home</h1>
+<h1 class="title toc-ignore">Notes</h1>
+<h4 class="author">Ross Gayler</h4>
 
 </div>
 
@@ -448,7 +526,7 @@ changes.
 
 <p>
 These are the previous versions of the repository in which changes were made
-to the R Markdown (<code>analysis/index.Rmd</code>) and HTML (<code>docs/index.html</code>)
+to the R Markdown (<code>analysis/notes.Rmd</code>) and HTML (<code>docs/notes.html</code>)
 files. If you’ve configured a remote Git repository (see
 <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to
 view the files as they were in that past version.
@@ -480,7 +558,7 @@ Message
 Rmd
 </td>
 <td>
-<a href="https://github.com/rgayler/fa_sim_cal/blob/b03a2c1dd5445240cd6f89d8b8bf92d8a23ae83a/analysis/index.Rmd" target="_blank">b03a2c1</a>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/b03a2c1dd5445240cd6f89d8b8bf92d8a23ae83a/analysis/notes.Rmd" target="_blank">b03a2c1</a>
 </td>
 <td>
 Ross Gayler
@@ -492,363 +570,6 @@ Ross Gayler
 wflow_publish(c(“analysis/index.Rmd”, “analysis/notes.Rmd”))
 </td>
 </tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/80b360b3150526ca8e49c989c90b2faff011fd16/docs/index.html" target="_blank">80b360b</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2021-01-04
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/856a5130bebd157ff021c84dd16a681eec69a031/docs/index.html" target="_blank">856a513</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2021-01-04
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/838463a34d91a47fe828e93e972685912d317dd9/docs/index.html" target="_blank">838463a</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2020-12-23
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/a618d9e6cf143d6635c252f0de37ce144ff72643/docs/index.html" target="_blank">a618d9e</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2020-12-23
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/rgayler/fa_sim_cal/blob/c6390cc93e5448c5e105702f7c3f8112ede62731/analysis/index.Rmd" target="_blank">c6390cc</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2020-12-23
-</td>
-<td>
-wflow_publish("analysis/*.Rmd")
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/36ccc822545dfd97b843137e262450c0c828c7af/docs/index.html" target="_blank">36ccc82</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2020-12-13
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/rgayler/fa_sim_cal/blob/f0a165ad91a752d5138c0520999971df3c19524b/analysis/index.Rmd" target="_blank">f0a165a</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2020-12-13
-</td>
-<td>
-End of day
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/d5eb60b0db0508e95f7d414db1b4312ab2ac4848/docs/index.html" target="_blank">d5eb60b</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2020-12-10
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/01b669c09dd18f84be1c8c5b5d25cff7eb3b1d4c/docs/index.html" target="_blank">01b669c</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2020-12-10
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/1993afac9e49894cc81f918a29b7d5fb3b5526c7/docs/index.html" target="_blank">1993afa</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2020-12-10
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/rgayler/fa_sim_cal/blob/9ea6d8a9b02df32dcf53f47849bb584d08e05749/analysis/index.Rmd" target="_blank">9ea6d8a</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2020-12-10
-</td>
-<td>
-Fix figure captions
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/bc8c1cc20e1272734090d30979e15ad0fa5808f2/docs/index.html" target="_blank">bc8c1cc</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2020-12-06
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/rgayler/fa_sim_cal/blob/c99ceffb8ecf8c926a7588ff29a0b0a28a08b3af/analysis/index.Rmd" target="_blank">c99ceff</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2020-12-06
-</td>
-<td>
-First draft of proposal
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/2f9886ae2f49c172f803074098d28768440cd7ba/docs/index.html" target="_blank">2f9886a</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2020-12-05
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/5f37c79afa7365673f113cc93c22be5636178605/docs/index.html" target="_blank">5f37c79</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2020-11-30
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/rgayler/fa_sim_cal/blob/c2e37f309928a1399545d37befd8d3c8fa00e98a/analysis/index.Rmd" target="_blank">c2e37f3</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2020-11-30
-</td>
-<td>
-Initial ndex.Rmd
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/c2e37f309928a1399545d37befd8d3c8fa00e98a/docs/index.html" target="_blank">c2e37f3</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2020-11-30
-</td>
-<td>
-Initial ndex.Rmd
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/rgayler/fa_sim_cal/blob/2a722d0aba009fa7375714ce9bc4e85713e4f8e8/analysis/index.Rmd" target="_blank">2a722d0</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2020-11-29
-</td>
-<td>
-end of day
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/2a722d0aba009fa7375714ce9bc4e85713e4f8e8/docs/index.html" target="_blank">2a722d0</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2020-11-29
-</td>
-<td>
-end of day
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/03b0a029989ff63b2c03f28740727655931cf5c4/docs/index.html" target="_blank">03b0a02</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2020-11-04
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/rgayler/fa_sim_cal/blob/e163b3bfe1212bc1b9f2b145a95d06a8ecca0a5e/analysis/index.Rmd" target="_blank">e163b3b</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2020-11-04
-</td>
-<td>
-Start workflowr project.
-</td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -856,30 +577,99 @@ Start workflowr project.
 </div>
 </div>
 </div>
-<p>This is the website for the research project “Frequency-Aware Similarity Calibration”.</p>
-<p>If you have cloned the project to a local computer this website is rendered in the <code>docs</code> subdirectory of the project directory.</p>
-<p>If you are using <code>workflowr</code> to publish the research website it will also be rendered online to GitHub Pages.</p>
-<p>This page acts as a table of contents for the website. There are links to the webpages generated from the analysis notebooks and to the rendered versions of manuscripts/documents/presentations.</p>
-<hr />
-<div id="proposal" class="section level2 unnumbered">
-<h2><a href="proposal.html">Proposal</a></h2>
-<p>This notebook explains the central ideas behind the project.</p>
+<p>This document is for keeping notes of any points that may be useful for later project or manuscript development and which are not covered in the analysis notebooks or at risk of getting lost in the notebooks.</p>
+<div id="project-infrastructure" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Project infrastructure</h1>
+<ul>
+<li>Consider using the <a href="https://wlandau.github.io/targets/">targets</a> package to control the computational workflow.</li>
+</ul>
 </div>
-<div id="notes" class="section level2 unnumbered">
-<h2><a href="notes.html">Notes</a></h2>
-<p>This notebook is for keeping notes of any points that may be useful for later project or manuscript development and which are not covered in the analysis notebooks or at risk of getting lost in the notebooks.</p>
-<hr />
+<div id="identity-data" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Identity data</h1>
+<ul>
+<li><p>Get a sizeable publicly available data set with personal names (NCVR).</p>
+<ul>
+<li>The focus of the empirical work is on string similarity metrics of names.</li>
+</ul></li>
+<li><p>Use sex and age in addition to personal names so that most records are discriminable.</p>
+<ul>
+<li><p>High frequency names will likely not be discriminable with only these attributes.</p>
+<ul>
+<li>This is not a problem because we are really interested in whether the methods proposed here assist in quantifying the discriminability of records. We want records spanning a wide range of discriminability.</li>
+</ul></li>
+<li><p>Age (and possibly sex) will be used as a blocking variable.</p>
+<ul>
+<li>Blocking is probably needed to make the project computationally tractable.</li>
+</ul></li>
+<li><p>Age and sex are also of interest in the calculation of name frequency because name distributions should vary conditional on age and sex.</p></li>
+</ul></li>
+<li><p>Keep address and phone number as they may be useful for manually checking identity in otherwise nondiscriminable records.</p>
+<ul>
+<li>As a fallback position, address and phone number can be used as discriminating attributes in the compatibility model.</li>
+</ul></li>
+<li><p>Get the oldest available data to minimise it’s currency (NCVR 2005 snapshot).</p></li>
+<li><p>Drop objectionable attributes such as race and political affiliation.</p></li>
+</ul>
 </div>
-<div id="analysis-notebooks" class="section level1 unnumbered">
-<h1>Analysis Notebooks</h1>
-<div id="get-check-and-clean-data" class="section level2 unnumbered">
-<h2><a href="01_get_check_data.html">Get, check and clean data</a></h2>
-<p>Import the raw data, check for anomalies, clean the important attributes, and save the cleaned data for use.</p>
-<hr />
+<div id="identity-data-preparation" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Identity data preparation</h1>
+<ul>
+<li><p>Apply basic data cleaning to the predictive attributes.</p>
+<ul>
+<li><p>This is probably unnecessary given how the data will be used.</p></li>
+<li><p>I can’t bring myself to model data without scrutinising it first.</p></li>
+</ul></li>
+<li><p>Only keep records that are ACTIVE and VERIFIED for modelling.</p>
+<ul>
+<li><p>These are likely to have the highest data quality attributes.</p></li>
+<li><p>These are least likely to have duplicate records (i.e. referring to the same person).</p></li>
+</ul></li>
+</ul>
 </div>
+<div id="identity-data-characterisation" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Identity data characterisation</h1>
+<ul>
+<li><p>Look at frequency distributions of names conditional on name length. The Zipf distributions may have different shape parameters for different name lengths. Name length might be examined as an alternative to name frequency for interaction with similarity.</p></li>
+<li><p>Look at frequency distributions of names conditional on age and/or sex</p>
+<ul>
+<li>These conditional distributions may increase the predictive power of the compatibility model.</li>
+</ul></li>
+</ul>
 </div>
-<div id="manuscripts" class="section level1 unnumbered">
-<h1>Manuscripts</h1>
+<div id="modelling" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Modelling</h1>
+<ul>
+<li><p>Try indicators for missingness. Missingness may be differentially informative across different predictor variables.</p></li>
+<li><p>Try indicators for similarity == 1. The compatibility of exact string equality is not necessarily continuous with the compatibility of similarity just below 1.</p></li>
+<li><p>Try name frequency as an interactive predictor variable.</p>
+<ul>
+<li>Also consider frequency conditional on age and/or sex</li>
+</ul></li>
+<li><p>There are <em>two</em> names in each lookup: dictionary and query. Therefore there are also two name frequencies to be considered. Consider how to use <em>both</em> frequencies (e.g. min, max, geometric mean, …).</p>
+<ul>
+<li><p>Queries may contain names that do not exist in the dictionary, so we need to deal with that case.</p></li>
+<li><p>Do we need to apply frequency smoothing, as used in probabilistic linguistic models?</p></li>
+<li><p>Do we need to estimate the probability mass of unobserved names?</p></li>
+</ul></li>
+</ul>
+</div>
+<div id="performance-evaluation" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> Performance evaluation</h1>
+<ul>
+<li><p>Partition the records into a dictionary and a set of queries (the <span class="math inline">\(Q_U\)</span> set).</p>
+<ul>
+<li>By the (reasonable) assumption that there are no duplicate records, each of the <span class="math inline">\(Q_U\)</span> queries will be unmatched in the dictionary.</li>
+</ul></li>
+<li><p>Select a subset of the dictionary records to use as the <span class="math inline">\(Q_M\)</span> query set.</p>
+<ul>
+<li>By the (reasonable) assumption that there are no duplicate records, each of the <span class="math inline">\(Q_M\)</span> queries will have exactly one matching record in the dictionary.</li>
+</ul></li>
+<li><p>This is evaluation is different to the usual evaluation of entity resolution in that it doesn’t consider the impact of transcription/typographical variation in the queries.</p>
+<ul>
+<li>It looks at the quantification of discriminability when the available attributes are not necessarily able to ensure that all records are discriminable.</li>
+</ul></li>
+<li><p>If we are interested in the performance with respect to transcription/typographical variation we may need to consider artificially corrupting some of the queries.</p></li>
+</ul>
 </div>
 
 
@@ -898,6 +688,8 @@ footer is added to webpages before the MathJax javascript. -->
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -930,6 +722,32 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4,h5",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
