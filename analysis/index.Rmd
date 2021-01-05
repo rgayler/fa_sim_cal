@@ -9,34 +9,35 @@ output:
     toc: false
 editor_options:
   chunk_output_type: console
+
 ---
 
 This is the website for the research project "Frequency-Aware Similarity Calibration".
 
-If you have cloned the project to a local computer
-this website is rendered in the `docs` subdirectory of the project directory.
+If you have cloned the project to a local computer this website is rendered in the `docs` subdirectory of the project directory.
 
-If you are using `workflowr` to publish the research website
-it will also be rendered online to GitHub Pages.
+If you are using `workflowr` to publish the research website it will also be rendered online to GitHub Pages.
 
-This page acts as a table of contents for the website.
-There are links to the webpages generated from the analysis notebooks
-and to the rendered versions of manuscripts/documents/presentations.
+This page acts as a table of contents for the website. There are links to the webpages generated from the analysis notebooks and to the rendered versions of manuscripts/documents/presentations.
 
----
+------------------------------------------------------------------------
 
-## [Proposal](proposal.html) {-}  
-   This notebook explains the central ideas behind the project.
+## [Proposal](proposal.html) {.unnumbered}
 
----
+This notebook explains the central ideas behind the project.
 
-# Analysis Notebooks {-}
+## [Notes](notes.html) {.unnumbered}
 
-## [Get, check and clean data](01_get_check_data.html) {-}  
-   Import the raw data, check for anomalies, clean the important attributes, and save the cleaned data for use.
+This notebook is for keeping notes of any points that may be useful for later project or manuscript development and which are not covered in the analysis notebooks or at risk of getting lost in the notebooks.
 
+------------------------------------------------------------------------
 
----
+# Analysis Notebooks {.unnumbered}
 
-# Manuscripts {-}
+## [Get, check and clean data](01_get_check_data.html) {.unnumbered}
 
+Import the raw data, check for anomalies, clean the important attributes, and save the cleaned data for use.
+
+------------------------------------------------------------------------
+
+# Manuscripts {.unnumbered}

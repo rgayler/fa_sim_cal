@@ -1,0 +1,96 @@
+---
+title: "Notes"
+author: "Ross Gayler"
+# date: "2021-01-05"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+This document is for keeping notes of any points that may be useful for later project or manuscript development and which are not covered in the analysis notebooks or at risk of getting lost in the notebooks.
+
+# Project infrastructure
+
+-   Consider using the [targets](https://wlandau.github.io/targets/) package to control the computational workflow.
+
+# Identity data
+
+-   Get a sizeable publicly available data set with personal names (NCVR).
+
+    -   The focus of the empirical work is on string similarity metrics of names.
+
+-   Use sex and age in addition to personal names so that most records are discriminable.
+
+    -   High frequency names will likely not be discriminable with only these attributes.
+
+        -   This is not a problem because we are really interested in whether the methods proposed here assist in quantifying the discriminability of records. We want records spanning a wide range of discriminability.
+
+    -   Age (and possibly sex) will be used as a blocking variable.
+
+        -   Blocking is probably needed to make the project computationally tractable.
+
+    -   Age and sex are also of interest in the calculation of name frequency because name distributions should vary conditional on age and sex.
+
+-   Keep address and phone number as they may be useful for manually checking identity in otherwise nondiscriminable records.
+
+    -   As a fallback position, address and phone number can be used as discriminating attributes in the compatibility model.
+
+-   Get the oldest available data to minimise it's currency (NCVR 2005 snapshot).
+
+-   Drop objectionable attributes such as race and political affiliation.
+
+# Identity data preparation
+
+-   Apply basic data cleaning to the predictive attributes.
+
+    -   This is probably unnecessary given how the data will be used.
+
+    -   I can't bring myself to model data without scrutinising it first.
+
+-   Only keep records that are ACTIVE and VERIFIED for modelling.
+
+    -   These are likely to have the highest data quality attributes.
+
+    -   These are least likely to have duplicate records (i.e. referring to the same person).
+
+# Identity data characterisation
+
+-   Look at frequency distributions of names conditional on name length. The Zipf distributions may have different shape parameters for different name lengths. Name length might be examined as an alternative to name frequency for interaction with similarity.
+
+-   Look at frequency distributions of names conditional on age and/or sex
+
+    -   These conditional distributions may increase the predictive power of the compatibility model.
+
+# Modelling
+
+-   Try indicators for missingness. Missingness may be differentially informative across different predictor variables.
+
+-   Try indicators for similarity == 1. The compatibility of exact string equality is not necessarily continuous with the compatibility of similarity just below 1.
+
+-   Try name frequency as an interactive predictor variable.
+
+    -   Also consider frequency conditional on age and/or sex
+
+-   There are *two* names in each lookup: dictionary and query. Therefore there are also two name frequencies to be considered. Consider how to use *both* frequencies (e.g. min, max, geometric mean, ...).
+
+    -   Queries may contain names that do not exist in the dictionary, so we need to deal with that case.
+
+    -   Do we need to apply frequency smoothing, as used in probabilistic linguistic models?
+
+    -   Do we need to estimate the probability mass of unobserved names?
+
+# Performance evaluation
+
+-   Partition the records into a dictionary and a set of queries (the $Q_U$ set).
+
+    -   By the (reasonable) assumption that there are no duplicate records, each of the $Q_U$ queries will be unmatched in the dictionary.
+
+-   Select a subset of the dictionary records to use as the $Q_M$ query set.
+
+    -   By the (reasonable) assumption that there are no duplicate records, each of the $Q_M$ queries will have exactly one matching record in the dictionary.
+
+-   This is evaluation is different to the usual evaluation of entity resolution in that it doesn't consider the impact of transcription/typographical variation in the queries.
+
+    -   It looks at the quantification of discriminability when the available attributes are not necessarily able to ensure that all records are discriminable.
+
+-   If we are interested in the performance with respect to transcription/typographical variation we may need to consider artificially corrupting some of the queries.
