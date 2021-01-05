@@ -59,79 +59,55 @@ Note that the lookup process can be described with respect to a single query $q$
 
 > Given that we don't have access to identity, the general approach we take here is to assess the *compatibility* of each dictionary record with the query record, where $compat(q_i, d_j)$ is defined in terms of the observed values $q_i$ and $d_i$. (Remember, $q_i = obs_q(e_i)$ and $d_j = obs_d(e_j)$.) This quantifies the extent to which the query and dictionary values are compatible with being observed from the same entity. Ideally, we want the compatibility value be high (say, 1) when the query and dictionary records are referring to the same entity and the compatibility value to be low (say, 0) when the query and dictionary records are referring to different entities.
 
-> Compatibility differs from similarity in that, depending on the observation functions, compatibility and similarity are not necessarily monotonically related.
-Even more radically, similarity is really only defined when the codomains of the query and dictionary observation functions are identical,
-whereas compatibilty can be meaningfully defined even when the codomains are completely disjoint.
+> Compatibility differs from similarity in that, depending on the observation functions, compatibility and similarity are not necessarily monotonically related. Even more radically, similarity is really only defined when the codomains of the query and dictionary observation functions are identical, whereas compatibilty can be meaningfully defined even when the codomains are completely disjoint.
 
 > To illustrate this point that the codomains of $obs_d()$ and $obs_q()$ do not have to be identical and to emphasise the nature of $compat()$, consider a problem domain where the entities are people with ages ranging from infant to elderly. $obs_d()$ measures the age and height of a person, and $obs_q()$ measures the sex and weight of a person. Obviously, age, height, weight, and sex are all related to some extent. Some combinations of query and dictionary records are much more compatible than others. Being very young or very short is only compatible with being very light. If the number of dictionary records was small and the persons were widely spaced with respect to the attributes it would be quite feasible to identify them from these attributes.
 
-> Of course, if the number of dictionary records is large
-and/or the persons have very similar values on the attributes
-the compatibility value may be high for some combinations of query and dictionary records that refer to different persons.
-This is perfectly reasonable
-because it indicates that the available attributes are not very discriminating
-with respect to the identities of these persons.
-It demonstrates that a lookup process based on compatibility is fallible 
-and the accuracy of the lookup process is uncertain.
+> Of course, if the number of dictionary records is large and/or the persons have very similar values on the attributes the compatibility value may be high for some combinations of query and dictionary records that refer to different persons. This is perfectly reasonable because it indicates that the available attributes are not very discriminating with respect to the identities of these persons. It demonstrates that a lookup process based on compatibility is fallible and the accuracy of the lookup process is uncertain.
 
-> This is equivalent to stating that the compatibility value can no longer be interpreted as a crisp indicator of identity. Now the best we can do is require that the compatibility be able to take intermediate values, while being higher when the query and dictionary records are likely to be referring to the same entity. Probability is the natural language for quantifying our uncertainty about the identity of the records. We want to know $P(id(q) = id(d) \mid compat(q, d))$. 
-We also want $compat(q, d))$ to be monotonic with $P(id(q) = id(d)$.
+> This is equivalent to stating that the compatibility value can no longer be interpreted as a crisp indicator of identity. Now the best we can do is require that the compatibility be able to take intermediate values, while being higher when the query and dictionary records are likely to be referring to the same entity. Probability is the natural language for quantifying our uncertainty about the identity of the records. We want to know $P(id(q) = id(d) \mid compat(q, d))$. We also want $compat(q, d))$ to be monotonic with $P(id(q) = id(d)$.
 
-> The compatibility and probability are two distinct quantities, because although the compatibility carries information about the probability of the query and dictionary records matching,
-it is not constrained to obey the rules of probability. Translating from compatibility to probability makes that information more useful because we can use the laws of probability to draw inferences.
-Similarity is evidence relating to probability of matching
-but is not necessarily monotonic with the probability of matching.
-The compatibility summarises the evidence to speak directly to the probability of matching.
-The probability is a re-scaling of the compatibility onto a scale which is most useful.
+> The compatibility and probability are two distinct quantities, because although the compatibility carries information about the probability of the query and dictionary records matching, it is not constrained to obey the rules of probability. Translating from compatibility to probability makes that information more useful because we can use the laws of probability to draw inferences. Similarity is evidence relating to probability of matching but is not necessarily monotonic with the probability of matching. The compatibility summarises the evidence to speak directly to the probability of matching. The probability is a re-scaling of the compatibility onto a scale which is most useful.
 
 # Similarity
 
-> Many entity resolution problems have query and dictionary observation functions defined with the same codomain, such as a tuple of attributes For example, the entities might be persons and the attributes might be: `given_name`, `family_name`, `sex`, `birth_date`, `address`. 
-Different types of attributes require different similarity functions.
-For example, birth date similarity might be defined in terms of the difference in days
-and address similarity might be defined in terms of geographic distance.
-Personal name similarity is typically defined in terms of
-some [string similarity metric](https://en.wikipedia.org/wiki/String_metric),
-comparing the corresponding attribute values from the query and dictionary records. The attribute similarities are then combined somehow to yield a record similarity value, which is used as the compatibility.
+> Many entity resolution problems have query and dictionary observation functions defined with the same codomain, such as a tuple of attributes For example, the entities might be persons and the attributes might be: `given_name`, `family_name`, `sex`, `birth_date`, `address`. Different types of attributes require different similarity functions. For example, birth date similarity might be defined in terms of the difference in days and address similarity might be defined in terms of geographic distance. Personal name similarity is typically defined in terms of some [string similarity metric](https://en.wikipedia.org/wiki/String_metric), comparing the corresponding attribute values from the query and dictionary records. The attribute similarities are then combined somehow to yield a record similarity value, which is used as the compatibility.
 
-> In this project we will focus on string similarity metrics applied to names.
-These demonstrate interesting properties that would be more difficult to show with other attributes and metrics.
-Ultimately, we are showing how to statistically estimate the probability of identity matching
-with regression models using the name similarities as predictors.
-In that framework it is then trivially easy to generalise the process to other predictors
-which are not name similarities.
-In fact they need to be similarities at all, they are just any variable which can be used as a predictor.
+> In this project we will focus on string similarity metrics applied to names. These demonstrate interesting properties that would be more difficult to show with other attributes and metrics. Ultimately, we are showing how to statistically estimate the probability of identity matching with regression models using the name similarities as predictors. In that framework it is then trivially easy to generalise the process to other predictors which are not name similarities. In fact they need to be similarities at all, they are just any variable which can be used as a predictor.
 
 If string similarity were defined in terms of exact equality between strings, records with identical values would be treated as compatible and records with any difference would be treated as incompatible. This would be less than ideal if there was measurement error in the observations (e.g. typographical and transcription errors).
 
 The justification for using string similarity metrics is that they accommodate such transcription errors. However, this is only a *heuristic* justification. There is no guarantee that all the most likely transcription errors yield the highest similarity metric values. Each string similarity metric implicitly embodies an error generation mechanism and there is no guarantee that any of them precisely correspond to the actual observation generating process.
 
-> Taking a broader view on that point:
-the strongest probabilistic model that could be built would be a [generative model](https://en.wikipedia.org/wiki/Generative_model#Definition).
-This would give for each entity the probability distribution over the query and dictionary records that would be observed from that entity.
-Given those probability distributions over observed rocords corresponding to all entities
-we could calculate all the probabilities of correct matches.
-Unfortunately, building such a generative model requires us to know the generative mechanisms by which the records are observed from the entities.
-That is for names we need to know the probabilities of all the transcription errors, typographical errors, form-filling errors, ... that might occur.
-We rarely have that level of detailed knowledge.
-In this project we instead build a discriminative model (a logistic regression),
-and use the lens of viewing it as a regression problem
-to search for predictors to use in the discriminative model
-that take its predictive power closer to that of a generative model.
+> Taking a broader view on that point: the strongest probabilistic model that could be built would be a [generative model](https://en.wikipedia.org/wiki/Generative_model#Definition). This would give for each entity the probability distribution over the query and dictionary records that would be observed from that entity. Given those probability distributions over observed rocords corresponding to all entities we could calculate all the probabilities of correct matches. Unfortunately, building such a generative model requires us to know the generative mechanisms by which the records are observed from the entities. That is for names we need to know the probabilities of all the transcription errors, typographical errors, form-filling errors, ... that might occur. We rarely have that level of detailed knowledge. In this project we instead build a discriminative model (a logistic regression), and use the lens of viewing it as a regression problem to search for predictors to use in the discriminative model that take its predictive power closer to that of a generative model.
 
-# Estimated similarity
+# Estimated compatibility
 
-Ideally, we want to estimate $P(id(q) = id(d) \mid q, d)$. Given a small fixed universe of entities, and an oracle for identity it would be possible to calculate the conditional probability by exhaustive enumeration. That's generally not possible, so we must try to come up with a compatibility function that captures the structure of the relationship to probability of identity from all pairs of query and dictionary records ($P(id(q) = id(d) \mid compat(q, d)$). The point of using $compat(q, d)$ rather than $(q, d)$ is that $compat()$ should be defined in terms of features derived from the the observed values of the query and dictionary records, meaning that it can be applied to previously unencountered records. We also aim for the variance of conditional probability over the space of record pairs to be maximised (i.e. to capture as much as possible of the variation between record pairs) and for the compatibility function to generalise over new entities not encountered during construction of the compatibility function.
+> Ideally, we want to estimate $P(id(q) = id(d_i) \mid q, d_i) \forall d_i \in D$. (Note that this implies the construction of all pairs of records $q$ with $d_i$.) Given a small fixed universe of entities, and an oracle for identity it would be possible to calculate the conditional probability by exhaustive enumeration. That's generally not possible, so we must try to come up with a compatibility function that captures the structure of the relationship to probability of identity from all pairs of query and dictionary records. That is, we want $P(id(q) = id(d_i) \mid compat(q, d)) \forall d_i \in D$ to be a good approximation to $P(id(q) = id(d_i) \mid q, d_i) \forall d_i \in D$.
 
-Stated that way, it is clear that construction of a compatibility function can be viewed as estimation of a statistical model (or supervised learning if you prefer ML terminology). If the estimation/optimisation process is fairly generic then our effort needs to be focused on choosing a functional form for the compatibility function. The functional form should emphasise features of the record pairs that are strongly related to probability of identity and suppress features that are irrelevant to probability of identity. That is, construction of the internals of the compatibility function can be viewed as a type of feature engineering in a regression model predicting the probability of identity from only one predictor: the compatibility. (Treating this as a regression problem implies that we have an identity oracle providing the outcome for estimating the model.)
+> Note that $compat(q, d)$ is a scalar value, unlike $(q, d)$, and because $compat(q, d)$ is a function it can only lose information present in $(q, d)$. In order for $compat(q, d)$ to support a good approximation to the probability of identity matching, the information lost by $compat()$ should be irrelevant to probability of identity matching. That is, $compat()$ should be defined in terms of features derived from the the observed values of the query and dictionary records, which means that $compat()$ can be applied to previously unencountered records. So, we are aiming for $compat()$ to provide a good approximation to the probability of matching (i.e. to capture as much as possible of the variation in match probability between record pairs) and to generalise over new entities not encountered during construction of the compatibility function.
 
-The compatibility function returns the best synthesis of the evidence given by the features defined on the record pairs. However, the scaling of the compatibility value is arbitrary rather than necessarily being a probability.
+> Stated that way, it is clear that construction of a compatibility function can be viewed as estimation of a statistical model (or supervised learning if you prefer ML terminology) to "predict" the probability of identity matching from predictor variables derived from the combination of a query record with a dictionary record and any static background information that can be brought to bear. For any fixed choice of model estimation/optimisation process (e.g. logistic regression) our effort needs to be focused on choosing/constructing predictor variables that maximise the predictive power of the model. The predictor variables should reflect properties of the record pairs that are strongly related to probability of identity matching and ignore record pair properties that are irrelevant to probability of identity matching. That is, construction of the predictor variables can be viewed as a type of [feature engineering](https://en.wikipedia.org/wiki/Feature_engineering) in a regression model predicting the probability of identity from only one predictor: the compatibility. (Treating this as a regression problem implies that we have an identity oracle providing the outcome for estimating the model.)
+
+> The estimated compatibility function returns the best synthesis of the evidence given by the features defined on the record pairs and background information. The conditional probability calculation then translates from compatibility to probability. Note that dependent on the details of the compatibility model it may be possible to arrange the compatibility model so that its output is durectly on the desired probability of matching scale.
+
+> Historically, the focus has been on record similarity because it is generally a good predictor of probability of matching. However, the predictors need not be restricted to similarity metrics. Our focus here on compatibility changes the status of similarity to just one (good) predictor among as many predictors as are found to be useful.
+For example, the background information of the frequency of strings in the dictionary and queries will be a useful predictor. If the name SMITH is common in the dictionary and the name SCHWARZENEGGER is rare, a query matching SCHWARZENEGGER will have a higher probability of being an identity match than a query matching SMITH. Construing compatibility as an estimated function puts the focus on feature engineering and any type of feature (e.g. missingness of some attributes, or the relationship between a person's height and weight) are potentially useful predictive features.
 
 # Calibrated similarity
 
-We believe that the probability of identity ($id(q) = id(d)$) is more useful than the similarity (or, more generally, compatibility). This is because the probability is already in the form most useful for decision-making. Probabilities can be used to weight the costs of the outcomes to optimise decision-making with respect to cost, whereas the decision-making implications of some arbitrary similarity metric are unknown.
+> We believe that the probability of identity conditional on compatibility has the same information content as the compatibility, but is more directly useful than the compatibility because the probability is already in the form most useful for decision-making. Probabilities can be used to weight the costs of the outcomes to optimise decision-making with respect to cost, whereas the decision-making implications of some arbitrary compatibility metric are not directly known.
 
-Reverting to using similarity as the compatibility function, what we want to do here is to find the relationship between similarity and probability of identity: $P(id(q) = id(d) \mid sim(q, d))$. This is a [calibration](https://en.wikipedia.org/wiki/Calibration_(statistics)) of the similarity to probability. It yields a function that allows us to translate any similarity into the corresponding probability.
+> Consider the case where the only compatibility predictor is some attribute similarity.
+The relationship between similarity and compatibility may be nonmonotonic,
+in which case the compatibility function must be a nonmonotonic function from similarity to compatibility.
+The mapping from compatibility to probability can be composed with the compatibility model
+to yied a sihngle function from similarity to probability of identity match: 
+$P(id(q) = id(d_i) \mid sim(q, d_i))$. This is a [calibration](https://en.wikipedia.org/wiki/Calibration_(statistics)) of the similarity to probability.
+It is also a very simple special case of an estimated compatibility function,
+which we will use below to demonstrate one way that non-similarity predictor variables
+(such as the distribution of values in the dictionary)
+can be used to increase the predictive power of the compatibility function.
 
 We would expect the probability to be a monotone function of the similarity, but given the heuristic nature of the similarity metrics that is not guaranteed. We can use any functional form that is empirically justified. In general we will only assume that the relationship is smooth.
 
@@ -142,7 +118,7 @@ tibble::tribble(
   1,    1
 ) %>%
   ggplot(aes(x = sim, y = prob)) +
-  xlab("Similarity") + ylab("Probability ( P(id(q) = id(d) | sim(q, d) )") + ylim(0, 1) +
+  xlab("Similarity - sim(q, d)") + ylab("Probability - P(id(q) = id(d) | sim(q, d) )") + ylim(0, 1) +
   geom_function(fun = function(x) (0.9 * x^2 + 0.05) %>% pmax(0) %>% pmin(1)) 
 ```
 
@@ -163,7 +139,7 @@ tibble::tribble(
   1,    1
 ) %>%
   ggplot(aes(x = sim, y = prob)) +
-  xlab("Similarity") + ylab("Probability ( P(id(q) = id(d) | sim(q, d) )") + ylim(0, 1) +
+  xlab("Similarity - sim(q, d)") + ylab("Probability - P(id(q) = id(d) | sim(q, d), subpopulation )") + ylim(0, 1) +
   geom_function(fun = function(x) (0.9 * x^2 + -0.1) %>% pmax(0) %>% pmin(1) , colour = "red") +
   geom_function(fun = function(x) (0.7 * x^2 + 0) %>% pmax(0) %>% pmin(1) , colour = "green") +
   geom_function(fun = function(x) (1.2 * x^2 + -0.1) %>% pmax(0) %>% pmin(1) , colour = "blue")
@@ -181,7 +157,7 @@ Consider the case where the codomains of the query and dictionary observation fu
 
 The prior paragraph only covered the case where the similarity function is exact equality. How do we deal with the more usual case of a similarity function (e.g. edit distance) that returns a range of intermediate similarity values. This requires a digression into the interpretation of the probability $P(id(q) = id(d) \mid q, d)$. The conditionality on $q$ and $d$ is equivalent to the fallible claim that $q$ and $d$ are observations of the same entity. Thus, $P(id(q) = id(d) \mid q, d)$ can be read as, "Given the claim that $q$ and $d$ are observations of the same entity, what is the probability that claim is correct?" or "What is the probability that $q$ and $d$ are a *true match*?".
 
-The probability $P(id(q) = id(d) \mid sim(q, d) )$ treats all record pairs having the same similarity as identical and having an identical probability of being a true match. When using a similarity measure it is assumed that the probability of being a true match increases monotonically with the similarity. Given $q$ and $d$ with similarity $sim(q, d)$ and accepting that match on the basis of similarity implies that we would accept any $d'$ with $sim(q, d') \ge sim(q, d)$. So the relevant frequency for frequency-aware similarity given a query record $q$ and dictionary record $d$ is the sum of the frequencies of all dictionary records $d'$ with similarity $sim(q, d') \ge sim(q, d)$.
+> The probability $P(id(q) = id(d) \mid sim(q, d) )$ treats all record pairs having the same similarity as identical and having an identical probability of being a true match. When directly using a similarity measure it is assumed that the probability of being a true match increases monotonically with the similarity (although this is not guaranteed and nonmonotonicity is known to occur). Assuming monotonicity and given $q$ and $d_i$ with similarity $sim(q, d_i)$ - if we accept $q$ and $d_i$ as matching on the basis of that similarity then that implies we should also accept any $d_j$ with $sim(q, d_j) \ge sim(q, d_i)$ as a match. So the relevant frequency for frequency-aware similarity given a query record $q$ and dictionary record $d_i$ is the sum of the frequencies of all dictionary records $d_j$ with similarity $sim(q, d_j) \ge sim(q, d_i)$.
 
 # Curried similarity functions
 
