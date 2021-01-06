@@ -94,3 +94,8 @@ This document is for keeping notes of any points that may be useful for later pr
     -   It looks at the quantification of discriminability when the available attributes are not necessarily able to ensure that all records are discriminable.
 
 -   If we are interested in the performance with respect to transcription/typographical variation we may need to consider artificially corrupting some of the queries.
+
+# Writing
+
+- Note relationship to Fellegi & Sunter / probilistic record linkage (in proposal?)
+
