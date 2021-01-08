@@ -13,6 +13,7 @@ navbar:
   - icon: fa-github
     text: Source code
     href: https://github.com/rgayler/fa_sim_cal
+# use output: bookdown::html_document2: to enable cross-references in notebooks
 output:
   bookdown::html_document2:
     base_format: workflowr::wflow_html
