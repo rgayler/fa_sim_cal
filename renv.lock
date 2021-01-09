@@ -480,10 +480,9 @@
     },
     "renv": {
       "Package": "renv",
-      "Version": "0.12.4",
+      "Version": "0.12.5",
       "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "ad32397e3063e44573f1b7b87eeeb129"
+      "Repository": "CRAN"
     },
     "repr": {
       "Package": "repr",
@@ -568,6 +567,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "71dffd8544691c520dd8e41ed2d7e070"
+    },
+    "tictoc": {
+      "Package": "tictoc",
+      "Version": "1.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "f8cc5adf4671b013434bbe127f35b28c"
     },
     "tidyr": {
       "Package": "tidyr",

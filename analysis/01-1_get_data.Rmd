@@ -1,0 +1,138 @@
+---
+title: "01-1_get_data"
+subtitle: "Read and subset the data"
+author: "Ross Gayler"
+date: "2021-01-07"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+  markdown: 
+    wrap: 72
+---
+
+```{r setup}
+# Set up the project environment, because each Rmd file is knit in a new R session
+library(here)
+source(here::here("code", "setup_project.R"))
+
+# Set up for the 01*.Rmd notebooks
+source(here::here("code", "setup_01.R"))
+
+library(vroom) # fast reading of delimited text files
+
+# start the execution time clock
+tictoc::toc("Total time: ")
+```
+
+# Introduction
+
+The `01*.Rmd` notebooks read the data, filter it to the subset to be
+used for modelling, characterise it to understand it, check for possible
+gotchas, clean it, and save it for the analyses proper.
+
+This notebook (`01-1_get_data`) reads the raw data, subsets it to the
+data we will use, and saves it in an R-friendly format.
+
+## Data
+
+This project uses historical voter registration data from the [North
+Carolina State Board of Elections](https://www.ncsbe.gov/). This
+information is made publicly available in accordance with [North
+Carolina state
+law](https://s3.amazonaws.com/dl.ncsbe.gov/ReadMe_PUBLIC_DATA.txt). The
+[Voter Registration Data
+page](https://www.ncsbe.gov/results-data/voter-registration-data) links
+to a [folder of Voter Registration
+snapshots](https://dl.ncsbe.gov/index.html?prefix=data/Snapshots/),
+which contains the snapshot data files and a [metadata file describing
+the layout of the snapshot data
+files](https://s3.amazonaws.com/dl.ncsbe.gov/data/Snapshots/layout_VR_Snapshot.txt).
+At the time of writing the snapshot files cover the years 2005 to 2020
+with at least one snapshot per year. The files are [ZIP
+compressed](https://en.wikipedia.org/wiki/ZIP_(file_format)) and
+relatively large, with the smallest being 572 MB after compression.
+
+The snapshots contain many columns that are irrelevant to this project
+(e.g. school district name) and/or prohibited under Australian privacy
+law (e.g. political affiliation, race). We initially read *all* the
+columns (because that is simple and may help debugging any problems in
+reading the data), then drop the unneeded columns.
+
+We use only one snapshot file
+([VR_Snapshot_20051125.zip](https://s3.amazonaws.com/dl.ncsbe.gov/data/Snapshots/VR_Snapshot_20051125.zip))
+because this project does not investigate linkage of records across
+time. We chose the oldest snapshot (2005) because it is the smallest and
+the contents are the most out of date, minimising the current
+information made available. Note that this project will not generate any
+information that is not already directly, publicly available from NCSBE.
+
+# Read data
+
+The snapshot ZIP file was manually downloaded (572 MB), uncompressed
+(5.7 GB), then re-compressed in [XZ
+format](https://en.wikipedia.org/wiki/XZ_Utils) to minimise the size
+(248 MB). The compressed snapshot file and the metadata file are stored
+in the `data` directory.
+
+The data is tab-separated, not fixed-width as you might reasonably think
+from reading the metadata. The field widths (interpreted as maximum
+lengths) in the metadata are not accurate. Some fields contain values
+longer than the stated width.
+
+Inspection of the raw data shows that the character fields are unquoted.
+However, at least one character value contains a double-quote character,
+which has the potential to confuse the parsing if it is looking for
+quoted values.
+
+```{r}
+# Show the raw data file location
+# This is set in./code/file_paths.R
+f_entity_uncln_tsv
+
+# read the data
+d <- vroom::vroom( #read raw data; let vroom guess the field types
+  f_entity_uncln_tsv,
+  delim = "\t", # assume that fields are *only* delimited by tabs
+  col_names = TRUE, # use the column names on the first line of data
+  na = "", # missing fields are empty string or whitespace only (see trim_ws argument)
+  quote = "", # don't allow for quoted strings
+  comment = "", # don't allow for comments
+  trim_ws = TRUE, # trim leading and trailing whitespace
+  escape_double = FALSE, # assume no escaped quotes
+  escape_backslash = FALSE # assume no escaped backslashes
+  ) %>% 
+  tibble::as_tibble() %T>% 
+  dim() %>% # dimensions of dataframe as read
+  dplyr::select( # drop the unneeded columns
+    XXXXX ,
+  )
+  
+  
+# fst::write_fst(d, d_fst, compress = 100) # save data frame (cheap-skate caching)
+```
+
+Some of the analyses have been done on a laptop with 16GB of RAM. The
+data set is almost too big for that laptop, so for different sections of
+the analysis I read a subset of the columns from the temporary data
+file, delete the dataframes after use and clean up the RAM with a
+garbage collection.
+
+```{r}
+d <- fst::read_fst(d_fst) %>% tibble::as_tibble() # get cached data
+dim(d)
+```
+
+-   Correct number of data rows extracted (external line count of input
+    file = 8,003,294)
+
+Take a very quick look at everything then concentrate on the columns
+that have a chance of being useful.
+
+```{r}
+glimpse(d)
+skimr::skim(d)
+```
+
+-   The warning messages from `skim()` indicate that a handful of rows
+    contain unexpected characters. If they are in rows we use they will
+    have to be located and dealt with.
