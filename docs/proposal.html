@@ -15,7 +15,7 @@
 
 <title>Proposal</title>
 
-<script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -28,8 +28,6 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
-<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -94,6 +92,29 @@ h6 {
 }
 .table th:not([align]) {
   text-align: left;
+}
+</style>
+
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
 }
 </style>
 
@@ -386,7 +407,7 @@ div.tocify {
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/rgayler/fa_sim_cal">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
     Source code
   </a>
@@ -411,7 +432,7 @@ div.tocify {
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
 workflowr
-<span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -421,7 +442,7 @@ workflowr
 </li>
 <li>
 <a data-toggle="tab" href="#checks">
-Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </a>
 </li>
 <li>
@@ -431,14 +452,14 @@ Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidde
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-01-05
+<strong>Last updated:</strong> 2021-01-09
 </p>
 <p>
 <strong>Checks:</strong>
 <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-6
+7
 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
-1
+0
 </p>
 <p>
 <strong>Knit directory:</strong>
@@ -461,21 +482,16 @@ The <em>Past versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
-<strong>R Markdown file:</strong> uncommitted changes
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>R Markdown file:</strong> up-to-date
 </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes.
-To know which version of the R Markdown file created these
-results, you’ll want to first commit it to the Git repo. If
-you’re still working on the analysis, you can ignore this
-warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and
-build the HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you
+know the exact version of the code that produced these results.</p>
 </div>
 </div>
 </div>
@@ -564,20 +580,20 @@ makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreeb05de9fd124b76c505c40e73ddca7a5d64e77d69targetblankb05de9fa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreee67f27dc5107a0a9ce2f63e2c2cf76196eb3a46ctargetblanke67f27da">
 <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/b05de9fd124b76c505c40e73ddca7a5d64e77d69" target="_blank">b05de9f</a>
+<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/e67f27dc5107a0a9ce2f63e2c2cf76196eb3a46c" target="_blank">e67f27d</a>
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreeb05de9fd124b76c505c40e73ddca7a5d64e77d69targetblankb05de9fa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreee67f27dc5107a0a9ce2f63e2c2cf76196eb3a46ctargetblanke67f27da" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and
 connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/b05de9fd124b76c505c40e73ddca7a5d64e77d69" target="_blank">b05de9f</a>.
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/e67f27dc5107a0a9ce2f63e2c2cf76196eb3a46c" target="_blank">e67f27d</a>.
 See the <em>Past versions</em> tab to see a history of the changes made to the
 R Markdown and HTML files.
 </p>
@@ -599,8 +615,8 @@ Ignored files:
     Ignored:    renv/library/
     Ignored:    renv/staging/
 
-Unstaged changes:
-    Modified:   analysis/proposal.Rmd
+Untracked files:
+    Untracked:  analysis/01-1_get_data.Rmd
 
 </code></pre>
 <p>
@@ -645,6 +661,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/e67f27dc5107a0a9ce2f63e2c2cf76196eb3a46c/analysis/proposal.Rmd" target="_blank">e67f27d</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-09
+</td>
+<td>
+Apply Peter’s proposal comments 2021-01-08
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/8dc7997c4e00a69e16436170d11e5c786141dd3e/analysis/proposal.Rmd" target="_blank">8dc7997</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-05
+</td>
+<td>
+Edit proposal
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/8dc7997c4e00a69e16436170d11e5c786141dd3e/docs/proposal.html" target="_blank">8dc7997</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-05
+</td>
+<td>
+Edit proposal
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -913,101 +980,47 @@ First draft of proposal
 <p>The problem concerns <a href="https://en.wikipedia.org/wiki/Record_linkage">entity resolution</a> - determining whether multiple records, each derived from some entity, refer to the same entity. For concreteness, we consider a database lookup use case. That is, given a query record (corresponding to some entity) and a dictionary of records (corresponding to unique entities) we want to find the dictionary record (if any) that corresponds to the same entity as the query record.</p>
 <p>We introduce some more formal notation before considering the implications of the problem setting.</p>
 <p>There is a universe of entities, <span class="math inline">\(e \in E\)</span>. For example, the entities might be persons. Each entity has a unique identity, <span class="math inline">\(id(e)\)</span>, that is generally not accessible to us.</p>
-<blockquote>
 <p>There is a dictionary (database) <span class="math inline">\(D\)</span> of records <span class="math inline">\(d \in D\)</span>, each corresponding to an entity. Overloading the meaning of <span class="math inline">\(id()\)</span>, we denote the identity of the entity corresponding to a dictionary record as <span class="math inline">\(id(d)\)</span>. This identity of the entity corresponding to a dictionary record is generally not available to us.</p>
-</blockquote>
 <p>We assume that the dictionary records correspond to unique entities, <span class="math inline">\(id(d_i) = id(d_j) \iff i = j\)</span>. In general, the dictionary <span class="math inline">\(D\)</span> only corresponds to a subset of the universe of entities <span class="math inline">\(E\)</span>.</p>
 <p>There is a set of query records, <span class="math inline">\(q \in Q\)</span>. Once again, overloading the meaning of <span class="math inline">\(id()\)</span>, we denote the identity of the entity corresponding to a query record as <span class="math inline">\(id(q)\)</span>. The set of queries <span class="math inline">\(Q\)</span> is assumed to be representative of the queries that will be encountered in practice.</p>
 <p>The identities of the entities are not generally available. (If they were, entity resolution would be trivial.) However, we assume that identities are available for the purposes of this project to allow estimation of statistical models (supervised learning) and to allow assessment of the performance of entity resolution. To emphasise the special nature of this project-specific access to identity information we will generally refer to it as an oracle.</p>
-<blockquote>
-<p>Each dictionary record is assumed to be the result of applying some observation process to an entity, <span class="math inline">\(d_i = obs_d(e_i)\)</span>. Likewise, each query record is assumed to be the result of applying some observation process to an entity, <span class="math inline">\(q_j = obs_q(e_j)\)</span>. The observations are usually taken to be tuples of values, e.g. <span class="math inline">\((name, address, age)\)</span>. This is not strictly necessary (they could be arbitrary data structures), but is convenient and will be adopted here. Note that the dictionary and query observation functions are different and may have different codomains. For convenience, we only consider the case where both observation functions have the same codomain.</p>
-</blockquote>
-<blockquote>
-<p>If the identities were accessible to us we could define the lookup function <span class="math inline">\(lookup(q, D) \triangleq \{ d \in D : id(d) = id(q) \}\)</span>, which is guaranteed to return either a singleton set or the empty set. The key component of this definition is the identity predicate (<span class="math inline">\(id(d) = id(q)\)</span>). Conceptually, this predicate is evaluated for all the combinations of the fixed <span class="math inline">\(q\)</span> with every <span class="math inline">\(d \in D\)</span> to find the required <span class="math inline">\(d\)</span>. Given the assumption that the <span class="math inline">\(d \in D\)</span> are unique, the predicate will be true for either exactly one <span class="math inline">\(d\)</span>, or none in the case that the sought entity is not represented in the dictionary <span class="math inline">\(D\)</span>.</p>
-</blockquote>
+<p>Each dictionary record is assumed to be the result of applying some observation process to an entity, <span class="math inline">\(d_i = obs_d(e_i)\)</span>. Likewise, each query record is assumed to be the result of applying some observation process to an entity, <span class="math inline">\(q_j = obs_q(e_j)\)</span>. The observations are usually taken to be tuples of values, e.g. <span class="math inline">\((name, address, age)\)</span>. This is not strictly necessary (they could be arbitrary data structures), but is typical, convenient, and will be adopted here. Note that the dictionary and query observation functions may be different and may have different codomains. For convenience, we only consider the case where both observation functions have the same codomain.</p>
+<p>If the identities were accessible to us we could define the lookup function <span class="math inline">\(lookup(q, D) \triangleq \{ d \in D : id(d) = id(q) \}\)</span>, which is guaranteed to return either a singleton set or the empty set. The key component of this definition is the identity predicate (<span class="math inline">\(id(d) = id(q)\)</span>). Conceptually, this predicate is evaluated for all the combinations of the fixed <span class="math inline">\(q\)</span> with every <span class="math inline">\(d \in D\)</span> to find the required <span class="math inline">\(d\)</span>. Given the assumption that the <span class="math inline">\(d \in D\)</span> are unique (i.e. <span class="math inline">\(e_i \ne e_j\)</span> and <span class="math inline">\(id(d_i) \ne id(d_j), \forall i \ne j\)</span> ), the predicate will be true for either exactly one <span class="math inline">\(d\)</span>, or none in the case that the sought entity is not represented in the dictionary <span class="math inline">\(D\)</span>.</p>
 <p>Unfortunately, the identities are not accessible to us to use in <span class="math inline">\(lookup()\)</span>. Instead, we are forced to define the lookup function in terms of the observation values, which are not guaranteed to uniquely identify the entities. As was the case with the predicate above this can be define in terms of some function <span class="math inline">\(f(q, d)\)</span> of a query record and a dictionary record. The interesting characteristics of this problem arise from attempting to use the observation values as a proxy for identity.</p>
-<blockquote>
 <p>The typical approach, where the codomains of <span class="math inline">\(obs_q()\)</span> and <span class="math inline">\(obs_d\)</span> are identical is to define some similarity function <span class="math inline">\(sim(q, d)\)</span> and return the dictionary record <span class="math inline">\(d\)</span> which is most similar to the query record <span class="math inline">\(lookup(q, D) \triangleq argmax_i \forall d_i \in D : sim(q, d_i)\)</span>. Unfortunately, the most similar dictionary record is not necessarily the correct answer. The most similar record might be very dissimilar if the query entity is not represented in the dictionary. The query record may actually be more similar to some other dictionary record than the correct one. There may be multiple dictionary records with close to the maximal similarity to the query record, which may indicate the uncertainty of the result.</p>
-</blockquote>
-<blockquote>
-<p>There are work-arounds to these issues, but the root cause of the issues is that similarity does not <em>directly</em> address the problem to be solved. In the following section we attempt to more directly address the problem to be solved by replacing similarity with the broader concept of compatibility and arguing that compatibility should be measured on a scale equivalent to the probability of a correct match.</p>
-</blockquote>
-<blockquote>
+<p>There are work-arounds for these issues, but the root cause of the issues is that similarity does not <em>directly</em> address the problem to be solved. In the following section we attempt to more directly address the problem to be solved by replacing similarity with the broader concept of compatibility and arguing that compatibility should be measured on a scale equivalent to the probability of a correct match.</p>
 <p>The empirical component of this project examines the extent to which addressing the problem in terms of probability-scaled compatibility may deliver advantages over addressing the problem directly in terms of similarity. This does not require abandoning similarities, rather, treating them as inputs which are transformed to probability-scaled compatibility.</p>
-</blockquote>
 <p>Note that the lookup process can be described with respect to a single query <span class="math inline">\(q\)</span>. We aim to define <span class="math inline">\(lookup()\)</span> to be as accurate as possible for every specific query <span class="math inline">\(q\)</span>. The set of queries <span class="math inline">\(Q\)</span> is only relevant in so far as we will summarise the performance of <span class="math inline">\(lookup()\)</span> over <span class="math inline">\(Q\)</span> in order to make claims about the expected performance over queries.</p>
 </div>
 <div id="probability-of-identity-match" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Probability of identity match</h1>
-<blockquote>
 <p>Given that we don’t have access to identity, the general approach we take here is to assess the <em>compatibility</em> of each dictionary record with the query record, where <span class="math inline">\(compat(q_i, d_j)\)</span> is defined in terms of the observed values <span class="math inline">\(q_i\)</span> and <span class="math inline">\(d_i\)</span>. (Remember, <span class="math inline">\(q_i = obs_q(e_i)\)</span> and <span class="math inline">\(d_j = obs_d(e_j)\)</span>.) This quantifies the extent to which the query and dictionary values are compatible with being observed from the same entity. Ideally, we want the compatibility value be high (say, 1) when the query and dictionary records are referring to the same entity and the compatibility value to be low (say, 0) when the query and dictionary records are referring to different entities.</p>
-</blockquote>
-<blockquote>
 <p>Compatibility differs from similarity in that, depending on the observation functions, compatibility and similarity are not necessarily monotonically related. Even more radically, similarity is really only defined when the codomains of the query and dictionary observation functions are identical, whereas compatibilty can be meaningfully defined even when the codomains are completely disjoint.</p>
-</blockquote>
-<blockquote>
-<p>To illustrate this point that the codomains of <span class="math inline">\(obs_d()\)</span> and <span class="math inline">\(obs_q()\)</span> do not have to be identical and to emphasise the nature of <span class="math inline">\(compat()\)</span>, consider a problem domain where the entities are people with ages ranging from infant to elderly. <span class="math inline">\(obs_d()\)</span> measures the age and height of a person, and <span class="math inline">\(obs_q()\)</span> measures the sex and weight of a person. Obviously, age, height, weight, and sex are all related to some extent. Some combinations of query and dictionary records are much more compatible than others. Being very young or very short is only compatible with being very light. If the number of dictionary records was small and the persons were widely spaced with respect to the attributes it would be quite feasible to identify them from these attributes.</p>
-</blockquote>
-<blockquote>
+<p>To illustrate this point that the codomains of <span class="math inline">\(obs_d()\)</span> and <span class="math inline">\(obs_q()\)</span> do not have to be identical and to emphasise the nature of <span class="math inline">\(compat()\)</span>, consider a problem domain where the entities are people with ages ranging from infant to elderly. <span class="math inline">\(obs_d()\)</span> measures the age and height of a person, and <span class="math inline">\(obs_q()\)</span> measures the sex and weight of a person. Obviously, age, height, weight, and sex are all related to some extent. Some combinations of query and dictionary records are much more compatible than others. Being very young or very short is only compatible with being very light. If the number of dictionary records was small and the persons were widely spaced with respect to the attributes it would be quite feasible to identify individuals from these attributes only.</p>
 <p>Of course, if the number of dictionary records is large and/or the persons have very similar values on the attributes the compatibility value may be high for some combinations of query and dictionary records that refer to different persons. This is perfectly reasonable because it indicates that the available attributes are not very discriminating with respect to the identities of these persons. It demonstrates that a lookup process based on compatibility is fallible and the accuracy of the lookup process is uncertain.</p>
-</blockquote>
-<blockquote>
 <p>This is equivalent to stating that the compatibility value can no longer be interpreted as a crisp indicator of identity. Now the best we can do is require that the compatibility be able to take intermediate values, while being higher when the query and dictionary records are likely to be referring to the same entity. Probability is the natural language for quantifying our uncertainty about the identity of the records. We want to know <span class="math inline">\(P(id(q) = id(d) \mid compat(q, d))\)</span>. We also want <span class="math inline">\(compat(q, d))\)</span> to be monotonic with <span class="math inline">\(P(id(q) = id(d)\)</span>.</p>
-</blockquote>
-<blockquote>
 <p>The compatibility and probability are two distinct quantities, because although the compatibility carries information about the probability of the query and dictionary records matching, it is not constrained to obey the rules of probability. Translating from compatibility to probability makes that information more useful because we can use the laws of probability to draw inferences. Similarity is evidence relating to probability of matching but is not necessarily monotonic with the probability of matching. The compatibility summarises the evidence to speak directly to the probability of matching. The probability is a re-scaling of the compatibility onto a scale which is most useful.</p>
-</blockquote>
 </div>
 <div id="similarity" class="section level1" number="3">
 <h1><span class="header-section-number">3</span> Similarity</h1>
-<blockquote>
 <p>Many entity resolution problems have query and dictionary observation functions defined with the same codomain, such as a tuple of attributes For example, the entities might be persons and the attributes might be: <code>given_name</code>, <code>family_name</code>, <code>sex</code>, <code>birth_date</code>, <code>address</code>. Different types of attributes require different similarity functions. For example, birth date similarity might be defined in terms of the difference in days and address similarity might be defined in terms of geographic distance. Personal name similarity is typically defined in terms of some <a href="https://en.wikipedia.org/wiki/String_metric">string similarity metric</a>, comparing the corresponding attribute values from the query and dictionary records. The attribute similarities are then combined somehow to yield a record similarity value, which is used as the compatibility.</p>
-</blockquote>
-<blockquote>
 <p>In this project we will focus on string similarity metrics applied to names. These demonstrate interesting properties that would be more difficult to show with other attributes and metrics. Ultimately, we are showing how to statistically estimate the probability of identity matching with regression models using the name similarities as predictors. In that framework it is then trivially easy to generalise the process to other predictors which are not name similarities. In fact they need to be similarities at all, they are just any variable which can be used as a predictor.</p>
-</blockquote>
 <p>If string similarity were defined in terms of exact equality between strings, records with identical values would be treated as compatible and records with any difference would be treated as incompatible. This would be less than ideal if there was measurement error in the observations (e.g. typographical and transcription errors).</p>
 <p>The justification for using string similarity metrics is that they accommodate such transcription errors. However, this is only a <em>heuristic</em> justification. There is no guarantee that all the most likely transcription errors yield the highest similarity metric values. Each string similarity metric implicitly embodies an error generation mechanism and there is no guarantee that any of them precisely correspond to the actual observation generating process.</p>
-<blockquote>
 <p>Taking a broader view on that point: the strongest probabilistic model that could be built would be a <a href="https://en.wikipedia.org/wiki/Generative_model#Definition">generative model</a>. This would give for each entity the probability distribution over the query and dictionary records that would be observed from that entity. Given those probability distributions over observed rocords corresponding to all entities we could calculate all the probabilities of correct matches. Unfortunately, building such a generative model requires us to know the generative mechanisms by which the records are observed from the entities. That is for names we need to know the probabilities of all the transcription errors, typographical errors, form-filling errors, … that might occur. We rarely have that level of detailed knowledge. In this project we instead build a discriminative model (a logistic regression), and use the lens of viewing it as a regression problem to search for predictors to use in the discriminative model that take its predictive power closer to that of a generative model.</p>
-</blockquote>
 </div>
 <div id="estimated-compatibility" class="section level1" number="4">
 <h1><span class="header-section-number">4</span> Estimated compatibility</h1>
-<blockquote>
 <p>Ideally, we want to estimate <span class="math inline">\(P(id(q) = id(d_i) \mid q, d_i) \forall d_i \in D\)</span>. (Note that this implies the construction of all pairs of records <span class="math inline">\(q\)</span> with <span class="math inline">\(d_i\)</span>.) Given a small fixed universe of entities, and an oracle for identity it would be possible to calculate the conditional probability by exhaustive enumeration. That’s generally not possible, so we must try to come up with a compatibility function that captures the structure of the relationship to probability of identity from all pairs of query and dictionary records. That is, we want <span class="math inline">\(P(id(q) = id(d_i) \mid compat(q, d)) \forall d_i \in D\)</span> to be a good approximation to <span class="math inline">\(P(id(q) = id(d_i) \mid q, d_i) \forall d_i \in D\)</span>.</p>
-</blockquote>
-<blockquote>
-<p>Note that <span class="math inline">\(compat(q, d)\)</span> is a scalar value, unlike <span class="math inline">\((q, d)\)</span>, and because <span class="math inline">\(compat(q, d)\)</span> is a function it can only lose information present in <span class="math inline">\((q, d)\)</span>. In order for <span class="math inline">\(compat(q, d)\)</span> to support a good approximation to the probability of identity matching, the information lost by <span class="math inline">\(compat()\)</span> should be irrelevant to probability of identity matching. That is, <span class="math inline">\(compat()\)</span> should be defined in terms of features derived from the the observed values of the query and dictionary records, which means that <span class="math inline">\(compat()\)</span> can be applied to previously unencountered records. So, we are aiming for <span class="math inline">\(compat()\)</span> to provide a good approximation to the probability of matching (i.e. to capture as much as possible of the variation in match probability between record pairs) and to generalise over new entities not encountered during construction of the compatibility function.</p>
-</blockquote>
-<blockquote>
+<p>Note that <span class="math inline">\(compat(q, d)\)</span> is a scalar value, unlike <span class="math inline">\((q, d)\)</span>, which is a tuple of arbitrary data structures. Because <span class="math inline">\(compat(q, d)\)</span> is a function it can only lose information present in <span class="math inline">\((q, d)\)</span>. In order for <span class="math inline">\(compat(q, d)\)</span> to support a good approximation to the probability of identity matching, the information lost by <span class="math inline">\(compat()\)</span> should be irrelevant to the probability of identity matching. That is, <span class="math inline">\(compat()\)</span> should be defined in terms of features derived from the the observed values of the query and dictionary records, which means that <span class="math inline">\(compat()\)</span> can be applied to previously unencountered records. So, we are aiming for <span class="math inline">\(compat()\)</span> to provide a good approximation to the probability of matching (i.e. to capture as much as possible of the variation in match probability between record pairs) and to generalise over new entities not encountered during construction of the compatibility function.</p>
 <p>Stated that way, it is clear that construction of a compatibility function can be viewed as estimation of a statistical model (or supervised learning if you prefer ML terminology) to “predict” the probability of identity matching from predictor variables derived from the combination of a query record with a dictionary record and any static background information that can be brought to bear. For any fixed choice of model estimation/optimisation process (e.g. logistic regression) our effort needs to be focused on choosing/constructing predictor variables that maximise the predictive power of the model. The predictor variables should reflect properties of the record pairs that are strongly related to probability of identity matching and ignore record pair properties that are irrelevant to probability of identity matching. That is, construction of the predictor variables can be viewed as a type of <a href="https://en.wikipedia.org/wiki/Feature_engineering">feature engineering</a> in a regression model predicting the probability of identity from only one predictor: the compatibility. (Treating this as a regression problem implies that we have an identity oracle providing the outcome for estimating the model.)</p>
-</blockquote>
-<blockquote>
 <p>The estimated compatibility function returns the best synthesis of the evidence given by the features defined on the record pairs and background information. The conditional probability calculation then translates from compatibility to probability. Note that dependent on the details of the compatibility model it may be possible to arrange the compatibility model so that its output is durectly on the desired probability of matching scale.</p>
-</blockquote>
-<blockquote>
-<p>Historically, the focus has been on record similarity because it is generally a good predictor of probability of matching. However, the predictors need not be restricted to similarity metrics. Our focus here on compatibility changes the status of similarity to just one (good) predictor among as many predictors as are found to be useful.
-For example, the background information of the frequency of strings in the dictionary and queries will be a useful predictor. If the name SMITH is common in the dictionary and the name SCHWARZENEGGER is rare, a query matching SCHWARZENEGGER will have a higher probability of being an identity match than a query matching SMITH. Construing compatibility as an estimated function puts the focus on feature engineering and any type of feature (e.g. missingness of some attributes, or the relationship between a person’s height and weight) are potentially useful predictive features.</p>
-</blockquote>
+<p>Historically, the focus has been on record similarity because it is generally a good predictor of probability of matching. However, the predictors need not be restricted to similarity metrics. Our focus here on compatibility changes the status of similarity to just one (good) predictor among as many predictors as are found to be useful. For example, the background information of the frequency of strings in the dictionary and queries will be a useful predictor. If the name SMITH is common in the dictionary and the name SCHWARZENEGGER is rare, a query matching SCHWARZENEGGER will have a higher probability of being an identity match than a query matching SMITH. Construing compatibility as an estimated function puts the focus on feature engineering and any type of feature (e.g. missingness of some attributes, or the relationship between a person’s height and weight) are potentially useful predictive features.</p>
 </div>
 <div id="calibrated-similarity" class="section level1" number="5">
 <h1><span class="header-section-number">5</span> Calibrated similarity</h1>
-<blockquote>
 <p>We believe that the probability of identity conditional on compatibility has the same information content as the compatibility, but is more directly useful than the compatibility because the probability is already in the form most useful for decision-making. Probabilities can be used to weight the costs of the outcomes to optimise decision-making with respect to cost, whereas the decision-making implications of some arbitrary compatibility metric are not directly known.</p>
-</blockquote>
-<blockquote>
-<p>Consider the case where the only compatibility predictor is some attribute similarity.
-The relationship between similarity and compatibility may be nonmonotonic,
-in which case the compatibility function must be a nonmonotonic function from similarity to compatibility.
-The mapping from compatibility to probability can be composed with the compatibility model
-to yied a sihngle function from similarity to probability of identity match:
-<span class="math inline">\(P(id(q) = id(d_i) \mid sim(q, d_i))\)</span>. This is a <a href="https://en.wikipedia.org/wiki/Calibration_(statistics)">calibration</a> of the similarity to probability.
-It is also a very simple special case of an estimated compatibility function,
-which we will use below to demonstrate one way that non-similarity predictor variables
-(such as the distribution of values in the dictionary)
-can be used to increase the predictive power of the compatibility function.</p>
-</blockquote>
+<p>Consider the case where the only compatibility predictor is some attribute similarity. The relationship between similarity and compatibility may be nonmonotonic, in which case the compatibility function must be a nonmonotonic function from similarity to compatibility. The mapping from compatibility to probability can be composed with the compatibility model to yied a single function from similarity to probability of identity match: <span class="math inline">\(P(id(q) = id(d_i) \mid sim(q, d_i))\)</span>. This is a <a href="https://en.wikipedia.org/wiki/Calibration_(statistics)">calibration</a> of the similarity to probability. It is also a very simple special case of an estimated compatibility function, which we will use below to demonstrate one way that non-similarity predictor variables (such as the distribution of values in the dictionary) can be used to increase the predictive power of the compatibility function.</p>
 <p>We would expect the probability to be a monotone function of the similarity, but given the heuristic nature of the similarity metrics that is not guaranteed. We can use any functional form that is empirically justified. In general we will only assume that the relationship is smooth.</p>
 <div class="figure" style="text-align: center"><span id="fig:calib-one"></span>
 <img src="figure/proposal.Rmd/calib-one-1.png" alt="Example calibration from similarity to probability." width="672" />
@@ -1037,6 +1050,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/8dc7997c4e00a69e16436170d11e5c786141dd3e/docs/figure/proposal.Rmd/calib-one-1.png" target="_blank">8dc7997</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-05
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/rgayler/fa_sim_cal/blob/bc8c1cc20e1272734090d30979e15ad0fa5808f2/docs/figure/proposal.Rmd/calib-one-1.png" target="_blank">bc8c1cc</a>
@@ -1089,6 +1113,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/8dc7997c4e00a69e16436170d11e5c786141dd3e/docs/figure/proposal.Rmd/calib-multi-1.png" target="_blank">8dc7997</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-05
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/rgayler/fa_sim_cal/blob/bc8c1cc20e1272734090d30979e15ad0fa5808f2/docs/figure/proposal.Rmd/calib-multi-1.png" target="_blank">bc8c1cc</a>
 </td>
 <td>
@@ -1112,9 +1147,7 @@ Ross Gayler
 <h1><span class="header-section-number">8</span> Frequency-aware similarity</h1>
 <p>Consider the case where the codomains of the query and dictionary observation functions are the single attribute <code>family_name</code>. Person names have very skewed distributions, a small number of names (e.g. “Smith”) are relatively common, while most names (e.g. “Schwarzenegger”) are relatively rare. If the query and dictionary records are both “Smith” and the similarity function is exact equality the probability of identity will be quite low because there are multiple “Smith” dictionary records and only at most one has the same identity as the query record. Thus, the frequency of the value in the dictionary has a very strong effect on the probability corresponding to the level of similarity (exact equality). This is not a new observation (<span class="citation">Lange &amp; Naumann (2011)</span>). The novel point here is that frequency can be exploited by using it in a statistical interaction with similarity.</p>
 <p>The prior paragraph only covered the case where the similarity function is exact equality. How do we deal with the more usual case of a similarity function (e.g. edit distance) that returns a range of intermediate similarity values. This requires a digression into the interpretation of the probability <span class="math inline">\(P(id(q) = id(d) \mid q, d)\)</span>. The conditionality on <span class="math inline">\(q\)</span> and <span class="math inline">\(d\)</span> is equivalent to the fallible claim that <span class="math inline">\(q\)</span> and <span class="math inline">\(d\)</span> are observations of the same entity. Thus, <span class="math inline">\(P(id(q) = id(d) \mid q, d)\)</span> can be read as, “Given the claim that <span class="math inline">\(q\)</span> and <span class="math inline">\(d\)</span> are observations of the same entity, what is the probability that claim is correct?” or “What is the probability that <span class="math inline">\(q\)</span> and <span class="math inline">\(d\)</span> are a <em>true match</em>?”</p>
-<blockquote>
 <p>The probability <span class="math inline">\(P(id(q) = id(d) \mid sim(q, d) )\)</span> treats all record pairs having the same similarity as identical and having an identical probability of being a true match. When directly using a similarity measure it is assumed that the probability of being a true match increases monotonically with the similarity (although this is not guaranteed and nonmonotonicity is known to occur). Assuming monotonicity and given <span class="math inline">\(q\)</span> and <span class="math inline">\(d_i\)</span> with similarity <span class="math inline">\(sim(q, d_i)\)</span> - if we accept <span class="math inline">\(q\)</span> and <span class="math inline">\(d_i\)</span> as matching on the basis of that similarity then that implies we should also accept any <span class="math inline">\(d_j\)</span> with <span class="math inline">\(sim(q, d_j) \ge sim(q, d_i)\)</span> as a match. So the relevant frequency for frequency-aware similarity given a query record <span class="math inline">\(q\)</span> and dictionary record <span class="math inline">\(d_i\)</span> is the sum of the frequencies of all dictionary records <span class="math inline">\(d_j\)</span> with similarity <span class="math inline">\(sim(q, d_j) \ge sim(q, d_i)\)</span>.</p>
-</blockquote>
 </div>
 <div id="curried-similarity-functions" class="section level1" number="9">
 <h1><span class="header-section-number">9</span> Curried similarity functions</h1>
@@ -1126,8 +1159,8 @@ Ross Gayler
 <p>We intend to model frequency-aware similarity as a smooth interaction of frequency and similarity. This can be done with a <a href="https://en.wikipedia.org/wiki/Generalized_additive_model">generalised additive model</a>, which is a type of <a href="https://en.wikipedia.org/wiki/Generalized_linear_model">generalised linear model</a>, of which logistic regression is a special case.</p>
 <p>The discussion in earlier sections has been in terms of observations having a single attribute. Treating entity resolution as a regression problem allows for straight-forward generalisation by adding multiple attributes as predictors.</p>
 </div>
-<div id="references" class="section level1" number="11">
-<h1><span class="header-section-number">11</span> References</h1>
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-langeFrequencyawareSimilarityMeasures2011" class="csl-entry">
 Lange, D., &amp; Naumann, F. (2011). <em>Frequency-aware similarity measures: Why arnold schwarzenegger is always a duplicate</em>. 243–248. <a href="https://doi.org/10.1145/2063576.2063616">https://doi.org/10.1145/2063576.2063616</a>
@@ -1161,19 +1194,19 @@ attached base packages:
 [1] stats     graphics  grDevices datasets  utils     methods   base     
 
 other attached packages:
-[1] ggplot2_3.3.2   magrittr_2.0.1  workflowr_1.6.2
+[1] ggplot2_3.3.3   magrittr_2.0.1  workflowr_1.6.2
 
 loaded via a namespace (and not attached):
  [1] Rcpp_1.0.5       highr_0.8        pillar_1.4.7     compiler_4.0.3  
  [5] later_1.1.0.1    git2r_0.27.1     tools_4.0.3      digest_0.6.27   
  [9] evaluate_0.14    lifecycle_0.2.0  tibble_3.0.4     gtable_0.3.0    
-[13] pkgconfig_2.0.3  rlang_0.4.9      rstudioapi_0.13  yaml_2.2.1      
-[17] xfun_0.19        withr_2.3.0      stringr_1.4.0    dplyr_1.0.2     
-[21] knitr_1.30       generics_0.1.0   fs_1.5.0         vctrs_0.3.5     
+[13] pkgconfig_2.0.3  rlang_0.4.10     rstudioapi_0.13  yaml_2.2.1      
+[17] xfun_0.20        withr_2.3.0      stringr_1.4.0    dplyr_1.0.2     
+[21] knitr_1.30       generics_0.1.0   fs_1.5.0         vctrs_0.3.6     
 [25] tidyselect_1.1.0 rprojroot_2.0.2  grid_4.0.3       glue_1.4.2      
-[29] R6_2.5.0         rmarkdown_2.5    bookdown_0.21    farver_2.0.3    
+[29] R6_2.5.0         rmarkdown_2.6    bookdown_0.21    farver_2.0.3    
 [33] purrr_0.3.4      whisker_0.4      scales_1.1.1     promises_1.1.1  
-[37] ellipsis_0.3.1   htmltools_0.5.0  colorspace_2.0-0 renv_0.12.3     
+[37] ellipsis_0.3.1   htmltools_0.5.0  colorspace_2.0-0 renv_0.12.4     
 [41] httpuv_1.5.4     labeling_0.4.2   stringi_1.5.3    munsell_0.5.0   
 [45] crayon_1.3.4    </code></pre>
 </div>
