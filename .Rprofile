@@ -15,10 +15,10 @@ if (requireNamespace("workflowr", quietly = TRUE)) {
 ## Load the here package so it is available before running setup scripts
 library(here)
 
-## Do project-wide setup
-## This is any setup needed by *all* work in the project
-## Groups of analyses or single analyses may require their own setup in addition to this
-source(here::here("code", "setup_project.R"))
+# ## Do project-wide setup
+# ## This is any setup needed by *all* work in the project
+# ## Groups of analyses or single analyses may require their own setup in addition to this
+# source(here::here("code", "setup_project.R"))
 
 ## Give reminders on what to do and project status on opening the project
 message("\nExecute workflowr functions from the R console, never from within an Rmd document.")
