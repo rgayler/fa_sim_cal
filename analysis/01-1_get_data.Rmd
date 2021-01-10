@@ -99,7 +99,7 @@ f_entity_uncln_tsv
 # read the data
 d <- vroom::vroom( #read raw data
   f_entity_uncln_tsv,
-  n_max = 1e4, # limit the rows for testing
+  # n_max = 1e4, # limit the rows for testing
   col_select = c( # get all the columns that might conceivably be used
                   # the names and ordering are from the metadata file
     snapshot_dt : voter_status_reason_desc, # 9 cols
