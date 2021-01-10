@@ -411,7 +411,7 @@ div.tocify {
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
 workflowr
-<span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -421,7 +421,7 @@ workflowr
 </li>
 <li>
 <a data-toggle="tab" href="#checks">
-Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </a>
 </li>
 <li>
@@ -436,9 +436,9 @@ Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidde
 <p>
 <strong>Checks:</strong>
 <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-6
+7
 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
-1
+0
 </p>
 <p>
 <strong>Knit directory:</strong>
@@ -477,75 +477,17 @@ know the exact version of the code that produced these results.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongobjectspresent">
-<span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
-<strong>Environment:</strong> objects present
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Environment:</strong> empty
 </a>
 </p>
 </div>
-<div id="strongEnvironmentstrongobjectspresent" class="panel-collapse collapse">
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
 <div class="panel-body">
-<p>
-The global environment had objects present when the code in the R Markdown
-file was run. These objects can affect the analysis in your R Markdown file in
-unknown ways. For reproduciblity it’s best to always run the code in an empty
-environment. Use <code>wflow_publish</code> or <code>wflow_build</code> to
-ensure that the code is always run in an empty environment.
-</p>
-<p>
-The following objects were defined in the global
-environment when these results were created:
-</p>
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th style="text-align:left;">
-Name
-</th>
-<th style="text-align:left;">
-Class
-</th>
-<th style="text-align:left;">
-Size
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-DEBUG
-</td>
-<td style="text-align:left;">
-logical
-</td>
-<td style="text-align:left;">
-56 bytes
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-f_entity_fst
-</td>
-<td style="text-align:left;">
-character
-</td>
-<td style="text-align:left;">
-232 bytes
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-f_entity_uncln_tsv
-</td>
-<td style="text-align:left;">
-character
-</td>
-<td style="text-align:left;">
-232 bytes
-</td>
-</tr>
-</tbody>
-</table>
+<p>Great job! The global environment was empty. Objects defined in the global
+environment can affect the analysis in your R Markdown file in unknown ways.
+For reproduciblity it’s best to always run the code in an empty environment.</p>
 </div>
 </div>
 </div>
@@ -617,20 +559,20 @@ makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree721359b4606f229f715f05024ce162e8a2851579targetblank721359ba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreee1477eb8ea80700e8f8902192d2ee72479403e0ftargetblanke1477eba">
 <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/721359b4606f229f715f05024ce162e8a2851579" target="_blank">721359b</a>
+<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/e1477eb8ea80700e8f8902192d2ee72479403e0f" target="_blank">e1477eb</a>
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree721359b4606f229f715f05024ce162e8a2851579targetblank721359ba" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreee1477eb8ea80700e8f8902192d2ee72479403e0ftargetblanke1477eba" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and
 connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/721359b4606f229f715f05024ce162e8a2851579" target="_blank">721359b</a>.
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/e1477eb8ea80700e8f8902192d2ee72479403e0f" target="_blank">e1477eb</a>.
 See the <em>Past versions</em> tab to see a history of the changes made to the
 R Markdown and HTML files.
 </p>
@@ -648,10 +590,12 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    .tresorit/
     Ignored:    data/VR_20051125.txt.xz
-    Ignored:    output/d.fst
     Ignored:    output/ent_raw.fst
     Ignored:    renv/library/
     Ignored:    renv/staging/
+
+Untracked files:
+    Untracked:  analysis/01_get_check_data.Rmd.bak
 
 </code></pre>
 <p>
@@ -701,6 +645,57 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/e1477eb8ea80700e8f8902192d2ee72479403e0f/analysis/01-1_get_data.Rmd" target="_blank">e1477eb</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-10
+</td>
+<td>
+wflow_publish("analysis/01-1*.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/815021857dd7f4d1f8904b24ba8133423f15365b/analysis/01-1_get_data.Rmd" target="_blank">8150218</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-10
+</td>
+<td>
+wflow_git_commit(all = TRUE)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/d445e8d40034380ba5136a167adbe3278f275d2b/docs/01-1_get_data.html" target="_blank">d445e8d</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-10
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/rgayler/fa_sim_cal/blob/721359b4606f229f715f05024ce162e8a2851579/analysis/01-1_get_data.Rmd" target="_blank">721359b</a>
 </td>
 <td>
@@ -740,9 +735,16 @@ End of day
 <pre class="r"><code># Set up the project environment, because each Rmd file knits in a new R session
 # so doesn&#39;t get the project setup from .Rprofile
 library(here)
-source(here::here(&quot;code&quot;, &quot;setup_project.R&quot;))
-
-# Extra set up for the 01*.Rmd notebooks
+source(here::here(&quot;code&quot;, &quot;setup_project.R&quot;))</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>✓ ggplot2 3.3.3     ✓ purrr   0.3.4
+✓ tibble  3.0.4     ✓ dplyr   1.0.2
+✓ tidyr   1.1.2     ✓ stringr 1.4.0
+✓ readr   1.4.0     ✓ forcats 0.5.0</code></pre>
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code># Extra set up for the 01*.Rmd notebooks
 source(here::here(&quot;code&quot;, &quot;setup_01.R&quot;))</code></pre>
 <pre><code>
 Attaching package: &#39;glue&#39;</code></pre>
@@ -1364,7 +1366,7 @@ d %&gt;% fst::write_fst(f_entity_fst, compress = 100) </code></pre>
 </div>
 <div id="timing" class="section level1 unnumbered">
 <h1>Timing</h1>
-<pre><code>Computation time (excl. render): 465.093 sec elapsed</code></pre>
+<pre><code>Computation time (excl. render): 466.187 sec elapsed</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1404,7 +1406,7 @@ loaded via a namespace (and not attached):
  [1] Rcpp_1.0.5        lubridate_1.7.9.2 utf8_1.1.4        assertthat_0.2.1 
  [5] rprojroot_2.0.2   digest_0.6.27     repr_1.1.0        R6_2.5.0         
  [9] cellranger_1.1.0  backports_1.2.1   reprex_0.3.0      evaluate_0.14    
-[13] httr_1.4.2        highr_0.8         pillar_1.4.7      rlang_0.4.10     
+[13] highr_0.8         httr_1.4.2        pillar_1.4.7      rlang_0.4.10     
 [17] readxl_1.3.1      rstudioapi_0.13   whisker_0.4       rmarkdown_2.6    
 [21] bit_4.0.4         munsell_0.5.0     broom_0.7.3       compiler_4.0.3   
 [25] httpuv_1.5.4      modelr_0.1.8      xfun_0.20         base64enc_0.1-3  
