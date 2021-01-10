@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Ross Gayler" />
+
+<meta name="date" content="2021-01-07" />
+
+<title>01-1_get_data</title>
+
+<script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Frequency-Aware Similarity Calibration</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/rgayler/fa_sim_cal">
+    <span class="fas fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">01-1_get_data</h1>
+<h3 class="subtitle">Read, subset, and save the data</h3>
+<h4 class="author">Ross Gayler</h4>
+<h4 class="date">2021-01-07</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr
+<span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks">
+Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-01-10
+</p>
+<p>
+<strong>Checks:</strong>
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+6
+<span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+1
+</p>
+<p>
+<strong>Knit directory:</strong>
+<code>fa_sim_cal/</code>
+<span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version
+1.6.2). The <em>Checks</em> tab describes the
+reproducibility checks that were applied when the results were created.
+The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you
+know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongobjectspresent">
+<span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+<strong>Environment:</strong> objects present
+</a>
+</p>
+</div>
+<div id="strongEnvironmentstrongobjectspresent" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+The global environment had objects present when the code in the R Markdown
+file was run. These objects can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an empty
+environment. Use <code>wflow_publish</code> or <code>wflow_build</code> to
+ensure that the code is always run in an empty environment.
+</p>
+<p>
+The following objects were defined in the global
+environment when these results were created:
+</p>
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th style="text-align:left;">
+Name
+</th>
+<th style="text-align:left;">
+Class
+</th>
+<th style="text-align:left;">
+Size
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+DEBUG
+</td>
+<td style="text-align:left;">
+logical
+</td>
+<td style="text-align:left;">
+56 bytes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+f_entity_fst
+</td>
+<td style="text-align:left;">
+character
+</td>
+<td style="text-align:left;">
+232 bytes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+f_entity_uncln_tsv
+</td>
+<td style="text-align:left;">
+character
+</td>
+<td style="text-align:left;">
+232 bytes
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20201104code">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Seed:</strong> <code>set.seed(20201104)</code>
+</a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20201104code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20201104)</code> was run prior to running the code in the R Markdown file.
+Setting a seed ensures that any results that rely on randomness, e.g.
+subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Session information:</strong> recorded
+</a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is
+critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Cache:</strong> none
+</a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident
+that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>File paths:</strong> relative
+</a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project
+makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree721359b4606f229f715f05024ce162e8a2851579targetblank721359ba">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/721359b4606f229f715f05024ce162e8a2851579" target="_blank">721359b</a>
+</a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree721359b4606f229f715f05024ce162e8a2851579targetblank721359ba" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and
+connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/721359b4606f229f715f05024ce162e8a2851579" target="_blank">721359b</a>.
+See the <em>Past versions</em> tab to see a history of the changes made to the
+R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the
+analysis have been committed to Git prior to generating the results (you can
+use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only
+checks the R Markdown file, but you know if there are other scripts or data
+files that it depends on. Below is the status of the Git repository when the
+results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    .tresorit/
+    Ignored:    data/VR_20051125.txt.xz
+    Ignored:    output/d.fst
+    Ignored:    output/ent_raw.fst
+    Ignored:    renv/library/
+    Ignored:    renv/staging/
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in
+this status report because it is ok for generated content to have uncommitted
+changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made
+to the R Markdown (<code>analysis/01-1_get_data.Rmd</code>) and HTML (<code>docs/01-1_get_data.html</code>)
+files. If you’ve configured a remote Git repository (see
+<code>?wflow_git_remote</code>), click on the hyperlinks in the table below to
+view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/721359b4606f229f715f05024ce162e8a2851579/analysis/01-1_get_data.Rmd" target="_blank">721359b</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-10
+</td>
+<td>
+Added 01-1_get_data
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/e7b19943090e18dac07990cd1790d56cfe565838/analysis/01-1_get_data.Rmd" target="_blank">e7b1994</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-09
+</td>
+<td>
+End of day
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code># Set up the project environment, because each Rmd file knits in a new R session
+# so doesn&#39;t get the project setup from .Rprofile
+library(here)
+source(here::here(&quot;code&quot;, &quot;setup_project.R&quot;))
+
+# Extra set up for the 01*.Rmd notebooks
+source(here::here(&quot;code&quot;, &quot;setup_01.R&quot;))</code></pre>
+<pre><code>
+Attaching package: &#39;glue&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:dplyr&#39;:
+
+    collapse</code></pre>
+<pre class="r"><code># Extra set up for this notebook
+library(vroom) # fast reading of delimited text files
+
+# start the execution time clock
+tictoc::tic(&quot;Computation time (excl. render)&quot;)</code></pre>
+<div id="introduction" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<p>The <code>01*.Rmd</code> notebooks read the data, filter it to the subset to be
+used for modelling, characterise it to understand it, check for possible
+gotchas, clean it, and save it for the analyses proper.</p>
+<p>This notebook (<code>01-1_get_data</code>) reads the raw data, subsets it to the
+data we will use, briefly sanity checks the data, and saves it in an
+R-friendly format.</p>
+<p>Some of the analyses have been run on a laptop computer with 16GB RAM.
+Consequently it is helpful to minimise the data volume as soon as
+possible. This means we will occasionally take a diversion in the
+analyses to make the data fit the hardware.</p>
+<div id="entity-data" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> Entity data</h2>
+<p>This project uses historical voter registration data from the <a href="https://www.ncsbe.gov/">North
+Carolina State Board of Elections</a>. This
+information is made publicly available in accordance with <a href="https://s3.amazonaws.com/dl.ncsbe.gov/ReadMe_PUBLIC_DATA.txt">North
+Carolina state
+law</a>. The
+<a href="https://www.ncsbe.gov/results-data/voter-registration-data">Voter Registration Data
+page</a> links
+to a <a href="https://dl.ncsbe.gov/index.html?prefix=data/Snapshots/">folder of Voter Registration
+snapshots</a>,
+which contains the snapshot data files and a <a href="https://s3.amazonaws.com/dl.ncsbe.gov/data/Snapshots/layout_VR_Snapshot.txt">metadata file describing
+the layout of the snapshot data
+files</a>.
+At the time of writing the snapshot files cover the years 2005 to 2020
+with at least one snapshot per year. The files are <a href="https://en.wikipedia.org/wiki/ZIP_(file_format)">ZIP
+compressed</a> and
+relatively large, with the smallest being 572 MB after compression.</p>
+<p>The snapshots contain many columns that are irrelevant to this project
+(e.g. school district name) and/or prohibited under Australian privacy
+law (e.g. political affiliation, race). We do not read these unneeded
+columns from the snapshot file.</p>
+<p>We use only one snapshot file
+(<a href="https://s3.amazonaws.com/dl.ncsbe.gov/data/Snapshots/VR_Snapshot_20051125.zip">VR_Snapshot_20051125.zip</a>)
+because this project does not investigate linkage of records across
+time. We chose the oldest snapshot (2005) because it is the smallest and
+the contents are the most out of date, minimising the current
+information made available. Note that this project will not generate any
+information that is not already directly, publicly available from NCSBE.</p>
+</div>
+</div>
+<div id="read-entity-data" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Read entity data</h1>
+<p>The snapshot ZIP file was manually downloaded (572 MB), uncompressed
+(5.7 GB), then re-compressed in <a href="https://en.wikipedia.org/wiki/XZ_Utils">XZ
+format</a> to minimise the size
+(248 MB). The compressed snapshot file and the metadata file are stored
+in the <code>data</code> directory.</p>
+<p>The data is tab-separated, not fixed-width as you might reasonably think
+from reading the metadata. The field widths (interpreted as maximum
+lengths) in the metadata are not accurate. Some fields contain values
+longer than the stated width.</p>
+<p>Inspection of the raw data shows that the character fields are unquoted.
+However, at least one character value contains a double-quote character,
+which has the potential to confuse the parsing if it is looking for
+quoted values.</p>
+<pre class="r"><code># Show the raw data file location
+# This is set in code/file_paths.R
+f_entity_uncln_tsv</code></pre>
+<pre><code>[1] &quot;/home/ross/RG/projects/academic/entity_resolution/fa_sim_cal_TOP/fa_sim_cal/data/VR_20051125.txt.xz&quot;</code></pre>
+<pre class="r"><code># read the data
+d &lt;- vroom::vroom( #read raw data
+  f_entity_uncln_tsv,
+  # n_max = 1e4, # limit the rows for testing
+  col_select = c( # get all the columns that might conceivably be used
+                  # the names and ordering are from the metadata file
+    snapshot_dt : voter_status_reason_desc, # 9 cols
+    last_name : street_sufx_cd, # 10 cols
+    unit_num : zip_code, # 4 cols
+    area_cd, phone_num, # 2 cols
+    sex_code : registr_dt, # 5 cols
+    cancellation_dt, load_dt # 2 cols
+    ), # total 32 cols
+  col_types = cols(
+    .default = col_character() # all cols as chars to allow for bad formatting
+    ),
+  delim = &quot;\t&quot;, # assume that fields are *only* delimited by tabs
+  col_names = TRUE, # use the column names on the first line of data
+  na = &quot;&quot;, # missing fields are empty string or whitespace only (see trim_ws argument)
+  quote = &quot;&quot;, # don&#39;t allow for quoted strings
+  comment = &quot;&quot;, # don&#39;t allow for comments
+  trim_ws = TRUE, # trim leading and trailing whitespace
+  escape_double = FALSE, # assume no escaped quotes
+  escape_backslash = FALSE # assume no escaped backslashes
+  ) %&gt;% 
+  tibble::as_tibble() %&gt;% 
+  dplyr::mutate( # convert the datetime cols to dates
+    snapshot_dt     = lubridate::as_date(snapshot_dt),
+    registr_dt      = lubridate::as_date(registr_dt),
+    cancellation_dt = lubridate::as_date(cancellation_dt),
+    load_dt         = lubridate::as_date(load_dt)
+  )</code></pre>
+<p>Check the number of rows and columns read.</p>
+<pre class="r"><code>dim(d)</code></pre>
+<pre><code>[1] 8003293      32</code></pre>
+<ul>
+<li>Correct number of data rows extracted (external line count of input
+file = 8,003,294)</li>
+<li>Correct number of columns extracted (checked against manual count of
+columns in metadata)</li>
+</ul>
+</div>
+<div id="exclusions" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Exclusions</h1>
+<p>Preliminary examination of the data showed that about half the rows
+correspond to people who have been removed from the electoral roll.
+Remove these rows from the data. Keep only the rows flagged as ACTIVE
+and VERIFIED, because by a common-sense interpretation of those labels,
+these rows have passed the electoral checking criteria and therefore
+are least likely to contain errors or be duplicates.</p>
+<p>Preliminary examination of the data discovered one row that was an
+obvious test record which was flagged as ACTIVE and VERIFIED. Remove
+that row from the data.</p>
+<p>Remove those rows now to reduce processing time for later steps and to
+avoid thinkiing about records that won’t be used.</p>
+<pre class="r"><code>d &lt;- d %&gt;% 
+  dplyr::filter(
+    voter_status_desc == &quot;ACTIVE&quot; &amp; voter_status_reason_desc == &quot;VERIFIED&quot;,
+      ! (first_name == &quot;THIS&quot; &amp; last_name == &quot;TEST&quot;)
+  )
+dim(d)</code></pre>
+<pre><code>[1] 4099699      32</code></pre>
+</div>
+<div id="quick-check" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Quick check</h1>
+<p>Take a very quick look at all the columns to see if they contain the
+expected content.</p>
+<pre class="r"><code>glimpse(d)</code></pre>
+<pre><code>Rows: 4,099,699
+Columns: 32
+$ snapshot_dt              &lt;date&gt; 2005-11-25, 2005-11-25, 2005-11-25, 2005-11…
+$ county_id                &lt;chr&gt; &quot;5&quot;, &quot;8&quot;, &quot;15&quot;, &quot;17&quot;, &quot;21&quot;, &quot;24&quot;, &quot;33&quot;, &quot;35&quot;…
+$ county_desc              &lt;chr&gt; &quot;ASHE&quot;, &quot;BERTIE&quot;, &quot;CAMDEN&quot;, &quot;CASWELL&quot;, &quot;CHOW…
+$ voter_reg_num            &lt;chr&gt; &quot;000000000001&quot;, &quot;000000000001&quot;, &quot;00000000000…
+$ ncid                     &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ status_cd                &lt;chr&gt; &quot;A&quot;, &quot;A&quot;, &quot;A&quot;, &quot;A&quot;, &quot;A&quot;, &quot;A&quot;, &quot;A&quot;, &quot;A&quot;, &quot;A&quot;,…
+$ voter_status_desc        &lt;chr&gt; &quot;ACTIVE&quot;, &quot;ACTIVE&quot;, &quot;ACTIVE&quot;, &quot;ACTIVE&quot;, &quot;ACT…
+$ reason_cd                &lt;chr&gt; &quot;AV&quot;, &quot;AV&quot;, &quot;AV&quot;, &quot;AV&quot;, &quot;AV&quot;, &quot;AV&quot;, &quot;AV&quot;, &quot;A…
+$ voter_status_reason_desc &lt;chr&gt; &quot;VERIFIED&quot;, &quot;VERIFIED&quot;, &quot;VERIFIED&quot;, &quot;VERIFIE…
+$ last_name                &lt;chr&gt; &quot;HOLMAN&quot;, &quot;ACREE&quot;, &quot;JACKSON&quot;, &quot;BERNARD&quot;, &quot;SC…
+$ first_name               &lt;chr&gt; &quot;RICKY&quot;, &quot;EDMOND&quot;, &quot;CARLISE&quot;, &quot;LAWRENCE&quot;, &quot;C…
+$ midl_name                &lt;chr&gt; &quot;LEE&quot;, &quot;JOSEPH&quot;, &quot;ABBOTT&quot;, &quot;WESLEY&quot;, &quot;C&quot;, &quot;K…
+$ name_sufx_cd             &lt;chr&gt; NA, &quot;III&quot;, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ house_num                &lt;chr&gt; &quot;221&quot;, &quot;103&quot;, &quot;405&quot;, &quot;5235&quot;, &quot;213&quot;, &quot;506&quot;, &quot;…
+$ half_code                &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ street_dir               &lt;chr&gt; &quot;S&quot;, NA, &quot;N&quot;, NA, NA, NA, &quot;W&quot;, NA, NA, NA, N…
+$ street_name              &lt;chr&gt; &quot;BEAVER CREEK&quot;, &quot;HARMON&quot;, &quot;RIVER&quot;, &quot;MOUNTAIN…
+$ street_type_cd           &lt;chr&gt; &quot;RD&quot;, &quot;ST&quot;, &quot;RD&quot;, &quot;RD&quot;, &quot;DR&quot;, &quot;RD&quot;, &quot;AVE&quot;, &quot;…
+$ street_sufx_cd           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ unit_num                 &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+$ res_city_desc            &lt;chr&gt; &quot;WEST JEFFERSON&quot;, &quot;AULANDER&quot;, &quot;CAMDEN&quot;, &quot;MIL…
+$ state_cd                 &lt;chr&gt; &quot;NC&quot;, &quot;NC&quot;, &quot;NC&quot;, &quot;NC&quot;, &quot;NC&quot;, &quot;NC&quot;, &quot;NC&quot;, &quot;N…
+$ zip_code                 &lt;chr&gt; &quot;28694&quot;, &quot;27805&quot;, &quot;27921&quot;, &quot;27305&quot;, &quot;27932&quot;,…
+$ area_cd                  &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, &quot;828&quot;, N…
+$ phone_num                &lt;chr&gt; NA, NA, NA, NA, &quot;4822387&quot;, NA, &quot;8233232&quot;, NA…
+$ sex_code                 &lt;chr&gt; &quot;M&quot;, &quot;M&quot;, &quot;F&quot;, &quot;M&quot;, &quot;F&quot;, &quot;F&quot;, &quot;M&quot;, &quot;M&quot;, &quot;F&quot;,…
+$ sex                      &lt;chr&gt; &quot;MALE&quot;, &quot;MALE&quot;, &quot;FEMALE&quot;, &quot;MALE&quot;, &quot;FEMALE&quot;, …
+$ age                      &lt;chr&gt; &quot;43&quot;, &quot;52&quot;, &quot;46&quot;, &quot;48&quot;, &quot;48&quot;, &quot;60&quot;, &quot;70&quot;, &quot;4…
+$ birth_place              &lt;chr&gt; &quot;NC&quot;, &quot;NC&quot;, &quot;NC&quot;, &quot;VA&quot;, &quot;NC&quot;, &quot;NC&quot;, &quot;NC&quot;, &quot;N…
+$ registr_dt               &lt;date&gt; 1991-10-04, 1996-01-12, 1978-04-01, 1976-04…
+$ cancellation_dt          &lt;date&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ load_dt                  &lt;date&gt; 2014-07-15, 2014-07-15, 2014-07-15, 2014-07…</code></pre>
+<pre class="r"><code>skimr::skim(d)</code></pre>
+<table>
+<caption><span id="tab:unnamed-chunk-4">Table 4.1: </span>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">d</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">4099699</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">32</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">28</td>
+</tr>
+<tr class="odd">
+<td align="left">Date</td>
+<td align="left">4</td>
+</tr>
+<tr class="even">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">county_id</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">0</td>
+<td align="right">100</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">county_desc</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">3</td>
+<td align="right">12</td>
+<td align="right">0</td>
+<td align="right">100</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">voter_reg_num</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">12</td>
+<td align="right">12</td>
+<td align="right">0</td>
+<td align="right">1786064</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">ncid</td>
+<td align="right">4099699</td>
+<td align="right">0.00</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">status_cd</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">voter_status_desc</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">6</td>
+<td align="right">6</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">reason_cd</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">voter_status_reason_desc</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">8</td>
+<td align="right">8</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">last_name</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">1</td>
+<td align="right">21</td>
+<td align="right">0</td>
+<td align="right">191996</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">first_name</td>
+<td align="right">23</td>
+<td align="right">1.00</td>
+<td align="right">1</td>
+<td align="right">19</td>
+<td align="right">0</td>
+<td align="right">126589</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">midl_name</td>
+<td align="right">252695</td>
+<td align="right">0.94</td>
+<td align="right">1</td>
+<td align="right">20</td>
+<td align="right">0</td>
+<td align="right">175742</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">name_sufx_cd</td>
+<td align="right">3869063</td>
+<td align="right">0.06</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">0</td>
+<td align="right">101</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">house_num</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">1</td>
+<td align="right">6</td>
+<td align="right">0</td>
+<td align="right">27534</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">half_code</td>
+<td align="right">4088996</td>
+<td align="right">0.00</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">41</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">street_dir</td>
+<td align="right">3812561</td>
+<td align="right">0.07</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">8</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">street_name</td>
+<td align="right">7</td>
+<td align="right">1.00</td>
+<td align="right">1</td>
+<td align="right">30</td>
+<td align="right">0</td>
+<td align="right">83244</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">street_type_cd</td>
+<td align="right">154594</td>
+<td align="right">0.96</td>
+<td align="right">2</td>
+<td align="right">4</td>
+<td align="right">0</td>
+<td align="right">119</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">street_sufx_cd</td>
+<td align="right">3941004</td>
+<td align="right">0.04</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">0</td>
+<td align="right">11</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">unit_num</td>
+<td align="right">3755239</td>
+<td align="right">0.08</td>
+<td align="right">1</td>
+<td align="right">7</td>
+<td align="right">0</td>
+<td align="right">16116</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">res_city_desc</td>
+<td align="right">19</td>
+<td align="right">1.00</td>
+<td align="right">3</td>
+<td align="right">20</td>
+<td align="right">0</td>
+<td align="right">783</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">state_cd</td>
+<td align="right">18</td>
+<td align="right">1.00</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">5</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">zip_code</td>
+<td align="right">21</td>
+<td align="right">1.00</td>
+<td align="right">5</td>
+<td align="right">9</td>
+<td align="right">0</td>
+<td align="right">902</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">area_cd</td>
+<td align="right">2628117</td>
+<td align="right">0.36</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">0</td>
+<td align="right">507</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">phone_num</td>
+<td align="right">2540990</td>
+<td align="right">0.38</td>
+<td align="right">1</td>
+<td align="right">7</td>
+<td align="right">0</td>
+<td align="right">1072592</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">sex_code</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">sex</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">3</td>
+<td align="right">6</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">age</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">0</td>
+<td align="right">135</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">birth_place</td>
+<td align="right">718647</td>
+<td align="right">0.82</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">56</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: Date</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="left">min</th>
+<th align="left">max</th>
+<th align="left">median</th>
+<th align="right">n_unique</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">snapshot_dt</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">2005-11-25</td>
+<td align="left">2005-11-25</td>
+<td align="left">2005-11-25</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">registr_dt</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">1899-09-14</td>
+<td align="left">9999-10-21</td>
+<td align="left">1997-01-09</td>
+<td align="right">18249</td>
+</tr>
+<tr class="odd">
+<td align="left">cancellation_dt</td>
+<td align="right">4095558</td>
+<td align="right">0</td>
+<td align="left">1994-10-18</td>
+<td align="left">2004-10-05</td>
+<td align="left">1997-01-16</td>
+<td align="right">248</td>
+</tr>
+<tr class="even">
+<td align="left">load_dt</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">2014-07-15</td>
+<td align="left">2014-07-15</td>
+<td align="left">2014-07-15</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+<div id="no-useful-variation" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> No useful variation</h2>
+<p>The following variables are entirely missing values:</p>
+<ul>
+<li><code>ncid</code> North Carolina identification number (NCID) of voter</li>
+</ul>
+<p>The following variables have exactly one unique nonmissing value:</p>
+<ul>
+<li><code>snapshot_dt</code> Date of snapshot</li>
+<li><code>load_dt</code> Data load date</li>
+</ul>
+<p>The following variables have exactly one unique nonmissing value becasue of selcting ACTIVE &amp; VERIFIED records:</p>
+<ul>
+<li><code>status_cd</code> Status code for voter registration</li>
+<li><code>voter_status_desc</code> Status code description</li>
+<li><code>reason_cd</code> Reason code for voter registration status</li>
+<li><code>voter_status_reason_desc</code> Reason code description</li>
+</ul>
+<p>Those variables can not possibly be useful. Drop them from the data.</p>
+<pre class="r"><code>d &lt;- d %&gt;% 
+  dplyr::select(
+    -c(ncid, snapshot_dt, load_dt,
+       status_cd, voter_status_desc, reason_cd, voter_status_reason_desc)
+  )</code></pre>
+</div>
+<div id="useful-variation" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> Useful variation</h2>
+<p>The remainder of variables have more than one unique nonmissing value,
+so are potentially usable.</p>
+<ul>
+<li>Eyeball checking of these variables shows they appear to have
+contents of the expected type.</li>
+</ul>
+<p>Add an identity variable.
+We assume that all the records correspond to unique people.
+So just sequentially number the records.</p>
+<pre class="r"><code>d &lt;- d %&gt;% 
+  dplyr::mutate(id = 1:nrow(.))</code></pre>
+</div>
+</div>
+<div id="save-entity-data" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Save entity data</h1>
+<p>The usable data is stored as an <a href="https://www.fstpackage.org/"><code>fst</code> format</a> file in the <code>output</code> directory.
+This format stores only a data frame and can be read <em>very</em> rapidly.
+It is possible to read a subset of the stored columns,
+so we don’t have to be too worried about storing columns that aren’t always needed.</p>
+<pre class="r"><code># Show the raw data file location
+# This is set in code/file_paths.R
+f_entity_fst</code></pre>
+<pre><code>[1] &quot;/home/ross/RG/projects/academic/entity_resolution/fa_sim_cal_TOP/fa_sim_cal/output/ent_raw.fst&quot;</code></pre>
+<pre class="r"><code># save the usable entity data (cheap-skate caching)
+d %&gt;% fst::write_fst(f_entity_fst, compress = 100) </code></pre>
+</div>
+<div id="timing" class="section level1 unnumbered">
+<h1>Timing</h1>
+<pre><code>Computation time (excl. render): 465.093 sec elapsed</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.0.3 (2020-10-10)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 20.10
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.9.0
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.9.0
+
+locale:
+ [1] LC_CTYPE=en_AU.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_AU.UTF-8        LC_COLLATE=en_AU.UTF-8    
+ [5] LC_MONETARY=en_AU.UTF-8    LC_MESSAGES=en_AU.UTF-8   
+ [7] LC_PAPER=en_AU.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_AU.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] vroom_1.3.2     glue_1.4.2      knitr_1.30      skimr_2.1.2    
+ [5] fst_0.9.4       forcats_0.5.0   stringr_1.4.0   dplyr_1.0.2    
+ [9] purrr_0.3.4     readr_1.4.0     tidyr_1.1.2     tibble_3.0.4   
+[13] ggplot2_3.3.3   tidyverse_1.3.0 tictoc_1.0      here_1.0.1     
+[17] workflowr_1.6.2
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.5        lubridate_1.7.9.2 utf8_1.1.4        assertthat_0.2.1 
+ [5] rprojroot_2.0.2   digest_0.6.27     repr_1.1.0        R6_2.5.0         
+ [9] cellranger_1.1.0  backports_1.2.1   reprex_0.3.0      evaluate_0.14    
+[13] httr_1.4.2        highr_0.8         pillar_1.4.7      rlang_0.4.10     
+[17] readxl_1.3.1      rstudioapi_0.13   whisker_0.4       rmarkdown_2.6    
+[21] bit_4.0.4         munsell_0.5.0     broom_0.7.3       compiler_4.0.3   
+[25] httpuv_1.5.4      modelr_0.1.8      xfun_0.20         base64enc_0.1-3  
+[29] pkgconfig_2.0.3   htmltools_0.5.0   tidyselect_1.1.0  bookdown_0.21    
+[33] fansi_0.4.1       crayon_1.3.4      dbplyr_2.0.0      withr_2.3.0      
+[37] later_1.1.0.1     grid_4.0.3        jsonlite_1.7.2    gtable_0.3.0     
+[41] lifecycle_0.2.0   DBI_1.1.0         git2r_0.27.1      magrittr_2.0.1   
+[45] scales_1.1.1      cli_2.2.0         stringi_1.5.3     renv_0.12.5      
+[49] fs_1.5.0          promises_1.1.1    xml2_1.3.2        ellipsis_0.3.1   
+[53] generics_0.1.0    vctrs_0.3.6       tools_4.0.3       bit64_4.0.5      
+[57] hms_0.5.3         parallel_4.0.3    yaml_2.2.1        colorspace_2.0-0 
+[61] rvest_0.3.6       haven_2.3.1      </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4,h5",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "site_libs/mathjax-local/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
