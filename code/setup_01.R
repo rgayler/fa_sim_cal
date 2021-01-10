@@ -28,9 +28,9 @@
 ##### Load libraries #####
 
 library(fst) # for fast, compressed dataframe storage
-library(magrittr) # for piping
-library(dplyr) # for tidy data manipulation
-library(stringr) # for string manipulation
+# library(magrittr) # for piping
+# library(dplyr) # for tidy data manipulation
+# library(stringr) # for string manipulation
 library(skimr) # for compact summary statistics
 library(knitr) # for formatted rendering of tables
 library(glue) # for convenient string interpolation

@@ -1756,21 +1756,21 @@ Find test records
 ```{r}
 # last name
 words <- c(
-  "TEST", "TST", "SAMPLE", "DUMMY", "VOTER",  "\\([A-Z]\\)\\1{2,}"
+  "TEST", "TST", "DUMMY", "VOTER",  "([A-Z])\\1{2,}"
   ) %>% 
   glue::glue(x = . , "\\b{x}\\b") %>%  # must be words
-  glue::glue_collapse(sep = "|") %>% 
-  glue::glue(x = . , "({x})")
+  glue::glue_collapse(sep = "|")
 
 x <- d %>% 
+  dplyr::select(last_name, first_name, midl_name, name_sufx_cd, sex, age, res_city_desc, street_name, house_num, area_cd, phone_num) %>% 
   dplyr::filter(
     last_name %>% 
-      stringr::str_to_upper() %>% 
-      stringr::str_replace_all(pattern = "[^ A-Z]", replacement = " ") %>% 
-      stringr::str_squish() %>% 
+      stringr::str_to_upper() %>%
+      stringr::str_replace_all(pattern = "[^ A-Z]", replacement = " ") %>%
+      stringr::str_squish() %>%
       stringr::str_detect(pattern = words)
   ) %>% 
-  dplyr::arrange(last_name, sex, first_name)
+  dplyr::arrange(last_name, res_city_desc, street_name, sex, first_name)
 nrow(x)
 x %>% knitr::kable()
 ```
@@ -1785,21 +1785,21 @@ Last name
 ```{r}
 # first name
 words <- c(
-  "TEST", "TST", "SAMPLE", "DUMMY", "VOTER",  "\\([A-Z]\\)\\1{2,}"
+  "THIS[A-Z]*", "TEST", "TST", "DUMMY", "FAKE", "FALSE", "BOGUS", "VOTER",  "([A-Z])\\1{2,}"
   ) %>% 
   glue::glue(x = . , "\\b{x}\\b") %>%  # must be words
-  glue::glue_collapse(sep = "|") %>% 
-  glue::glue(x = . , "({x})")
+  glue::glue_collapse(sep = "|")
 
 x <- d %>% 
+  dplyr::select(last_name, first_name, midl_name, name_sufx_cd, sex, age, res_city_desc, street_name, house_num, area_cd, phone_num) %>% 
   dplyr::filter(
     first_name %>% 
-      stringr::str_to_upper() %>% 
-      stringr::str_replace_all(pattern = "[^ A-Z]", replacement = " ") %>% 
-      stringr::str_squish() %>% 
+      stringr::str_to_upper() %>%
+      stringr::str_replace_all(pattern = "[^ A-Z]", replacement = " ") %>%
+      stringr::str_squish() %>%
       stringr::str_detect(pattern = words)
   ) %>% 
-  dplyr::arrange(first_name, sex, last_name)
+  dplyr::arrange(first_name, last_name, res_city_desc, street_name, sex)
 nrow(x)
 x %>% knitr::kable()
 ```
@@ -1814,21 +1814,21 @@ First name
 ```{r}
 # middle name
 words <- c(
-  "TEST", "TST", "SAMPLE", "DUMMY", "VOTER",  "\\([A-Z]\\)\\1{2,}"
+  "THIS[A-Z]*", "TEST", "TST", "DUMMY", "FAKE", "FALSE", "BOGUS", "VOTER",  "([A-Z])\\1{2,}"
   ) %>% 
   glue::glue(x = . , "\\b{x}\\b") %>%  # must be words
-  glue::glue_collapse(sep = "|") %>% 
-  glue::glue(x = . , "({x})")
+  glue::glue_collapse(sep = "|")
 
 x <- d %>% 
+  dplyr::select(last_name, first_name, midl_name, name_sufx_cd, sex, age, res_city_desc, street_name, house_num, area_cd, phone_num) %>% 
   dplyr::filter(
     midl_name %>% 
-      stringr::str_to_upper() %>% 
-      stringr::str_replace_all(pattern = "[^ A-Z]", replacement = " ") %>% 
-      stringr::str_squish() %>% 
+      stringr::str_to_upper() %>%
+      stringr::str_replace_all(pattern = "[^ A-Z]", replacement = " ") %>%
+      stringr::str_squish() %>%
       stringr::str_detect(pattern = words)
   ) %>% 
-  dplyr::arrange(midl_name, sex, last_name)
+  dplyr::arrange(midl_name, last_name, res_city_desc, street_name, sex, first_name)
 nrow(x)
 x %>% knitr::kable()
 ```
@@ -1839,6 +1839,7 @@ Middle name
 -   As entire middle name:
 -   Prefixes:
 -   Suffixes:
+
 
 # Clean name variables
 

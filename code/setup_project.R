@@ -44,6 +44,9 @@ if(!exists("DEBUG")) DEBUG <- FALSE
 
 library(here) # for constructing file paths relative to project root
 library(tictoc) # for timing the operations
+# suppressPackageStartupMessages(
+  library(tidyverse) # for "tidy" operations
+# )
 
 # ##### Load utility functions #####
 #

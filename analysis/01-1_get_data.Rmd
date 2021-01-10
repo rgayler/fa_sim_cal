@@ -1,6 +1,6 @@
 ---
 title: "01-1_get_data"
-subtitle: "Read and subset the data"
+subtitle: "Read, subset, and save the data"
 author: "Ross Gayler"
 date: "2021-01-07"
 output: workflowr::wflow_html
@@ -11,17 +11,19 @@ editor_options:
 ---
 
 ```{r setup}
-# Set up the project environment, because each Rmd file is knit in a new R session
+# Set up the project environment, because each Rmd file knits in a new R session
+# so doesn't get the project setup from .Rprofile
 library(here)
 source(here::here("code", "setup_project.R"))
 
-# Set up for the 01*.Rmd notebooks
+# Extra set up for the 01*.Rmd notebooks
 source(here::here("code", "setup_01.R"))
 
+# Extra set up for this notebook
 library(vroom) # fast reading of delimited text files
 
 # start the execution time clock
-tictoc::toc("Total time: ")
+tictoc::tic("Computation time (excl. render)")
 ```
 
 # Introduction
@@ -31,9 +33,15 @@ used for modelling, characterise it to understand it, check for possible
 gotchas, clean it, and save it for the analyses proper.
 
 This notebook (`01-1_get_data`) reads the raw data, subsets it to the
-data we will use, and saves it in an R-friendly format.
+data we will use, briefly sanity checks the data, and saves it in an
+R-friendly format.
 
-## Data
+Some of the analyses have been run on a laptop computer with 16GB RAM.
+Consequently it is helpful to minimise the data volume as soon as
+possible. This means we will occasionally take a diversion in the
+analyses to make the data fit the hardware.
+
+## Entity data
 
 This project uses historical voter registration data from the [North
 Carolina State Board of Elections](https://www.ncsbe.gov/). This
@@ -54,9 +62,8 @@ relatively large, with the smallest being 572 MB after compression.
 
 The snapshots contain many columns that are irrelevant to this project
 (e.g. school district name) and/or prohibited under Australian privacy
-law (e.g. political affiliation, race). We initially read *all* the
-columns (because that is simple and may help debugging any problems in
-reading the data), then drop the unneeded columns.
+law (e.g. political affiliation, race). We do not read these unneeded
+columns from the snapshot file.
 
 We use only one snapshot file
 ([VR_Snapshot_20051125.zip](https://s3.amazonaws.com/dl.ncsbe.gov/data/Snapshots/VR_Snapshot_20051125.zip))
@@ -66,7 +73,7 @@ the contents are the most out of date, minimising the current
 information made available. Note that this project will not generate any
 information that is not already directly, publicly available from NCSBE.
 
-# Read data
+# Read entity data
 
 The snapshot ZIP file was manually downloaded (572 MB), uncompressed
 (5.7 GB), then re-compressed in [XZ
@@ -86,12 +93,25 @@ quoted values.
 
 ```{r}
 # Show the raw data file location
-# This is set in./code/file_paths.R
+# This is set in code/file_paths.R
 f_entity_uncln_tsv
 
 # read the data
-d <- vroom::vroom( #read raw data; let vroom guess the field types
+d <- vroom::vroom( #read raw data
   f_entity_uncln_tsv,
+  # n_max = 1e4, # limit the rows for testing
+  col_select = c( # get all the columns that might conceivably be used
+                  # the names and ordering are from the metadata file
+    snapshot_dt : voter_status_reason_desc, # 9 cols
+    last_name : street_sufx_cd, # 10 cols
+    unit_num : zip_code, # 4 cols
+    area_cd, phone_num, # 2 cols
+    sex_code : registr_dt, # 5 cols
+    cancellation_dt, load_dt # 2 cols
+    ), # total 32 cols
+  col_types = cols(
+    .default = col_character() # all cols as chars to allow for bad formatting
+    ),
   delim = "\t", # assume that fields are *only* delimited by tabs
   col_names = TRUE, # use the column names on the first line of data
   na = "", # missing fields are empty string or whitespace only (see trim_ws argument)
@@ -101,38 +121,127 @@ d <- vroom::vroom( #read raw data; let vroom guess the field types
   escape_double = FALSE, # assume no escaped quotes
   escape_backslash = FALSE # assume no escaped backslashes
   ) %>% 
-  tibble::as_tibble() %T>% 
-  dim() %>% # dimensions of dataframe as read
-  dplyr::select( # drop the unneeded columns
-    XXXXX ,
+  tibble::as_tibble() %>% 
+  dplyr::mutate( # convert the datetime cols to dates
+    snapshot_dt     = lubridate::as_date(snapshot_dt),
+    registr_dt      = lubridate::as_date(registr_dt),
+    cancellation_dt = lubridate::as_date(cancellation_dt),
+    load_dt         = lubridate::as_date(load_dt)
   )
-  
-  
-# fst::write_fst(d, d_fst, compress = 100) # save data frame (cheap-skate caching)
 ```
 
-Some of the analyses have been done on a laptop with 16GB of RAM. The
-data set is almost too big for that laptop, so for different sections of
-the analysis I read a subset of the columns from the temporary data
-file, delete the dataframes after use and clean up the RAM with a
-garbage collection.
+Check the number of rows and columns read.
 
 ```{r}
-d <- fst::read_fst(d_fst) %>% tibble::as_tibble() # get cached data
 dim(d)
 ```
 
 -   Correct number of data rows extracted (external line count of input
     file = 8,003,294)
+-   Correct number of columns extracted (checked against manual count of
+    columns in metadata)
 
-Take a very quick look at everything then concentrate on the columns
-that have a chance of being useful.
+# Exclusions
+
+Preliminary examination of the data showed that about half the rows
+correspond to people who have been removed from the electoral roll.
+Remove these rows from the data. Keep only the rows flagged as ACTIVE
+and VERIFIED, because by a common-sense interpretation of those labels,
+these rows have passed the electoral checking criteria and therefore
+are least likely to contain errors or be duplicates.
+
+Preliminary examination of the data discovered one row that was an
+obvious test record which was flagged as ACTIVE and VERIFIED. Remove
+that row from the data.
+
+Remove those rows now to reduce processing time for later steps and to
+avoid thinkiing about records that won't be used.
+
+```{r}
+d <- d %>% 
+  dplyr::filter(
+    voter_status_desc == "ACTIVE" & voter_status_reason_desc == "VERIFIED",
+      ! (first_name == "THIS" & last_name == "TEST")
+  )
+dim(d)
+```
+
+# Quick check
+
+Take a very quick look at all the columns to see if they contain the
+expected content.
 
 ```{r}
 glimpse(d)
 skimr::skim(d)
 ```
 
--   The warning messages from `skim()` indicate that a handful of rows
-    contain unexpected characters. If they are in rows we use they will
-    have to be located and dealt with.
+## No useful variation
+
+The following variables are entirely missing values:
+
+-   `ncid` North Carolina identification number (NCID) of voter
+
+The following variables have exactly one unique nonmissing value:
+
+-   `snapshot_dt` Date of snapshot
+-   `load_dt` Data load date
+
+The following variables have exactly one unique nonmissing value becasue of selcting ACTIVE & VERIFIED records:
+
+* `status_cd` Status code for voter registration
+* `voter_status_desc` Status code description
+* `reason_cd` Reason code for voter registration status
+* `voter_status_reason_desc` Reason code description
+
+Those variables can not possibly be useful. Drop them from the data.
+
+```{r}
+d <- d %>% 
+  dplyr::select(
+    -c(ncid, snapshot_dt, load_dt,
+       status_cd, voter_status_desc, reason_cd, voter_status_reason_desc)
+  )
+```
+
+## Useful variation
+
+The remainder of variables have more than one unique nonmissing value,
+so are potentially usable.
+
+-   Eyeball checking of these variables shows they appear to have
+    contents of the expected type.
+    
+Add an identity variable.
+We assume that all the records correspond to unique people.
+So just sequentially number the records.
+
+```{r}
+d <- d %>% 
+  dplyr::mutate(id = 1:nrow(.))
+```
+
+# Save entity data
+
+The usable data is stored as an [`fst` format](https://www.fstpackage.org/) file in the `output` directory.
+This format stores only a data frame and can be read *very* rapidly.
+It is possible to read a subset of the stored columns,
+so we don't have to be too worried about storing columns that aren't always needed.
+
+```{r}
+# Show the raw data file location
+# This is set in code/file_paths.R
+f_entity_fst
+
+# save the usable entity data (cheap-skate caching)
+d %>% fst::write_fst(f_entity_fst, compress = 100) 
+```
+
+
+
+
+# Timing {.unnumbered}
+
+```{r echo=FALSE}
+tictoc::toc()
+```
