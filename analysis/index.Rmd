@@ -34,9 +34,9 @@ This notebook is for keeping notes of any points that may be useful for later pr
 
 # Analysis Notebooks {.unnumbered}
 
-## [Get, check and clean data](01_get_check_data.html) {.unnumbered}
+## [Get, subset, check, and save data](01-1_get_data.html) {.unnumbered}
 
-Import the raw data, check for anomalies, clean the important attributes, and save the cleaned data for use.
+Import the raw data, cut it back to the subset of rows and columns that are possibly useful, sanity check the data, and save the data in an R-friendly format.
 
 ------------------------------------------------------------------------
 
