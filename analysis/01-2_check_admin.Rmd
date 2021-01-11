@@ -1,6 +1,6 @@
 ---
 title: "01-2_check_admin"
-subtitle: "Read, subset, and save the data"
+subtitle: "Check administrative variables"
 author: "Ross Gayler"
 date: "2021-01-11"
 output: workflowr::wflow_html
