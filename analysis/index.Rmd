@@ -9,7 +9,6 @@ output:
     toc: false
 editor_options:
   chunk_output_type: console
-
 ---
 
 This is the website for the research project "Frequency-Aware Similarity Calibration".
@@ -34,9 +33,15 @@ This notebook is for keeping notes of any points that may be useful for later pr
 
 # Analysis Notebooks {.unnumbered}
 
-## [Get, subset, check, and save data](01-1_get_data.html) {.unnumbered}
+## 01 Read, check, and standardise the entity data {-}
+
+### [01-1 Get, subset, check, and save data](01-1_get_data.html) {.unnumbered}
 
 Import the raw data, cut it back to the subset of rows and columns that are possibly useful, sanity check the data, and save the data in an R-friendly format.
+
+### [01-2 Check administrative data](01-2_check_admin.html) {.unnumbered}
+
+Check the "administrative" data. This is data relating to the administration of voter registration.
 
 ------------------------------------------------------------------------
 
