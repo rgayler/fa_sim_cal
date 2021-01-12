@@ -47,6 +47,10 @@ Check the "administrative" variables. This is data relating to the administratio
 
 Check the residence variables - residential address and phone number.
 
+### [01-4 Check demographic variables](01-4_check_demog.html) {.unnumbered}
+
+Check the demographic variables - sex, age, and birth place.
+
 ------------------------------------------------------------------------
 
 # Manuscripts {.unnumbered}
