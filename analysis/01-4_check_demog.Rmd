@@ -47,7 +47,7 @@ Define the demographic variables.
 
 ```{r}
 vars_resid <- c(
-"sex_code", "sex", "age", "birth_place" 
+  "sex_code", "sex", "age", "birth_place" 
 )
 ```
 
