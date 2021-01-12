@@ -39,9 +39,13 @@ This notebook is for keeping notes of any points that may be useful for later pr
 
 Import the raw data, cut it back to the subset of rows and columns that are possibly useful, sanity check the data, and save the data in an R-friendly format.
 
-### [01-2 Check administrative data](01-2_check_admin.html) {.unnumbered}
+### [01-2 Check administrative variables](01-2_check_admin.html) {.unnumbered}
 
-Check the "administrative" data. This is data relating to the administration of voter registration.
+Check the "administrative" variables. This is data relating to the administration of voter registration.
+
+### [01-3 Check residence variables](01-3_check_resid.html) {.unnumbered}
+
+Check the residence variables - residential address and phone number.
 
 ------------------------------------------------------------------------
 
