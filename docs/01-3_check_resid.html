@@ -1,0 +1,2489 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Ross Gayler" />
+
+<meta name="date" content="2021-01-12" />
+
+<title>01-3_check_resid</title>
+
+<script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Frequency-Aware Similarity Calibration</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/rgayler/fa_sim_cal">
+    <span class="fas fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">01-3_check_resid</h1>
+<h3 class="subtitle">Check residence variables</h3>
+<h4 class="author">Ross Gayler</h4>
+<h4 class="date">2021-01-12</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks">
+Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-01-12
+</p>
+<p>
+<strong>Checks:</strong>
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+7
+<span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+0
+</p>
+<p>
+<strong>Knit directory:</strong>
+<code>fa_sim_cal/</code>
+<span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version
+1.6.2). The <em>Checks</em> tab describes the
+reproducibility checks that were applied when the results were created.
+The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you
+know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Environment:</strong> empty
+</a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global
+environment can affect the analysis in your R Markdown file in unknown ways.
+For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20201104code">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Seed:</strong> <code>set.seed(20201104)</code>
+</a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20201104code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20201104)</code> was run prior to running the code in the R Markdown file.
+Setting a seed ensures that any results that rely on randomness, e.g.
+subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Session information:</strong> recorded
+</a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is
+critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Cache:</strong> none
+</a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident
+that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>File paths:</strong> relative
+</a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project
+makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree84d53a0756d7b2510376a5f2fa65b054baa2fbectargetblank84d53a0a">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/84d53a0756d7b2510376a5f2fa65b054baa2fbec" target="_blank">84d53a0</a>
+</a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree84d53a0756d7b2510376a5f2fa65b054baa2fbectargetblank84d53a0a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and
+connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/84d53a0756d7b2510376a5f2fa65b054baa2fbec" target="_blank">84d53a0</a>.
+See the <em>Past versions</em> tab to see a history of the changes made to the
+R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the
+analysis have been committed to Git prior to generating the results (you can
+use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only
+checks the R Markdown file, but you know if there are other scripts or data
+files that it depends on. Below is the status of the Git repository when the
+results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    .tresorit/
+    Ignored:    data/VR_20051125.txt.xz
+    Ignored:    output/ent_raw.fst
+    Ignored:    renv/library/
+    Ignored:    renv/staging/
+
+Untracked files:
+    Untracked:  analysis/01_get_check_data.Rmd.txt
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in
+this status report because it is ok for generated content to have uncommitted
+changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made
+to the R Markdown (<code>analysis/01-3_check_resid.Rmd</code>) and HTML (<code>docs/01-3_check_resid.html</code>)
+files. If you’ve configured a remote Git repository (see
+<code>?wflow_git_remote</code>), click on the hyperlinks in the table below to
+view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/84d53a0756d7b2510376a5f2fa65b054baa2fbec/analysis/01-3_check_resid.Rmd" target="_blank">84d53a0</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-12
+</td>
+<td>
+Add 01-3 check resid
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code># Set up the project environment, because each Rmd file knits in a new R session
+# so doesn&#39;t get the project setup from .Rprofile
+
+# Project setup
+library(here)
+source(here::here(&quot;code&quot;, &quot;setup_project.R&quot;))</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>✓ ggplot2 3.3.3     ✓ purrr   0.3.4
+✓ tibble  3.0.4     ✓ dplyr   1.0.2
+✓ tidyr   1.1.2     ✓ stringr 1.4.0
+✓ readr   1.4.0     ✓ forcats 0.5.0</code></pre>
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code># Extra set up for the 01*.Rmd notebooks
+source(here::here(&quot;code&quot;, &quot;setup_01.R&quot;))</code></pre>
+<pre><code>
+Attaching package: &#39;glue&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:dplyr&#39;:
+
+    collapse</code></pre>
+<pre class="r"><code># Extra set up for this notebook
+# ???
+
+# start the execution time clock
+tictoc::tic(&quot;Computation time (excl. render)&quot;)</code></pre>
+<div id="introduction" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<p>The <code>01*.Rmd</code> notebooks read the data, filter it to the subset to be
+used for modelling, characterise it to understand it, check for possible
+gotchas, clean it, and save it for the analyses proper.</p>
+<p>This notebook (<code>01-3_check_resid</code>) characterises the residence variables
+in the saved subset of the data. These are the residential address and
+the phone number (which is tied to the address if the telephone is a
+land-line).</p>
+<p>We have no intention of using the residence variables as predictors for
+entity resolution. However, they may be of use for manually checking the
+results of entity resolution. Consequently, the checking done here is
+minimal.</p>
+<hr />
+<p>Define the residence variables.</p>
+<pre class="r"><code>vars_resid &lt;- c(
+  &quot;unit_num&quot;, &quot;house_num&quot;,      
+  &quot;half_code&quot;, &quot;street_dir&quot;, &quot;street_name&quot;, &quot;street_type_cd&quot;, &quot;street_sufx_cd&quot;,
+  &quot;res_city_desc&quot;, &quot;state_cd&quot;, &quot;zip_code&quot;,
+  &quot;area_cd&quot;, &quot;phone_num&quot;
+)</code></pre>
+<p>Read the usable data. Remember that this consists of only the ACTIVE &amp;
+VERIFIED records.</p>
+<pre class="r"><code># Show the entity data file location
+# This is set in code/file_paths.R
+f_entity_fst</code></pre>
+<pre><code>[1] &quot;/home/ross/RG/projects/academic/entity_resolution/fa_sim_cal_TOP/fa_sim_cal/output/ent_raw.fst&quot;</code></pre>
+<pre class="r"><code># get data for next section of analyses
+d &lt;- fst::read_fst(
+  f_entity_fst, 
+  columns = vars_resid
+) %&gt;% 
+  tibble::as_tibble()
+dim(d)</code></pre>
+<pre><code>[1] 4099699      12</code></pre>
+<p>Look at some examples.</p>
+<p>Residential address:</p>
+<pre class="r"><code>d %&gt;% 
+  dplyr::select(unit_num : zip_code) %&gt;% 
+  dplyr::slice_sample(n = 20) %&gt;% 
+  knitr::kable()</code></pre>
+<table>
+<colgroup>
+<col width="7%" />
+<col width="8%" />
+<col width="8%" />
+<col width="9%" />
+<col width="15%" />
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+<col width="7%" />
+<col width="7%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">unit_num</th>
+<th align="left">house_num</th>
+<th align="left">half_code</th>
+<th align="left">street_dir</th>
+<th align="left">street_name</th>
+<th align="left">street_type_cd</th>
+<th align="left">street_sufx_cd</th>
+<th align="left">res_city_desc</th>
+<th align="left">state_cd</th>
+<th align="left">zip_code</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">2883</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">EASY</td>
+<td align="left">ST</td>
+<td align="left">NA</td>
+<td align="left">DUNN</td>
+<td align="left">NC</td>
+<td align="left">28334</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">665</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">MOUNT OLIVE CHURCH</td>
+<td align="left">RD</td>
+<td align="left">NA</td>
+<td align="left">FRANKLINTON</td>
+<td align="left">NC</td>
+<td align="left">27525</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">417</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">EDINBURGH</td>
+<td align="left">DR</td>
+<td align="left">NA</td>
+<td align="left">FAYETTEVILLE</td>
+<td align="left">NC</td>
+<td align="left">28303</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">2517</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">KERR</td>
+<td align="left">AVE</td>
+<td align="left">N</td>
+<td align="left">WILMINGTON</td>
+<td align="left">NC</td>
+<td align="left">28405</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">2337</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">CLEVELAND</td>
+<td align="left">AVE</td>
+<td align="left">NA</td>
+<td align="left">FAYETTEVILLE</td>
+<td align="left">NC</td>
+<td align="left">28312</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">9435</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NC HWY 87</td>
+<td align="left">NA</td>
+<td align="left">N</td>
+<td align="left">PITTSBORO</td>
+<td align="left">NC</td>
+<td align="left">27312</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">215</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">ORANGE</td>
+<td align="left">ST</td>
+<td align="left">NA</td>
+<td align="left">ROCKY MOUNT</td>
+<td align="left">NC</td>
+<td align="left">27801</td>
+</tr>
+<tr class="even">
+<td align="left">A317</td>
+<td align="left">733</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">PLANTATION ESTATES</td>
+<td align="left">DR</td>
+<td align="left">NA</td>
+<td align="left">MATTHEWS</td>
+<td align="left">NC</td>
+<td align="left">28105</td>
+</tr>
+<tr class="odd">
+<td align="left">2</td>
+<td align="left">5311</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">25 70</td>
+<td align="left">HWY</td>
+<td align="left">NA</td>
+<td align="left">MARSHALL</td>
+<td align="left">NC</td>
+<td align="left">28753</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">424</td>
+<td align="left">NA</td>
+<td align="left">N</td>
+<td align="left">KING</td>
+<td align="left">ST</td>
+<td align="left">NA</td>
+<td align="left">ST PAULS</td>
+<td align="left">NC</td>
+<td align="left">28384</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">13429</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">OLD STAGE</td>
+<td align="left">RD</td>
+<td align="left">NA</td>
+<td align="left">WILLOW SPRINGS</td>
+<td align="left">NC</td>
+<td align="left">27592</td>
+</tr>
+<tr class="even">
+<td align="left">D</td>
+<td align="left">3247</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">CYPRESS PARK</td>
+<td align="left">RD</td>
+<td align="left">NA</td>
+<td align="left">GREENSBORO</td>
+<td align="left">NC</td>
+<td align="left">27407</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">9925</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">PALLISERS</td>
+<td align="left">TER</td>
+<td align="left">NA</td>
+<td align="left">CHARLOTTE</td>
+<td align="left">NC</td>
+<td align="left">28210</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">114</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">GIBBS</td>
+<td align="left">RD</td>
+<td align="left">NA</td>
+<td align="left">NEW BERN</td>
+<td align="left">NC</td>
+<td align="left">28560</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">8885</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">ROCKY RIVER</td>
+<td align="left">RD</td>
+<td align="left">NA</td>
+<td align="left">HARRISBURG</td>
+<td align="left">NC</td>
+<td align="left">28075</td>
+</tr>
+<tr class="even">
+<td align="left">A</td>
+<td align="left">105</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">TAMALPAIS</td>
+<td align="left">PT</td>
+<td align="left">NA</td>
+<td align="left">CHAPEL HILL</td>
+<td align="left">NC</td>
+<td align="left">27514</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">102</td>
+<td align="left">NA</td>
+<td align="left">N</td>
+<td align="left">ROXFORD</td>
+<td align="left">RD</td>
+<td align="left">NA</td>
+<td align="left">KINGS MOUNTAIN</td>
+<td align="left">NC</td>
+<td align="left">28086</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">551</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NICK MCLEAN</td>
+<td align="left">RD</td>
+<td align="left">NA</td>
+<td align="left">BUNNLEVEL</td>
+<td align="left">NC</td>
+<td align="left">28323</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">2913</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">WINDSOR</td>
+<td align="left">AVE</td>
+<td align="left">NA</td>
+<td align="left">CHARLOTTE</td>
+<td align="left">NC</td>
+<td align="left">28209</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">2200</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">GRESHAM LAKE</td>
+<td align="left">RD</td>
+<td align="left">NA</td>
+<td align="left">RALEIGH</td>
+<td align="left">NC</td>
+<td align="left">27615</td>
+</tr>
+</tbody>
+</table>
+<p>Telephone number:</p>
+<pre class="r"><code>d %&gt;% 
+  dplyr::select(area_cd : phone_num) %&gt;% 
+  dplyr::slice_sample(n = 20) %&gt;% 
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">area_cd</th>
+<th align="left">phone_num</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">252</td>
+<td align="left">5364553</td>
+</tr>
+<tr class="even">
+<td align="left">252</td>
+<td align="left">5235950</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">828</td>
+<td align="left">9269783</td>
+</tr>
+<tr class="odd">
+<td align="left">910</td>
+<td align="left">5755969</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">704</td>
+<td align="left">8065796</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">704</td>
+<td align="left">3920844</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">828</td>
+<td align="left">6705254</td>
+</tr>
+<tr class="odd">
+<td align="left">252</td>
+<td align="left">7474543</td>
+</tr>
+<tr class="even">
+<td align="left">252</td>
+<td align="left">6366840</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">910</td>
+<td align="left">8924300</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="dwelling" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Dwelling</h1>
+<p><code>unit_num</code> Residential address unit number<br />
+<code>house_num</code> Residential address street number<br />
+<code>half_code</code> Residential address street number half code</p>
+<pre class="r"><code>d %&gt;% 
+  dplyr::select(unit_num, house_num, half_code) %&gt;% 
+  skimr::skim()</code></pre>
+<pre><code>Warning in grepl(&quot;^\\s+$&quot;, x): input string 13013 is invalid in this locale</code></pre>
+<pre><code>Warning in grepl(&quot;^\\s+$&quot;, x): input string 27075 is invalid in this locale</code></pre>
+<pre><code>Warning in grepl(&quot;^\\s+$&quot;, x): input string 35910 is invalid in this locale</code></pre>
+<pre><code>Warning in grepl(&quot;^\\s+$&quot;, x): input string 40713 is invalid in this locale</code></pre>
+<pre><code>Warning in grepl(&quot;^\\s+$&quot;, x): input string 49523 is invalid in this locale</code></pre>
+<table>
+<caption><span id="tab:unnamed-chunk-5">Table 2.1: </span>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">Piped data</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">4099699</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">3</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">3</td>
+</tr>
+<tr class="odd">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">unit_num</td>
+<td align="right">3755239</td>
+<td align="right">0.08</td>
+<td align="right">1</td>
+<td align="right">7</td>
+<td align="right">0</td>
+<td align="right">16116</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">house_num</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">1</td>
+<td align="right">6</td>
+<td align="right">0</td>
+<td align="right">27534</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">half_code</td>
+<td align="right">4088996</td>
+<td align="right">0.00</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">41</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p><code>unit_num</code> 8% filled</p></li>
+<li><p><code>house_num</code> 100% filled</p></li>
+<li><p><code>half_code</code> 0.3% filled</p>
+<ul>
+<li>Warning messages indicate some invalid multibyte strings</li>
+</ul></li>
+</ul>
+<p>Look at <code>half_code</code>.</p>
+<pre class="r"><code>table(d$half_code, useNA = &quot;ifany&quot;)</code></pre>
+<pre><code>
+      -       /       `       +    \xab    \xbd       0       1       2       3 
+      1       8       5      32       3    1730       1      44      35       5 
+      4       5       6       7       8       9       A       B       C       D 
+     10       6       6       5       4       1    3313    2725     948     569 
+      E       F       G       H       I       J       K       L       M       N 
+    273     214     154     174      36      78      58      48      48      33 
+      O       P       Q       R       S       T       U       V       W       X 
+      6      21       7      13      38      13       3       6      24       4 
+      Y    &lt;NA&gt; 
+      1 4088996 </code></pre>
+<pre class="r"><code>d %&gt;% 
+  dplyr::filter(!is.na(half_code)) %&gt;% 
+  dplyr::select(unit_num : street_type_cd) %&gt;% 
+  dplyr::slice_sample(n = 20)</code></pre>
+<pre><code># A tibble: 20 x 6
+   unit_num house_num half_code street_dir street_name         street_type_cd
+   &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;               &lt;chr&gt;         
+ 1 &lt;NA&gt;     640       &quot;\xab&quot;    N          LOUISIANA           AVE           
+ 2 &lt;NA&gt;     21        &quot;B&quot;       &lt;NA&gt;       SPICEWOOD           RD            
+ 3 &lt;NA&gt;     803       &quot;C&quot;       &lt;NA&gt;       DOUGLAS             DR            
+ 4 &lt;NA&gt;     601       &quot;B&quot;       W          GRAHAM              ST            
+ 5 &lt;NA&gt;     102       &quot;\xbd&quot;    &lt;NA&gt;       FAIRWAY             DR            
+ 6 A        141       &quot;A&quot;       &lt;NA&gt;       HERRON              AVE           
+ 7 &lt;NA&gt;     795       &quot;\xbd&quot;    &lt;NA&gt;       HENDERSONVILLE      RD            
+ 8 &lt;NA&gt;     1005      &quot;C&quot;       &lt;NA&gt;       EAST                ST            
+ 9 &lt;NA&gt;     2840      &quot;D&quot;       &lt;NA&gt;       ROGERS              RD            
+10 &lt;NA&gt;     717       &quot;C&quot;       &lt;NA&gt;       DEEP FORD           RD            
+11 &lt;NA&gt;     3211      &quot;A&quot;       &lt;NA&gt;       BIG WOODS           RD            
+12 &lt;NA&gt;     626       &quot;A&quot;       &lt;NA&gt;       LUMBEE              ST            
+13 &lt;NA&gt;     910       &quot;D&quot;       &lt;NA&gt;       CULBRETH            AVE           
+14 &lt;NA&gt;     155       &quot;B&quot;       &lt;NA&gt;       HIBRITEN MOUNTAIN   RD            
+15 &lt;NA&gt;     901       &quot;B&quot;       &lt;NA&gt;       OAKLAWN             DR            
+16 &lt;NA&gt;     1314      &quot;A&quot;       &lt;NA&gt;       BEAVER CREEK SCHOOL RD            
+17 &lt;NA&gt;     100       &quot;A&quot;       &lt;NA&gt;       CIRCLE              CT            
+18 &lt;NA&gt;     301       &quot;`&quot;       &lt;NA&gt;       CHAMPION            DR            
+19 &lt;NA&gt;     21        &quot;B&quot;       &lt;NA&gt;       MASTERS COURT       DR            
+20 &lt;NA&gt;     114       &quot;D&quot;       &lt;NA&gt;       SPRUCE HILL         LN            </code></pre>
+<p><code>half_code</code> appears to indicate where there are multiple buildings on
+one street-numbered block. Typical values would be A, B, …</p>
+</div>
+<div id="street" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Street</h1>
+<pre class="r"><code>d %&gt;% 
+  dplyr::select(starts_with(&quot;street_&quot;)) %&gt;% 
+  skimr::skim()</code></pre>
+<table>
+<caption><span id="tab:unnamed-chunk-7">Table 3.1: </span>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">Piped data</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">4099699</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">4</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">4</td>
+</tr>
+<tr class="odd">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">street_dir</td>
+<td align="right">3812561</td>
+<td align="right">0.07</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">8</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">street_name</td>
+<td align="right">7</td>
+<td align="right">1.00</td>
+<td align="right">1</td>
+<td align="right">30</td>
+<td align="right">0</td>
+<td align="right">83244</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">street_type_cd</td>
+<td align="right">154594</td>
+<td align="right">0.96</td>
+<td align="right">2</td>
+<td align="right">4</td>
+<td align="right">0</td>
+<td align="right">119</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">street_sufx_cd</td>
+<td align="right">3941004</td>
+<td align="right">0.04</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">0</td>
+<td align="right">11</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>street_dir</code> 7% filled</li>
+<li><code>street_name</code> ~100% filled (7 missing)</li>
+<li><code>street_type_cd</code> 96% filled</li>
+<li><code>street_sufx_cd</code> 4% filled</li>
+</ul>
+<div id="street_dir" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> street_dir</h2>
+<p><code>street_dir</code> Residential address street direction (N,S,E,W,NE,SW, etc.)</p>
+<pre class="r"><code>table(d$street_dir, useNA = &quot;ifany&quot;)</code></pre>
+<pre><code>
+      E       N      NE      NW       S      SE      SW       W    &lt;NA&gt; 
+  71244   72784    2161     911   68612    1221     729   69476 3812561 </code></pre>
+</div>
+<div id="street_name" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> street_name</h2>
+<p><code>street_name</code> Residential address street name</p>
+<p>Seven records are missing street name. Look at them.</p>
+<pre class="r"><code>d %&gt;% 
+  dplyr::filter(is.na(street_name)) %&gt;% 
+  knitr::kable()</code></pre>
+<table style="width:100%;">
+<colgroup>
+<col width="6%" />
+<col width="7%" />
+<col width="7%" />
+<col width="8%" />
+<col width="9%" />
+<col width="11%" />
+<col width="11%" />
+<col width="10%" />
+<col width="6%" />
+<col width="6%" />
+<col width="6%" />
+<col width="7%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">unit_num</th>
+<th align="left">house_num</th>
+<th align="left">half_code</th>
+<th align="left">street_dir</th>
+<th align="left">street_name</th>
+<th align="left">street_type_cd</th>
+<th align="left">street_sufx_cd</th>
+<th align="left">res_city_desc</th>
+<th align="left">state_cd</th>
+<th align="left">zip_code</th>
+<th align="left">area_cd</th>
+<th align="left">phone_num</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">STONY POINT</td>
+<td align="left">NC</td>
+<td align="left">28678</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">BELMONT</td>
+<td align="left">NC</td>
+<td align="left">28012</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Seven records have no residential address. Are these homeless
+people?</li>
+</ul>
+<p>Some street names are very short. Look at the distribution of length of
+street name.</p>
+<pre class="r"><code>summary(stringr::str_length(d$street_name))</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+   1.00    6.00    8.00    8.78   11.00   30.00       7 </code></pre>
+<pre class="r"><code>d %&gt;% 
+  ggplot() +
+  geom_histogram(aes(x = stringr::str_length(street_name)), binwidth = 1) +
+  scale_y_sqrt()</code></pre>
+<pre><code>Warning: Removed 7 rows containing non-finite values (stat_bin).</code></pre>
+<p><img src="figure/01-3_check_resid.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Look at examples of short street names.</p>
+<pre class="r"><code>d %&gt;% 
+  dplyr::filter(stringr::str_length(street_name) == 1) %&gt;% 
+  dplyr::select(starts_with(&quot;street_&quot;), res_city_desc) %&gt;%
+  dplyr::slice_sample(n = 20) %&gt;% 
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">street_dir</th>
+<th align="left">street_name</th>
+<th align="left">street_type_cd</th>
+<th align="left">street_sufx_cd</th>
+<th align="left">res_city_desc</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">C</td>
+<td align="left">ST</td>
+<td align="left">NA</td>
+<td align="left">NEWPORT</td>
+</tr>
+<tr class="even">
+<td align="left">W</td>
+<td align="left">C</td>
+<td align="left">ST</td>
+<td align="left">NA</td>
+<td align="left">ERWIN</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">A</td>
+<td align="left">ST</td>
+<td align="left">NA</td>
+<td align="left">CAMP LEJEUNE</td>
+</tr>
+<tr class="even">
+<td align="left">E</td>
+<td align="left">I</td>
+<td align="left">ST</td>
+<td align="left">NA</td>
+<td align="left">ERWIN</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">F</td>
+<td align="left">AVE</td>
+<td align="left">NA</td>
+<td align="left">KURE BEACH</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">A</td>
+<td align="left">ST</td>
+<td align="left">NA</td>
+<td align="left">LANSING</td>
+</tr>
+<tr class="odd">
+<td align="left">E</td>
+<td align="left">K</td>
+<td align="left">ST</td>
+<td align="left">NA</td>
+<td align="left">ERWIN</td>
+</tr>
+<tr class="even">
+<td align="left">E</td>
+<td align="left">C</td>
+<td align="left">ST</td>
+<td align="left">NA</td>
+<td align="left">BUTNER</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">D</td>
+<td align="left">ST</td>
+<td align="left">NA</td>
+<td align="left">SPRING LAKE</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">B</td>
+<td align="left">AVE</td>
+<td align="left">NA</td>
+<td align="left">CHARLOTTE</td>
+</tr>
+<tr class="odd">
+<td align="left">E</td>
+<td align="left">B</td>
+<td align="left">ST</td>
+<td align="left">NA</td>
+<td align="left">BUTNER</td>
+</tr>
+<tr class="even">
+<td align="left">W</td>
+<td align="left">B</td>
+<td align="left">ST</td>
+<td align="left">NA</td>
+<td align="left">KANNAPOLIS</td>
+</tr>
+<tr class="odd">
+<td align="left">E</td>
+<td align="left">C</td>
+<td align="left">ST</td>
+<td align="left">NA</td>
+<td align="left">BUTNER</td>
+</tr>
+<tr class="even">
+<td align="left">E</td>
+<td align="left">L</td>
+<td align="left">ST</td>
+<td align="left">NA</td>
+<td align="left">ERWIN</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">A</td>
+<td align="left">ST</td>
+<td align="left">NA</td>
+<td align="left">CAMP LEJEUNE</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">E</td>
+<td align="left">ST</td>
+<td align="left">NA</td>
+<td align="left">NORTH WILKESBORO</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">J</td>
+<td align="left">AVE</td>
+<td align="left">NA</td>
+<td align="left">KURE BEACH</td>
+</tr>
+<tr class="even">
+<td align="left">W</td>
+<td align="left">C</td>
+<td align="left">ST</td>
+<td align="left">NA</td>
+<td align="left">BUTNER</td>
+</tr>
+<tr class="odd">
+<td align="left">E</td>
+<td align="left">J</td>
+<td align="left">ST</td>
+<td align="left">NA</td>
+<td align="left">MAIDEN</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">E</td>
+<td align="left">ST</td>
+<td align="left">NA</td>
+<td align="left">NORTH WILKESBORO</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>d %&gt;% 
+  dplyr::filter(stringr::str_length(street_name) == 2) %&gt;% 
+  dplyr::select(starts_with(&quot;street_&quot;), res_city_desc) %&gt;%
+  dplyr::slice_sample(n = 20) %&gt;% 
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">street_dir</th>
+<th align="left">street_name</th>
+<th align="left">street_type_cd</th>
+<th align="left">street_sufx_cd</th>
+<th align="left">res_city_desc</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">DJ</td>
+<td align="left">DR</td>
+<td align="left">NA</td>
+<td align="left">BENSON</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">KY</td>
+<td align="left">FLDS</td>
+<td align="left">NA</td>
+<td align="left">WEAVERVILLE</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">63</td>
+<td align="left">HWY</td>
+<td align="left">NA</td>
+<td align="left">LEICESTER</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">KY</td>
+<td align="left">FLDS</td>
+<td align="left">NA</td>
+<td align="left">WEAVERVILLE</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">OW</td>
+<td align="left">LN</td>
+<td align="left">NA</td>
+<td align="left">DUNN</td>
+</tr>
+<tr class="even">
+<td align="left">N</td>
+<td align="left">ST</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">ASHEVILLE</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">KY</td>
+<td align="left">FLDS</td>
+<td align="left">NA</td>
+<td align="left">WEAVERVILLE</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">RH</td>
+<td align="left">RD</td>
+<td align="left">NA</td>
+<td align="left">HICKORY</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">23</td>
+<td align="left">HWY</td>
+<td align="left">NA</td>
+<td align="left">MARS HILL</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">DJ</td>
+<td align="left">DR</td>
+<td align="left">NA</td>
+<td align="left">STATESVILLE</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">CY</td>
+<td align="left">CIR</td>
+<td align="left">NA</td>
+<td align="left">CONCORD</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">JR</td>
+<td align="left">RD</td>
+<td align="left">NA</td>
+<td align="left">TIMBERLAKE</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">WR</td>
+<td align="left">LN</td>
+<td align="left">NA</td>
+<td align="left">CLAREMONT</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">63</td>
+<td align="left">HWY</td>
+<td align="left">NA</td>
+<td align="left">LEICESTER</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">19</td>
+<td align="left">HWY</td>
+<td align="left">NA</td>
+<td align="left">MARS HILL</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">JR</td>
+<td align="left">RD</td>
+<td align="left">NA</td>
+<td align="left">TIMBERLAKE</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">23</td>
+<td align="left">HWY</td>
+<td align="left">NA</td>
+<td align="left">MARS HILL</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">AA</td>
+<td align="left">DR</td>
+<td align="left">NA</td>
+<td align="left">TAYLORSVILLE</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">BR</td>
+<td align="left">DR</td>
+<td align="left">NA</td>
+<td align="left">MARION</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">RH</td>
+<td align="left">RD</td>
+<td align="left">NA</td>
+<td align="left">HICKORY</td>
+</tr>
+</tbody>
+</table>
+<p>I checked some of these examples against a map.</p>
+<ul>
+<li>Some streets have names like A, B, C, …</li>
+<li>“JC Road” is a valid street name</li>
+</ul>
+<p>Look at examples of long street names.</p>
+<pre class="r"><code>d %&gt;% 
+  dplyr::filter(stringr::str_length(street_name) &gt;= 28) %&gt;% 
+  dplyr::select(starts_with(&quot;street_&quot;), res_city_desc) %&gt;%
+  dplyr::distinct(.keep_all = TRUE) %&gt;% 
+  dplyr::arrange(street_name) %&gt;% 
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">street_dir</th>
+<th align="left">street_name</th>
+<th align="left">street_type_cd</th>
+<th align="left">street_sufx_cd</th>
+<th align="left">res_city_desc</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">BROOKFIELD RETIREMENT CENTER</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">LILLINGTON</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">CROSS MEMORIAL BAPTIST CHURCH</td>
+<td align="left">LOOP</td>
+<td align="left">NA</td>
+<td align="left">MARION</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">KINGSDALE MANOR NURSING CENTER</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">LUMBERTON</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">LOMBARDY VILLAGE MOBILE HOME</td>
+<td align="left">PARK</td>
+<td align="left">NA</td>
+<td align="left">LUMBERTON</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">LOMBARDY VILLAGE MOBILE HOME</td>
+<td align="left">PARK</td>
+<td align="left">NA</td>
+<td align="left">SHANNON</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">LOMBARDY VILLAGE MOBILE HOME</td>
+<td align="left">PARK</td>
+<td align="left">NA</td>
+<td align="left">REX</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">NC HWY 197N NEAR COVY ROCK CHU</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">BURNSVILLE</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">OLD TAMMANY-OINE ROOKER DAIRY</td>
+<td align="left">RD</td>
+<td align="left">NA</td>
+<td align="left">NORLINA</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">SWEPSONVILLE-METHODIST CHURCH</td>
+<td align="left">RD</td>
+<td align="left">NA</td>
+<td align="left">GRAHAM</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">WHEELING VILLAGE TRAILER PARK</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">WINSTON SALEM</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="left">WILDLIFE RECREATION AREA ACC</td>
+<td align="left">RD</td>
+<td align="left">NA</td>
+<td align="left">LEXINGTON</td>
+</tr>
+<tr class="even">
+<td align="left">NA</td>
+<td align="left">WISE-FIVE FORKS- ROBERSON FERR</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">MACON</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>Long street names are multi-word phrases</p>
+<ul>
+<li>Some appear to have been truncated</li>
+</ul></li>
+</ul>
+</div>
+<div id="street_type_cd" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> street_type_cd</h2>
+<p><code>street_type_cd</code> Residential address street type (RD, ST, DR, BLVD,
+etc.)</p>
+<pre class="r"><code>table(d$street_type_cd, useNA = &quot;ifany&quot;)</code></pre>
+<pre><code>
+    ALY     ANX     ARC     AVE     BCH     BLF    BLVD     BND      BR     BRG 
+    266      23       7  207808       1      47   27022     250     166       7 
+    BRK     BTM     BYP     CIR     CLB     CMN    CMNS     COR    COVE    CRES 
+     56       1    1205   99489      18      28      20      44       3     534 
+    CRK    CRSE    CRST    CSWY      CT     CTR      CV      DL      DM    DORM 
+    141       8      12      22  249682      15    2527       4       1    1756 
+     DR     EST    ESTS    EXPY     EXT    FALL    FLDS     FLS     FLT    FLTS 
+ 926884     457     203      18    4931       2      64      19       8       4 
+    FRD     FRK    FRST      FT     FWY     GDN    GDNS     GLN     GRN     GRV 
+      9      13      22       1       4       6     110      61       6      94 
+    HBR      HL     HLS    HOLW     HTS     HVN     HWY      IS     JCT     KNL 
+     38     513     261     200    1684      24   44189      19       6     162 
+   KNLS    LAND     LDG      LK     LKS      LN    LNDG    LOOP     MDW    MDWS 
+     51       2       6      51      16  347932     371    9505       2      37 
+   MEWS     MHP     MNR     MTN    ORCH    OVAL    PARK    PASS    PATH    PKWY 
+    102       2     222      78       7       2    2013     171    1035    6665 
+     PL     PLZ    PNES    PSGE      PT    RAMP      rd      RD     RDG     ROW 
+  82253     211      21      21    2263       1       1 1287597    2124     333 
+    RST     RTE     RUN     SHR    SHRS     SMT     SPG    SPGS    SPUR      SQ 
+      2    2731    5219       3      33      11       6      32      58    1169 
+     ST     STA     TER    TPKE    TRAK    TRCE     TRL    TRLR     VIA     VIS 
+ 512983       9    7959      13      10    1319   44565      26       2      60 
+     VL     VLG     VLY      VW    WALK     WAY    WYND    XING    XRDS    &lt;NA&gt; 
+      1     991      67     217     581   51625     328     652     163  154594 </code></pre>
+</div>
+<div id="street_sufx_cd" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span> street_sufx_cd</h2>
+<p><code>street_sufx_cd</code> Residential address street suffix (BUS, EXT, and
+directional)</p>
+<pre class="r"><code>table(d$street_sufx_cd, useNA = &quot;ifany&quot;)</code></pre>
+<pre><code>
+    BUS       E     EXT       I       N      NE      NW       S      SE      SW 
+    169   13021    1481       1   17869   24755   29472   18870   13095   26587 
+      W    &lt;NA&gt; 
+  13375 3941004 </code></pre>
+</div>
+</div>
+<div id="locality" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Locality</h1>
+<p><code>res_city_desc</code> Residential address city name<br />
+<code>state_cd</code> Residential address state code<br />
+<code>zip_code</code> Residential address zip code</p>
+<pre class="r"><code>d %&gt;% 
+  dplyr::select(res_city_desc : zip_code) %&gt;% 
+  skimr::skim()</code></pre>
+<table>
+<caption><span id="tab:unnamed-chunk-15">Table 4.1: </span>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">Piped data</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">4099699</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">3</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">3</td>
+</tr>
+<tr class="odd">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">res_city_desc</td>
+<td align="right">19</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">20</td>
+<td align="right">0</td>
+<td align="right">783</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">state_cd</td>
+<td align="right">18</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">5</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">zip_code</td>
+<td align="right">21</td>
+<td align="right">1</td>
+<td align="right">5</td>
+<td align="right">9</td>
+<td align="right">0</td>
+<td align="right">902</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>res_city_desc</code> ~100% filled (19 missing)</li>
+<li><code>state_cd</code> ~100% filled (19 missing)</li>
+<li><code>zip_code</code> ~100% filled (19 missing)</li>
+</ul>
+<p>Look at the addresses with any missing locality variable.</p>
+<pre class="r"><code>d %&gt;% 
+  dplyr::filter(is.na(res_city_desc) | is.na(state_cd) | is.na(zip_code)) %&gt;% 
+  dplyr::select(house_num : zip_code) %&gt;%
+  dplyr::distinct(.keep_all = TRUE) %&gt;%
+  dplyr::arrange(state_cd, res_city_desc, zip_code) %&gt;% 
+  knitr::kable()</code></pre>
+<table style="width:100%;">
+<colgroup>
+<col width="9%" />
+<col width="9%" />
+<col width="9%" />
+<col width="16%" />
+<col width="13%" />
+<col width="13%" />
+<col width="12%" />
+<col width="8%" />
+<col width="8%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">house_num</th>
+<th align="left">half_code</th>
+<th align="left">street_dir</th>
+<th align="left">street_name</th>
+<th align="left">street_type_cd</th>
+<th align="left">street_sufx_cd</th>
+<th align="left">res_city_desc</th>
+<th align="left">state_cd</th>
+<th align="left">zip_code</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">5189</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">COVE</td>
+<td align="left">RD</td>
+<td align="left">NA</td>
+<td align="left">MARION</td>
+<td align="left">NC</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">5030</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">COVE</td>
+<td align="left">RD</td>
+<td align="left">NA</td>
+<td align="left">MARION</td>
+<td align="left">NC</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">H &amp; N MOBILE HOME</td>
+<td align="left">PARK</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NC</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">UNKNOWN</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NC</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">1407</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">OVERLOOK</td>
+<td align="left">DR</td>
+<td align="left">NA</td>
+<td align="left">LENOIR</td>
+<td align="left">NA</td>
+<td align="left">28645</td>
+</tr>
+<tr class="even">
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">CONFIDENTIAL</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">0</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Some appear to be good addresses, apart from a missing zip code</li>
+<li>One appears to be a good address, apart from a missing state code</li>
+<li>Some are CONFIDENTIAL addresses, with all details missing</li>
+<li>Some appear to be completely missing the address (homeless persons?)</li>
+</ul>
+<div id="state_cd" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> state_cd</h2>
+<p><code>state_cd</code> Residential address state code</p>
+<pre class="r"><code>table(d$state_cd, useNA = &quot;ifany&quot;)</code></pre>
+<pre><code>
+     GA      NC      SC      TN      VA    &lt;NA&gt; 
+     13 4099631       1      29       7      18 </code></pre>
+<ul>
+<li><p>Residential state codes are almost entirely Georgia</p>
+<ul>
+<li>There are a small number in neighbouring states (non-resident
+voters?)</li>
+</ul></li>
+</ul>
+</div>
+<div id="zip_code" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> zip_code</h2>
+<p><code>zip_code</code> Residential address zip code</p>
+<p>The zip codes are not all the same length. Look at the distribution of
+length of zip code</p>
+<pre class="r"><code>table(stringr::str_length(d$zip_code), useNA = &quot;ifany&quot;)</code></pre>
+<pre><code>
+      5       9    &lt;NA&gt; 
+4099667      11      21 </code></pre>
+<p>Look at the 9-digit zip codes.</p>
+<pre class="r"><code>d %&gt;% 
+  dplyr::filter(stringr::str_length(zip_code) == 9) %&gt;% 
+  dplyr::select(street_name : zip_code) %&gt;%
+  dplyr::arrange(zip_code) %&gt;% 
+  knitr::kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">street_name</th>
+<th align="left">street_type_cd</th>
+<th align="left">street_sufx_cd</th>
+<th align="left">res_city_desc</th>
+<th align="left">state_cd</th>
+<th align="left">zip_code</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">ECHO</td>
+<td align="left">LN</td>
+<td align="left">NA</td>
+<td align="left">SANFORD</td>
+<td align="left">NC</td>
+<td align="left">273308492</td>
+</tr>
+<tr class="even">
+<td align="left">UNKNOWN</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">LILLINGTON</td>
+<td align="left">NC</td>
+<td align="left">275468949</td>
+</tr>
+<tr class="odd">
+<td align="left">LINCOLN MCKAY</td>
+<td align="left">DR</td>
+<td align="left">NA</td>
+<td align="left">LILLINGTON</td>
+<td align="left">NC</td>
+<td align="left">275469001</td>
+</tr>
+<tr class="even">
+<td align="left">SMITH</td>
+<td align="left">ST</td>
+<td align="left">NA</td>
+<td align="left">ALBEMARLE</td>
+<td align="left">NC</td>
+<td align="left">280014351</td>
+</tr>
+<tr class="odd">
+<td align="left">INDIAN MOUND</td>
+<td align="left">RD</td>
+<td align="left">NA</td>
+<td align="left">ALBEMARLE</td>
+<td align="left">NC</td>
+<td align="left">280019245</td>
+</tr>
+<tr class="even">
+<td align="left">POND</td>
+<td align="left">ST</td>
+<td align="left">NA</td>
+<td align="left">ALBEMARLE</td>
+<td align="left">NC</td>
+<td align="left">280019766</td>
+</tr>
+<tr class="odd">
+<td align="left">NC 731 HWY</td>
+<td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">NORWOOD</td>
+<td align="left">NC</td>
+<td align="left">281289420</td>
+</tr>
+<tr class="even">
+<td align="left">FRIENDLY MCLEOD</td>
+<td align="left">LN</td>
+<td align="left">NA</td>
+<td align="left">DUNN</td>
+<td align="left">NC</td>
+<td align="left">283349250</td>
+</tr>
+<tr class="odd">
+<td align="left">BEAVER DAM</td>
+<td align="left">RD</td>
+<td align="left">NA</td>
+<td align="left">ERWIN</td>
+<td align="left">NC</td>
+<td align="left">283399790</td>
+</tr>
+<tr class="even">
+<td align="left">WIRE</td>
+<td align="left">RD</td>
+<td align="left">NA</td>
+<td align="left">LINDEN</td>
+<td align="left">NC</td>
+<td align="left">283569413</td>
+</tr>
+<tr class="odd">
+<td align="left">WALKER</td>
+<td align="left">RD</td>
+<td align="left">NA</td>
+<td align="left">LINDEN</td>
+<td align="left">NC</td>
+<td align="left">283569416</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>5-digit and 9-digit zip codes are <a href="https://en.wikipedia.org/wiki/ZIP_Code">valid</a></li>
+</ul>
+</div>
+</div>
+<div id="timing" class="section level1 unnumbered">
+<h1>Timing</h1>
+<pre><code>Computation time (excl. render): 29.517 sec elapsed</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.0.3 (2020-10-10)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 20.10
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.9.0
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.9.0
+
+locale:
+ [1] LC_CTYPE=en_AU.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_AU.UTF-8        LC_COLLATE=en_AU.UTF-8    
+ [5] LC_MONETARY=en_AU.UTF-8    LC_MESSAGES=en_AU.UTF-8   
+ [7] LC_PAPER=en_AU.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_AU.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] hexbin_1.28.2   glue_1.4.2      knitr_1.30      skimr_2.1.2    
+ [5] fst_0.9.4       forcats_0.5.0   stringr_1.4.0   dplyr_1.0.2    
+ [9] purrr_0.3.4     readr_1.4.0     tidyr_1.1.2     tibble_3.0.4   
+[13] ggplot2_3.3.3   tidyverse_1.3.0 tictoc_1.0      here_1.0.1     
+[17] workflowr_1.6.2
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.5        lattice_0.20-41   lubridate_1.7.9.2 utf8_1.1.4       
+ [5] assertthat_0.2.1  rprojroot_2.0.2   digest_0.6.27     repr_1.1.0       
+ [9] R6_2.5.0          cellranger_1.1.0  backports_1.2.1   reprex_0.3.0     
+[13] evaluate_0.14     highr_0.8         httr_1.4.2        pillar_1.4.7     
+[17] rlang_0.4.10      readxl_1.3.1      rstudioapi_0.13   whisker_0.4      
+[21] rmarkdown_2.6     labeling_0.4.2    munsell_0.5.0     broom_0.7.3      
+[25] compiler_4.0.3    httpuv_1.5.4      modelr_0.1.8      xfun_0.20        
+[29] base64enc_0.1-3   pkgconfig_2.0.3   htmltools_0.5.0   tidyselect_1.1.0 
+[33] bookdown_0.21     fansi_0.4.1       crayon_1.3.4      dbplyr_2.0.0     
+[37] withr_2.3.0       later_1.1.0.1     grid_4.0.3        jsonlite_1.7.2   
+[41] gtable_0.3.0      lifecycle_0.2.0   DBI_1.1.0         git2r_0.28.0     
+[45] magrittr_2.0.1    scales_1.1.1      cli_2.2.0         stringi_1.5.3    
+[49] farver_2.0.3      renv_0.12.5       fs_1.5.0          promises_1.1.1   
+[53] xml2_1.3.2        ellipsis_0.3.1    generics_0.1.0    vctrs_0.3.6      
+[57] tools_4.0.3       hms_0.5.3         parallel_4.0.3    yaml_2.2.1       
+[61] colorspace_2.0-0  rvest_0.3.6       haven_2.3.1      </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4,h5",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "site_libs/mathjax-local/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
