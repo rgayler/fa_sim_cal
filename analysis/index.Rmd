@@ -35,6 +35,8 @@ This notebook is for keeping notes of any points that may be useful for later pr
 
 ## 01 Read, check, and standardise the entity data {-}
 
+Initial data preparation of imported entity records.
+
 ### [01-1 Get, subset, check, and save data](01-1_get_data.html) {.unnumbered}
 
 Import the raw data, cut it back to the subset of rows and columns that are possibly useful, sanity check the data, and save the data in an R-friendly format.
@@ -54,6 +56,24 @@ Check the demographic variables - sex, age, and birth place.
 ### [01-5 Check name variables](01-5_check_name.html) {.unnumbered}
 
 Check the name variables.
+
+## 02 Name frequency {-}
+
+Detailed examination of the distributions of name frequencies.
+
+
+## 03 Similarity calibration {-}
+
+Detailed examination of the calibration from similarity to probability of identity match,
+both unconditionally and as a function of name frequency.
+
+
+
+## 03 Compatibility models {-}
+
+Estimate multivariate compatibility models.
+
+
 
 ------------------------------------------------------------------------
 
