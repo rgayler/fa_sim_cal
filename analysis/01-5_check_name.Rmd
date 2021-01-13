@@ -722,7 +722,7 @@ x %>%
 ```
 
 -   1 last name with a 5
--   Substitution of 5 for S
+-   Random insertion
 
 ```{r}
 x <- d %>% 
