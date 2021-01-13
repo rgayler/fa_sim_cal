@@ -51,6 +51,10 @@ Check the residence variables - residential address and phone number.
 
 Check the demographic variables - sex, age, and birth place.
 
+### [01-5 Check name variables](01-5_check_name.html) {.unnumbered}
+
+Check the name variables.
+
 ------------------------------------------------------------------------
 
 # Manuscripts {.unnumbered}

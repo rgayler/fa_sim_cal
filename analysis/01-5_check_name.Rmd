@@ -1,0 +1,970 @@
+---
+title: "01-5_check_name"
+subtitle: "Check name variables"
+author: "Ross Gayler"
+date: "2021-01-12"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+  markdown: 
+    wrap: 72
+---
+
+```{r setup}
+# Set up the project environment, because each Rmd file knits in a new R session
+# so doesn't get the project setup from .Rprofile
+
+# Project setup
+library(here)
+source(here::here("code", "setup_project.R"))
+
+# Extra set up for the 01*.Rmd notebooks
+source(here::here("code", "setup_01.R"))
+
+# Extra set up for this notebook
+# ???
+
+# start the execution time clock
+tictoc::tic("Computation time (excl. render)")
+```
+
+# Introduction
+
+The `01*.Rmd` notebooks read the data, filter it to the subset to be
+used for modelling, characterise it to understand it, check for possible
+gotchas, clean it, and save it for the analyses proper.
+
+This notebook (`01-5_check_name`) characterises the name variables in
+the saved subset of the data.
+
+These variables will be used to construct the main predictors in the
+compatibility models.
+
+We intend to use the one snapshot file as both the database to be
+queried and as the set of queries. Consequently, strictly speaking, we
+don't need to standardise the name variables because the database and
+query records are guaranteed to be identical (they will literally be the
+same record). However, we will look at the name variables with an eye to
+standardisation because it is never a good idea to statistically model
+data without having an idea about the quality of the data. We will apply
+some basic standardisation to the name variables, if appropriate,
+because it parallels what would be necessary in practice.
+
+------------------------------------------------------------------------
+
+Define the name variables.
+
+```{r}
+vars_name <- c(
+  "last_name", "first_name", "midl_name", "name_sufx_cd" 
+)
+```
+
+Read the usable data. Remember that this consists of only the ACTIVE &
+VERIFIED records.
+
+```{r}
+# Show the entity data file location
+# This is set in code/file_paths.R
+f_entity_fst
+
+# get data for next section of analyses
+d <- fst::read_fst(
+  f_entity_fst, 
+  columns = c(vars_name, "sex") # get sex as well for cross-checking
+) %>% 
+  tibble::as_tibble()
+dim(d)
+```
+
+Take a quick look at the distributions.
+
+```{r}
+d %>% skimr::skim()
+```
+
+-   `last_name` 100% filled
+-   `first_name` \~100% filled (23 missing)
+-   `midl_name` 94% filled
+-   `name_sufx_cd` 6% filled
+
+# Name length
+
+Look at the distributions of name lengths first, before moving on to
+analyses more focused on standardisation.
+
+Calculate the lengths of the name variables.
+
+```{r}
+x <- d %>% 
+  dplyr::mutate(
+    len_last = stringr::str_length(last_name),
+    len_first = stringr::str_length(first_name),
+    len_midl = stringr::str_length(midl_name)
+  )
+```
+
+## last_name
+
+`last_name` Voter last name
+
+Look at the distributions of name lengths.
+
+```{r}
+summary(x$len_last)
+table(x$len_last, useNA = "ifany")
+
+x %>% 
+  ggplot() +
+  geom_histogram(aes(x = len_last), binwidth = 1) +
+  scale_y_sqrt()
+```
+
+Look at examples of short names.
+
+```{r}
+# length == 1
+x %>% 
+  dplyr::filter(len_last == 1) %>% 
+  dplyr::select(ends_with("_name")) %>% 
+  dplyr::arrange(last_name, first_name) %>% 
+  knitr::kable()
+```
+
+-   1-letter last names are very rare
+-   1-letter last names are probably errors
+
+```{r}
+# length == 2
+x %>% 
+  dplyr::filter(len_last == 2) %>% 
+  dplyr::select(ends_with("_name")) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(last_name, first_name) %>% 
+  knitr::kable()
+```
+
+-   Most 2-letter last names are probably valid.
+-   ST is probably Saint from a multi-word last name
+
+Look at examples of long names.
+
+```{r}
+# length == 21
+x %>% 
+  dplyr::filter(len_last == 21) %>% 
+  dplyr::select(ends_with("_name")) %>% 
+  dplyr::arrange(last_name, first_name) %>% 
+  knitr::kable()
+```
+
+-   21-letter last names are hyphenated
+
+```{r}
+# length >= 20
+x %>% 
+  dplyr::filter(len_last >= 20) %>% 
+  dplyr::select(ends_with("_name")) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(last_name, first_name) %>% 
+  knitr::kable()
+```
+
+-   20+-letter last names appear to be multi-word and/or hyphenated
+
+## first_name
+
+`first_name` Voter first name
+
+Look at the distributions of name lengths.
+
+```{r}
+summary(x$len_first)
+table(x$len_first, useNA = "ifany")
+
+x %>% 
+  ggplot() +
+  geom_histogram(aes(x = len_first), binwidth = 1) +
+  scale_y_sqrt()
+```
+
+Look at the missing names.
+
+```{r}
+x %>% 
+  dplyr::filter(is.na(first_name)) %>% 
+  dplyr::select(ends_with("_name")) %>% 
+  dplyr::arrange(last_name, first_name) %>% 
+  knitr::kable()
+```
+
+-   Some missing first names look like the middle name is actually the
+    first name, e.g. ? JASON ALEXANDER
+-   Some missing first names appear to have only a last name, e.g. ? ?
+    AMEN
+-   Some missing first names appear to have the entire name in the last
+    name variable, e.g. ? ? FRYE WILLIAM C
+
+Look at examples of short names.
+
+```{r}
+# length == 1
+x %>% 
+  dplyr::filter(len_first == 1) %>% 
+  dplyr::select(ends_with("_name")) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(last_name, first_name) %>% 
+  knitr::kable()
+```
+
+-   The 1-letter first names appear to be using an initial as the first
+    name
+
+```{r}
+# length == 2
+x %>% 
+  dplyr::filter(len_first == 2) %>% 
+  dplyr::select(ends_with("_name")) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(last_name, first_name) %>% 
+  knitr::kable()
+```
+
+2-letter first names appear to be:
+
+-   Valid, e.g. JO W CLARK, HO NGOC NGUYEN
+-   Part of a multi word name that has bee split across the first and
+    middle name variables, e.g. LA SONDA FOWLER
+
+Look at the long names.
+
+```{r}
+# length >= 16
+x %>% 
+  dplyr::filter(len_first >= 16) %>% 
+  dplyr::select(ends_with("_name")) %>% 
+  dplyr::arrange(last_name, first_name) %>% 
+  knitr::kable()
+```
+
+Long first names appear to be:
+
+-   Long non-anglo names, e.g. LAKSHMINARAYANAN
+-   Multi-word and/or hyphenated, e.g. ELIZABETH-LINDSAY
+
+## midl_name
+
+`midl_name` Voter middle name
+
+These names will often be missing or initials only.
+
+Look at the distributions of name lengths.
+
+```{r}
+summary(x$len_midl)
+table(x$len_midl, useNA = "ifany")
+
+x %>% 
+  ggplot() +
+  geom_histogram(aes(x = len_midl), binwidth = 1) +
+  scale_y_sqrt()
+```
+
+-   *Many* records are missing middle name
+-   Spike of 1-letter names will be initials
+
+Look at the long names.
+
+```{r}
+# lentgh >= 16
+x %>% 
+  dplyr::filter(len_midl >= 16) %>% 
+  dplyr::select(ends_with("_name")) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(last_name, first_name) %>% 
+  knitr::kable()
+```
+
+-   Long middle names appear to be multiple names and/or hyphenated
+
+```{r}
+# clean up
+rm(x)
+gc()
+```
+
+# name_sufx_cd
+
+`name_sufx_cd` Voter name suffix
+
+This is intended for generation markers, e.g. Junior, Senior.
+
+I am not going to use name suffix in entity resolution because age
+should be sufficient and is much better quality. I will look at what
+values turn up in the name suffix because the same values sometimes
+wrongly occur in the main name variables. Knowing what values occur may
+help us to remove those values from the main name variables.
+
+```{r}
+d %>% dplyr::select(name_sufx_cd) %>% skimr::skim()
+table(d$name_sufx_cd, useNA = "ifany") %>% sort() %>% rev()
+
+# get a better look at the cleaned suffixes
+d %>% 
+  dplyr::mutate(
+    sufx = name_sufx_cd %>% 
+      stringr::str_to_upper() %>% 
+      stringr::str_remove_all(pattern = "[^A-Z0-9]") %>% # remove non-alphanumeric
+      dplyr::na_if("") 
+  ) %>% 
+  dplyr::count(sufx) %>% 
+  dplyr::filter(n > 1) %>% 
+  dplyr::arrange(desc(n), sufx) %>% 
+  knitr::kable()
+```
+
+-   There are generation suffixes: JR, SR, I, II (11), III (111), IV, V,
+    VI, VII
+-   There are honorific titles: MRS, MR, MS, DR, REV
+
+# Standardisation
+
+Look at issues that might be addressed by standardisation.
+
+For each type of standardisation issue look at first middle and last
+names separately, because the issue may manifest differently in each of
+the name variables.
+
+## Lower-case letters.
+
+```{r}
+d %>% dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "[a-z]"))
+
+d %>% dplyr::select(first_name) %>%
+  dplyr::filter(stringr::str_detect(first_name, "[a-z]"))
+
+d %>% dplyr::select(midl_name) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "[a-z]"))
+```
+
+-   Lower case letters occur in last, first, and middle names
+-   Associated with particles where there would optionally be a space,
+    e.g. JoANN, McBride
+
+## Non-alphanumeric
+
+Check for non-alphanumeric characters in names.
+
+### Hyphen
+
+Check for hyphens.
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(last_name, "-"))
+
+nrow(x)
+
+x %>%   
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(last_name, sex) %>% 
+  knitr::kable()
+```
+
+-   \~21k last names with hyphens
+-   Look like legitimately hyphenated last names
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(first_name, "-"))
+
+nrow(x)
+
+x %>%   
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(first_name, sex) %>% 
+  knitr::kable()
+```
+
+-   \~3kL first names with hyphens
+-   Look like legitimately hyphenated first names
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, "-"))
+
+nrow(x)
+
+x %>%   
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(midl_name, sex) %>% 
+  knitr::kable()
+```
+
+-   ~4k middle names with hyphens
+-   Look like legitimately hyphenated middle names
+
+### Quote
+
+Check for quotes.
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(last_name, "'"))
+
+nrow(x)
+
+x %>%   
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(last_name, sex) %>% 
+  knitr::kable()
+```
+
+-   ~5k last names with quotes
+-   Look like legitimately quoted last names
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(first_name, "'"))
+
+nrow(x)
+
+x %>%   
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(first_name, sex) %>% 
+  knitr::kable()
+```
+
+-   ~1k first names with quotes
+-   Look like legitimately quoted first names
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, "'"))
+
+nrow(x)
+
+x %>%   
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(midl_name, sex) %>% 
+  knitr::kable()
+```
+
+-   ~3k middle names with quotes
+-   Look like legitimately quoted middle names
+
+### Period
+
+Check for periods.
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(last_name, "\\."))
+
+nrow(x)
+
+x %>%   
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(last_name, sex) %>% 
+  knitr::kable()
+```
+
+-   11 last names with periods
+-   Look like legitimate abbreviations
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(first_name, "\\."))
+
+nrow(x)
+
+x %>%   
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(first_name, sex) %>% 
+  knitr::kable()
+```
+
+-   120 first names with periods
+-   Look like initials
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, "\\."))
+
+nrow(x)
+
+x %>%   
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(midl_name, sex) %>% 
+  knitr::kable()
+```
+
+-   ~2k middle names with periods
+-   Look like initials
+
+### Comma
+
+Check for commas.
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(last_name, ","))
+
+nrow(x)
+
+x %>%   
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(last_name, sex) %>% 
+  knitr::kable()
+```
+
+-   2 last names with commas
+-   Punctuation for suffix field values added to last name
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(first_name, ","))
+
+nrow(x)
+
+x %>%   
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(first_name, sex) %>% 
+  knitr::kable()
+```
+
+-   4 first names with commas
+-   Arbitrary added punctuation
+-   Punctuation for suffix field value added to first name
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, ","))
+
+nrow(x)
+
+x %>%   
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(midl_name, sex) %>% 
+  knitr::kable()
+```
+
+-   12 middle names with periods
+-   List separator
+-   Punctuation to squeeze in extra field
+
+### Other non-alphanumeric
+
+Check for other non-alphanumeric characters.
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(last_name, "[^ a-zA-Z0-9\\.,'-]"))
+
+nrow(x)
+
+x %>%   
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(last_name, sex) # %>% 
+  # knitr::kable() # some of the characters break the kable formatting
+```
+
+-   31 last names with other non-alphanumeric characters
+-   Most look like substitutions for hyphen or quote
+-   Some look like random cruft
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(first_name, "[^ a-zA-Z0-9\\.,'-]"))
+
+nrow(x)
+
+x %>%   
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(first_name, sex) # %>% 
+  # knitr::kable() # some of the characters break the kable formatting
+```
+
+-   102 first names with other non-alphanumeric characters
+-   Some look like substitutions for hyphen or quote
+-   Some are parenthetical notes
+-   Some look like random cruft
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, "[^ a-zA-Z0-9\\.,'-]"))
+
+nrow(x)
+
+x %>%   
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(midl_name, sex) %>% 
+  knitr::kable()
+```
+
+-   ~1k middle names with other non-alphanumeric characters
+-   Some look like substitutions for hyphen
+-   Many are parenthetical notes (NMN = no middle name)
+
+## Digits
+
+Check for digits.
+
+### Zero
+
+Check for zero
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(last_name, "0"))
+
+nrow(x)
+
+x %>%   
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(last_name, sex) %>% 
+  knitr::kable()
+```
+
+-   29 last names with zero
+-   Substitution for O
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(first_name, "0"))
+
+nrow(x)
+
+x %>%   
+  dplyr::slice_sample(n = 20) %>%
+  dplyr::arrange(first_name, sex) %>% 
+  knitr::kable()
+```
+
+-   33 first names with zero
+-   Substitution for O
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, "0"))
+
+nrow(x)
+
+x %>%   
+  dplyr::slice_sample(n = 20) %>%
+  dplyr::arrange(midl_name, sex) %>% 
+  knitr::kable()
+```
+
+-   77 middle names with zero
+-   Some are substitution for O
+-   Some are in superfluous numbers
+
+### One
+
+Check for one.
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(last_name, "1"))
+
+nrow(x)
+
+x %>%   
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(last_name, sex) %>% 
+  knitr::kable()
+```
+
+-   1 last name with one
+-   Substitution for I in generation suffix (111 = III)
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(first_name, "1"))
+
+nrow(x)
+```
+
+-   0 first names with one
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, "1"))
+
+nrow(x)
+
+x %>%   
+  dplyr::slice_sample(n = 20) %>%
+  dplyr::arrange(midl_name, sex) %>% 
+  knitr::kable()
+```
+
+-   39 middle names with one
+-   Some are substitution for I in generation suffix
+-   Some are in superfluous numbers
+
+### Other digits
+
+Check for other digits.
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(last_name, "[2-9]"))
+
+nrow(x)
+
+x %>%   
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(last_name, sex) %>% 
+  knitr::kable()
+```
+
+-   1 last name with a 5
+-   Substitution of 5 for S
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(first_name, "[2-9]"))
+
+nrow(x)
+
+x %>%   
+  dplyr::slice_sample(n = 20) %>%
+  dplyr::arrange(first_name, sex) %>% 
+  knitr::kable()
+```
+
+-   2 first names with digits 2-9
+-   Look like random insertions
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, "[2-9]"))
+
+nrow(x)
+
+x %>%   
+  dplyr::slice_sample(n = 20) %>%
+  dplyr::arrange(midl_name, sex) %>% 
+  knitr::kable()
+```
+
+-   24 middle names with digits 2-9
+-   One random insertion
+-   Most appear to be superfluous numbers (from the address?)
+
+## Special words
+
+Look for special words that shouldn't be in names.
+
+Define word patterns to search for.
+
+```{r}
+# honorifics
+w_hons <- c(
+  "MR", "MISTER", "MASTER", "MRS", "MS", "MISS", 
+  "REV", "REVEREND", "SR", "SISTER", "BR", "BROTHER",
+  "FATHER", "MOTHER", "PASTOR", "ELDER", "BISHOP",
+  "DR", "DOCTOR", "MD", "PROF", "PROFESSOR"
+)
+
+# generation suffixes
+w_gen <- c(
+  "JR", "JNR", "JUNIOR", "SR", "SNR", "SENIOR",
+  "1ST", "2ND", "3RD", "4TH", "5TH", "6TH", "7TH", "8TH",
+  "FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH", "EIGHTH", "EIGHTTH",
+  "1", "2", "3", "4", "5", "6", "7", "8",
+  "I", "II", "III", "IIII", "IV", "V", "VI"
+)
+
+# special values
+w_spec <- c(
+  "NN", "NMN", "NAME",
+  "UNK", "UNKNOWN", "AKA", "KNOWN AS", "ALSO KNOWN AS", "ALIAS",
+  "BLIND"
+)
+
+# test
+w_test <- c(
+  "TEST", "TST", "DUMMY", "VOTER",  "([A-Z])\\1{2,}"
+)
+```
+
+### Last name
+
+```{r}
+# regular expression to match words
+w_regexp <- 
+  c(w_hons, w_gen, w_spec, w_test) %>% # all special words
+  unique() %>% # make it a set
+  dplyr::setdiff( # remove words that appear to mostly be validly used
+    c(
+      "BISHOP",
+      "BLIND",
+      "BROTHER",
+      "DOCTOR",
+      "ELDER",
+      "FIRST",
+      "JUNIOR",
+      "MASTER",
+      "MISS",
+      "MISTER",
+      "PASTOR",
+      "SENIOR",
+      "TEST",
+      "THIRD",
+      "VOTER"
+    )
+  ) %>% 
+  glue::glue(x = . , "\\b{x}\\b") %>%  # must be words
+  glue::glue_collapse(sep = "|") # search for any
+
+x <- d %>% 
+  dplyr::mutate(
+    match = 
+      last_name %>% 
+      stringr::str_to_upper() %>% 
+      stringr::str_replace_all(pattern = "[^ A-Z]", replacement = " ") %>% 
+      stringr::str_squish() %>% 
+      stringr::str_extract(pattern = w_regexp)
+  ) %>% 
+  dplyr::filter(!is.na(match))
+
+nrow(x)
+
+x %>% 
+  dplyr::arrange(match, sex, last_name, first_name) %>% 
+  knitr::kable()
+```
+
+I eyeballed the results and removed words which appeared to be mostly
+validly used.
+
+Invalid words:
+
+-   As whole field:
+-   As first word:
+-   As last word: DR, II, III, IIII, IV, JR, MD, SR
+-   As internal word: SR
+
+### First name
+
+```{r}
+# regular expression to match words
+w_regexp <- 
+  c(w_hons, w_gen, w_spec, w_test) %>% # all special words
+  unique() %>% # make it a set
+  dplyr::setdiff( # remove words that appear to mostly be validly used
+    c(
+      "BISHOP",
+      "BROTHER",
+      "DOCTOR",
+      "ELDER",
+      "JUNIOR",
+      "MASTER",
+      "MISTER",
+      "PASTOR",
+      "PROFESSOR"
+    )
+  ) %>% 
+  glue::glue(x = . , "\\b{x}\\b") %>%  # must be words
+  glue::glue_collapse(sep = "|") # search for any
+
+x <- d %>% 
+  dplyr::mutate(
+    match = 
+      first_name %>% 
+      stringr::str_to_upper() %>% 
+      stringr::str_replace_all(pattern = "[^ A-Z]", replacement = " ") %>% 
+      stringr::str_squish() %>% 
+      stringr::str_extract(pattern = w_regexp)
+  ) %>% 
+  dplyr::filter(!is.na(match))
+
+nrow(x)
+
+x %>% 
+  dplyr::arrange(match, sex, last_name, first_name) %>% 
+  knitr::kable()
+```
+
+I eyeballed the results and removed words which appeared to be mostly
+validly used.
+
+Invalid words:
+
+-   As whole field: FATHER, III, IV, JR, MD, MR, MRS, SISTER, SR
+-   As first word: DR, MISS, MRS, REV, SISTER
+-   As last word: III, JR, MRS, NMN, SR
+-   As internal word: MRS
+
+### Middle name
+
+```{r}
+# regular expression to match words
+w_regexp <- 
+  c(w_hons, w_gen, w_spec, w_test) %>% # all special words
+  unique() %>% # make it a set
+  dplyr::setdiff( # remove words that appear to mostly be validly used
+    c(
+      "BISHOP",
+      "BLIND",
+      "BR",
+      "BROTHER",
+      "DOCTOR",
+      "ELDER",
+      "FIRST",
+      "JR", # invalid & too many to display 
+      "JUNIOR",
+      "MASTER",
+      "MISTER",
+      "MRS", # invalid & too many to display
+      "NMN", # invalid & too many to display
+      "PASTOR",
+      "SENIOR",
+      "SISTER",
+      "I",
+      "V",
+      "VI",
+      "VOTER"
+    )
+  ) %>% 
+  glue::glue(x = . , "\\b{x}\\b") %>%  # must be words
+  glue::glue_collapse(sep = "|") # search for any
+
+x <- d %>% 
+  dplyr::mutate(
+    match = 
+      midl_name %>% 
+      stringr::str_to_upper() %>% 
+      stringr::str_replace_all(pattern = "[^ A-Z]", replacement = " ") %>% 
+      stringr::str_squish() %>% 
+      stringr::str_extract(pattern = w_regexp)
+  ) %>% 
+  dplyr::filter(!is.na(match))
+
+nrow(x)
+
+x %>% 
+  dplyr::arrange(match, sex, last_name, first_name) %>% 
+  knitr::kable()
+```
+
+I eyeballed the results and removed words which appeared to be mostly
+validly used.
+
+Invalid words:
+
+-   As whole field: AKA, DR, II, III, IV, JR, MD, MISS, MRS, MS, NMN,
+    REV, SR
+-   As first word: JR, MRS
+-   As last word: DR, II, III, IV, JR, MD, MISS, MR, MRS, NMN, NN, SR
+-   As internal word: JR
+
+# Timing {.unnumbered}
+
+```{r echo=FALSE}
+tictoc::toc()
+```
