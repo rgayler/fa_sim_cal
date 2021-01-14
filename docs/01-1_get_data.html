@@ -431,7 +431,7 @@ Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></sp
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-01-10
+<strong>Last updated:</strong> 2021-01-15
 </p>
 <p>
 <strong>Checks:</strong>
@@ -559,20 +559,20 @@ makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreee1477eb8ea80700e8f8902192d2ee72479403e0ftargetblanke1477eba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree5ab5dc465e2faee2e8450ec148085b0ce634dee4targetblank5ab5dc4a">
 <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/e1477eb8ea80700e8f8902192d2ee72479403e0f" target="_blank">e1477eb</a>
+<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/5ab5dc465e2faee2e8450ec148085b0ce634dee4" target="_blank">5ab5dc4</a>
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreee1477eb8ea80700e8f8902192d2ee72479403e0ftargetblanke1477eba" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree5ab5dc465e2faee2e8450ec148085b0ce634dee4targetblank5ab5dc4a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and
 connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/e1477eb8ea80700e8f8902192d2ee72479403e0f" target="_blank">e1477eb</a>.
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/5ab5dc465e2faee2e8450ec148085b0ce634dee4" target="_blank">5ab5dc4</a>.
 See the <em>Past versions</em> tab to see a history of the changes made to the
 R Markdown and HTML files.
 </p>
@@ -590,12 +590,10 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    .tresorit/
     Ignored:    data/VR_20051125.txt.xz
+    Ignored:    output/ent_cln.fst
     Ignored:    output/ent_raw.fst
     Ignored:    renv/library/
     Ignored:    renv/staging/
-
-Untracked files:
-    Untracked:  analysis/01_get_check_data.Rmd.bak
 
 </code></pre>
 <p>
@@ -640,6 +638,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/c674a51143f78ae013f84d528bfa8d4d55e42f87/analysis/01-1_get_data.Rmd" target="_blank">c674a51</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-15
+</td>
+<td>
+Add 01-6 clean vars
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/1d4a3952ef6f3f41e1be121afce4ac0be718db96/docs/01-1_get_data.html" target="_blank">1d4a395</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-10
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -816,11 +848,11 @@ which has the potential to confuse the parsing if it is looking for
 quoted values.</p>
 <pre class="r"><code># Show the raw data file location
 # This is set in code/file_paths.R
-f_entity_uncln_tsv</code></pre>
-<pre><code>[1] &quot;/home/ross/RG/projects/academic/entity_resolution/fa_sim_cal_TOP/fa_sim_cal/data/VR_20051125.txt.xz&quot;</code></pre>
+fs::path_file(f_entity_raw_tsv)</code></pre>
+<pre><code>[1] &quot;VR_20051125.txt.xz&quot;</code></pre>
 <pre class="r"><code># read the data
 d &lt;- vroom::vroom( #read raw data
-  f_entity_uncln_tsv,
+  f_entity_raw_tsv,
   # n_max = 1e4, # limit the rows for testing
   col_select = c( # get all the columns that might conceivably be used
                   # the names and ordering are from the metadata file
@@ -1359,14 +1391,14 @@ It is possible to read a subset of the stored columns,
 so we don’t have to be too worried about storing columns that aren’t always needed.</p>
 <pre class="r"><code># Show the raw data file location
 # This is set in code/file_paths.R
-f_entity_fst</code></pre>
-<pre><code>[1] &quot;/home/ross/RG/projects/academic/entity_resolution/fa_sim_cal_TOP/fa_sim_cal/output/ent_raw.fst&quot;</code></pre>
+fs::path_file(f_entity_raw_fst)</code></pre>
+<pre><code>[1] &quot;ent_raw.fst&quot;</code></pre>
 <pre class="r"><code># save the usable entity data (cheap-skate caching)
-d %&gt;% fst::write_fst(f_entity_fst, compress = 100) </code></pre>
+d %&gt;% fst::write_fst(f_entity_raw_fst, compress = 100) </code></pre>
 </div>
 <div id="timing" class="section level1 unnumbered">
 <h1>Timing</h1>
-<pre><code>Computation time (excl. render): 466.187 sec elapsed</code></pre>
+<pre><code>Computation time (excl. render): 453.429 sec elapsed</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1396,26 +1428,26 @@ attached base packages:
 [1] stats     graphics  grDevices datasets  utils     methods   base     
 
 other attached packages:
- [1] vroom_1.3.2     glue_1.4.2      knitr_1.30      skimr_2.1.2    
- [5] fst_0.9.4       forcats_0.5.0   stringr_1.4.0   dplyr_1.0.2    
- [9] purrr_0.3.4     readr_1.4.0     tidyr_1.1.2     tibble_3.0.4   
-[13] ggplot2_3.3.3   tidyverse_1.3.0 tictoc_1.0      here_1.0.1     
-[17] workflowr_1.6.2
+ [1] vroom_1.3.2     hexbin_1.28.2   glue_1.4.2      knitr_1.30     
+ [5] skimr_2.1.2     fst_0.9.4       fs_1.5.0        forcats_0.5.0  
+ [9] stringr_1.4.0   dplyr_1.0.2     purrr_0.3.4     readr_1.4.0    
+[13] tidyr_1.1.2     tibble_3.0.4    ggplot2_3.3.3   tidyverse_1.3.0
+[17] tictoc_1.0      here_1.0.1      workflowr_1.6.2
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.5        lubridate_1.7.9.2 utf8_1.1.4        assertthat_0.2.1 
- [5] rprojroot_2.0.2   digest_0.6.27     repr_1.1.0        R6_2.5.0         
- [9] cellranger_1.1.0  backports_1.2.1   reprex_0.3.0      evaluate_0.14    
-[13] highr_0.8         httr_1.4.2        pillar_1.4.7      rlang_0.4.10     
-[17] readxl_1.3.1      rstudioapi_0.13   whisker_0.4       rmarkdown_2.6    
-[21] bit_4.0.4         munsell_0.5.0     broom_0.7.3       compiler_4.0.3   
-[25] httpuv_1.5.4      modelr_0.1.8      xfun_0.20         base64enc_0.1-3  
-[29] pkgconfig_2.0.3   htmltools_0.5.0   tidyselect_1.1.0  bookdown_0.21    
-[33] fansi_0.4.1       crayon_1.3.4      dbplyr_2.0.0      withr_2.3.0      
-[37] later_1.1.0.1     grid_4.0.3        jsonlite_1.7.2    gtable_0.3.0     
-[41] lifecycle_0.2.0   DBI_1.1.0         git2r_0.27.1      magrittr_2.0.1   
-[45] scales_1.1.1      cli_2.2.0         stringi_1.5.3     renv_0.12.5      
-[49] fs_1.5.0          promises_1.1.1    xml2_1.3.2        ellipsis_0.3.1   
+ [1] Rcpp_1.0.5        lattice_0.20-41   lubridate_1.7.9.2 utf8_1.1.4       
+ [5] assertthat_0.2.1  rprojroot_2.0.2   digest_0.6.27     repr_1.1.0       
+ [9] R6_2.5.0          cellranger_1.1.0  backports_1.2.1   reprex_0.3.0     
+[13] evaluate_0.14     highr_0.8         httr_1.4.2        pillar_1.4.7     
+[17] rlang_0.4.10      readxl_1.3.1      rstudioapi_0.13   whisker_0.4      
+[21] rmarkdown_2.6     bit_4.0.4         munsell_0.5.0     broom_0.7.3      
+[25] compiler_4.0.3    httpuv_1.5.4      modelr_0.1.8      xfun_0.20        
+[29] base64enc_0.1-3   pkgconfig_2.0.3   htmltools_0.5.0   tidyselect_1.1.0 
+[33] bookdown_0.21     fansi_0.4.1       crayon_1.3.4      dbplyr_2.0.0     
+[37] withr_2.3.0       later_1.1.0.1     grid_4.0.3        jsonlite_1.7.2   
+[41] gtable_0.3.0      lifecycle_0.2.0   DBI_1.1.0         git2r_0.28.0     
+[45] magrittr_2.0.1    scales_1.1.1      cli_2.2.0         stringi_1.5.3    
+[49] renv_0.12.5       promises_1.1.1    xml2_1.3.2        ellipsis_0.3.1   
 [53] generics_0.1.0    vctrs_0.3.6       tools_4.0.3       bit64_4.0.5      
 [57] hms_0.5.3         parallel_4.0.3    yaml_2.2.1        colorspace_2.0-0 
 [61] rvest_0.3.6       haven_2.3.1      </code></pre>
