@@ -431,7 +431,7 @@ Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></sp
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-01-12
+<strong>Last updated:</strong> 2021-01-15
 </p>
 <p>
 <strong>Checks:</strong>
@@ -559,20 +559,20 @@ makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreec6a10c1890ddd7f2b90db3b308943fd2263785b6targetblankc6a10c1a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree9c91455acd4354f2ce46fc7e791233b4ddb3b49etargetblank9c91455a">
 <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/c6a10c1890ddd7f2b90db3b308943fd2263785b6" target="_blank">c6a10c1</a>
+<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/9c91455acd4354f2ce46fc7e791233b4ddb3b49e" target="_blank">9c91455</a>
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreec6a10c1890ddd7f2b90db3b308943fd2263785b6targetblankc6a10c1a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree9c91455acd4354f2ce46fc7e791233b4ddb3b49etargetblank9c91455a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and
 connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/c6a10c1890ddd7f2b90db3b308943fd2263785b6" target="_blank">c6a10c1</a>.
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/9c91455acd4354f2ce46fc7e791233b4ddb3b49e" target="_blank">9c91455</a>.
 See the <em>Past versions</em> tab to see a history of the changes made to the
 R Markdown and HTML files.
 </p>
@@ -590,16 +590,10 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    .tresorit/
     Ignored:    data/VR_20051125.txt.xz
+    Ignored:    output/ent_cln.fst
     Ignored:    output/ent_raw.fst
     Ignored:    renv/library/
     Ignored:    renv/staging/
-
-Untracked files:
-    Untracked:  analysis/01-3_check_resid.Rmd
-    Untracked:  analysis/01_get_check_data.Rmd.txt
-
-Unstaged changes:
-    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -644,6 +638,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/c674a51143f78ae013f84d528bfa8d4d55e42f87/analysis/01-2_check_admin.Rmd" target="_blank">c674a51</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-15
+</td>
+<td>
+Add 01-6 clean vars
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/638d81ecc3f5a7678df19953388504f1aec8dae5/docs/01-2_check_admin.html" target="_blank">638d81e</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-12
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -748,11 +776,11 @@ modelling.</p>
 VERIFIED records.</p>
 <pre class="r"><code># Show the entity data file location
 # This is set in code/file_paths.R
-f_entity_fst</code></pre>
-<pre><code>[1] &quot;/home/ross/RG/projects/academic/entity_resolution/fa_sim_cal_TOP/fa_sim_cal/output/ent_raw.fst&quot;</code></pre>
+fs::path_file(f_entity_raw_fst)</code></pre>
+<pre><code>[1] &quot;ent_raw.fst&quot;</code></pre>
 <pre class="r"><code># get data for next section of analyses
 d &lt;- fst::read_fst(
-  f_entity_fst, 
+  f_entity_raw_fst, 
   columns = c(vars_admin, &quot;age&quot;) # get age as well
 ) %&gt;% 
   tibble::as_tibble()
@@ -1359,7 +1387,7 @@ Perhaps they had been removed from the electoral roll in the past and subsequent
 </div>
 <div id="timing" class="section level1 unnumbered">
 <h1>Timing</h1>
-<pre><code>Computation time (excl. render): 32.117 sec elapsed</code></pre>
+<pre><code>Computation time (excl. render): 33.261 sec elapsed</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1390,10 +1418,10 @@ attached base packages:
 
 other attached packages:
  [1] hexbin_1.28.2   glue_1.4.2      knitr_1.30      skimr_2.1.2    
- [5] fst_0.9.4       forcats_0.5.0   stringr_1.4.0   dplyr_1.0.2    
- [9] purrr_0.3.4     readr_1.4.0     tidyr_1.1.2     tibble_3.0.4   
-[13] ggplot2_3.3.3   tidyverse_1.3.0 tictoc_1.0      here_1.0.1     
-[17] workflowr_1.6.2
+ [5] fst_0.9.4       fs_1.5.0        forcats_0.5.0   stringr_1.4.0  
+ [9] dplyr_1.0.2     purrr_0.3.4     readr_1.4.0     tidyr_1.1.2    
+[13] tibble_3.0.4    ggplot2_3.3.3   tidyverse_1.3.0 tictoc_1.0     
+[17] here_1.0.1      workflowr_1.6.2
 
 loaded via a namespace (and not attached):
  [1] Rcpp_1.0.5        lattice_0.20-41   lubridate_1.7.9.2 assertthat_0.2.1 
@@ -1408,10 +1436,10 @@ loaded via a namespace (and not attached):
 [37] later_1.1.0.1     grid_4.0.3        jsonlite_1.7.2    gtable_0.3.0     
 [41] lifecycle_0.2.0   DBI_1.1.0         git2r_0.28.0      magrittr_2.0.1   
 [45] scales_1.1.1      cli_2.2.0         stringi_1.5.3     farver_2.0.3     
-[49] renv_0.12.5       fs_1.5.0          promises_1.1.1    xml2_1.3.2       
-[53] ellipsis_0.3.1    generics_0.1.0    vctrs_0.3.6       tools_4.0.3      
-[57] hms_0.5.3         parallel_4.0.3    yaml_2.2.1        colorspace_2.0-0 
-[61] rvest_0.3.6       haven_2.3.1      </code></pre>
+[49] renv_0.12.5       promises_1.1.1    xml2_1.3.2        ellipsis_0.3.1   
+[53] generics_0.1.0    vctrs_0.3.6       tools_4.0.3       hms_0.5.3        
+[57] parallel_4.0.3    yaml_2.2.1        colorspace_2.0-0  rvest_0.3.6      
+[61] haven_2.3.1      </code></pre>
 </div>
 </div>
 
