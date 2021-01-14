@@ -57,11 +57,11 @@ VERIFIED records.
 ```{r}
 # Show the entity data file location
 # This is set in code/file_paths.R
-f_entity_fst
+fs::path_file(f_entity_raw_fst)
 
 # get data for next section of analyses
 d <- fst::read_fst(
-  f_entity_fst, 
+  f_entity_raw_fst, 
   columns = vars_resid
 ) %>% 
   tibble::as_tibble()

@@ -1,0 +1,477 @@
+---
+title: "01-6_clean_vars"
+subtitle: "Clean all the variables"
+author: "Ross Gayler"
+date: "2021-01-13"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+  markdown: 
+    wrap: 72
+---
+
+```{r setup}
+# Set up the project environment, because each Rmd file knits in a new R session
+# so doesn't get the project setup from .Rprofile
+
+# Project setup
+library(here)
+source(here::here("code", "setup_project.R"))
+
+# Extra set up for the 01*.Rmd notebooks
+source(here::here("code", "setup_01.R"))
+
+# Extra set up for this notebook
+# ???
+
+# start the execution time clock
+tictoc::tic("Computation time (excl. render)")
+```
+
+# Introduction
+
+The `01*.Rmd` notebooks read the data, filter it to the subset to be
+used for modelling, characterise it to understand it, check for possible
+gotchas, clean it, and save it for the analyses proper.
+
+This notebook (`01-6_clean_vars`) prepares all the variables for use in
+predictive modelling and saves the data.
+
+## Variable roles
+
+The name variables, `last_name`, `first_name`, and `midl_name`, will
+definitely be used in compatibility modelling.
+
+We intend to use the one snapshot file as both the database to be
+queried and as the set of queries. Consequently, strictly speaking, we
+don't need to standardise the name variables because the database and
+query records are guaranteed to be identical (they will literally be the
+same record). However, we will look at the name variables with an eye to
+standardisation because it is never a good idea to statistically model
+data without having an idea about the quality of the data. We will apply
+some basic standardisation to the name variables, if appropriate,
+because it parallels what would be necessary in practice.
+
+The demographic variables `sex`, `age`, `birt_place`, and the
+administrative variable `county_id` may be used as predictors and/or
+blocking variables.
+
+The remainder of the variables (residence and administrative variables)
+will be kept in case they are useful for manually assessing claimed
+matches.
+
+## Cleanup for predictors
+
+### Name standardisation
+
+Standardisation will be applied to the name variables `last_name`,
+`first_name`, and `midl_name`. This attempts to remove variation that is
+probably irrelevant to identity (e.g. case, punctuation, and spacing).
+
+### Missing values
+
+In the previous notebooks I have converted empty strings to missing
+values (`NA_character_` in R). This was convenient because `table()` and
+`skim()` count missing values as a separate category. However, modelling
+is a different kettle of fish.
+
+In modelling, we want to get an estimated probability of identity match
+for every query, regardless of how many attributes have missing values.
+Typical modelling functions do not tolerate any missing (`NA`) values in
+predictors. If any of the predictors is missing then the estimate is
+also missing.
+
+We avoid that problem by transforming the missing values into some
+nonmissing value and creating an extra variable to indicate the
+missingness. This will be done for the name variables `last_name`,
+`first_name`, and `midl_name`, and the demographic variable `age`. (This
+is not necessary for `birth_place` because "missing" is just another
+valid level of the variable..
+
+### Cleanup summary
+
+The cleanup actions to be applied are (in order):
+
+-   *age*
+
+    -   convert from string to integer
+    -   add missing value indicator and set to true if age \< 17 or
+        age \> 104
+    -   if age missing indicator is true, set age to 0
+
+-   *preprocess all character variables*
+
+    -   map missing to empty string
+    -   map lower case letters to upper case
+
+-   *all names*
+
+    -   map each non-alphanumeric character to a space (Remove
+        variability of punctuation while preserving word boundaries.)
+    -   map words 11, 111, 1111 to words II, III, IIII (Correct
+        substitution of 1 for I in generation suffixes.)
+    -   if name contains zero and no other digits, map zero to O
+        (Correct substitution of 0 for O in names.)
+    -   map each digit to an empty string (Remove random digit
+        insertions)
+
+-   *last name*
+
+    -   map words DR, II, III, IIII, IV, JR, MD, SR to empty string
+    -   if number of letters in last name = 1, map name to empty string
+
+-   *middle name*
+
+    -   map words AKA, DR, II, III, IV, JR, MD, MISS, MR, MRS, MS, NMN,
+        NN, REV, SR to empty string
+
+-   *first name*
+
+    -   map words DR, FATHER, III, IV, JR, MD, MISS, MR, MRS, NMN, REV,
+        SISTER, SR to empty string
+    -   if number of letters in first name = 0, move first word of
+        middle name to first name
+
+-   *postprocess all name variables*
+
+    -   map all spaces to empty strings (Remove variability of spacing.)
+    -   add missing value indicator variables for all name variables
+
+# Read data
+
+Read the usable data. Remember that this consists of only the ACTIVE &
+VERIFIED records.
+
+```{r}
+# Show the entity data file location
+# This is set in code/file_paths.R
+fs::path_file(f_entity_raw_fst)
+
+# get entity data
+d <- fst::read_fst(f_entity_raw_fst) %>% 
+  tibble::as_tibble() %>% 
+  dplyr::select(-county_desc, -voter_reg_num, -sex_code) # drop redundant vars
+
+dim(d)
+```
+
+# Apply cleanup
+
+### Age
+
+-   convert from string to integer
+-   add missing indicator and set to true if age \< 17 or age \> 104
+-   if age missing indicator is true, set age to 0
+
+```{r}
+d <- d %>% 
+  dplyr::mutate(
+    age_cln = as.integer(age),
+    age_cln_miss = ! dplyr::between(age_cln, 17, 104), # valid age range
+    age_cln = dplyr::if_else(age_cln_miss, 0L, age_cln)
+  )
+```
+
+### Preprocess all character variables
+
+-   map missing to empty string
+-   map lower case letters to upper case
+
+Note that this is an in-place transformation of the character variables
+rather than adding the transformed values as new variables. This is
+because I am viewing this a light tidying rather than as creating
+distinctly new cleaned values.
+
+```{r}
+tidy_char_var <- function(x) {
+  x %>% 
+    tidyr::replace_na("") %>% # map NA to ""
+    stringr::str_to_upper() # map lower case to upper case
+}
+
+d <- d %>% 
+  dplyr::mutate(
+    across(where(is.character), tidy_char_var) # apply to all char vars
+  )
+```
+
+### All names
+
+-   map each non-alphanumeric character to a space (Remove variability
+    of punctuation. This preserves word boundaries.)
+-   map words 11, 111, 1111 to words II, III, IIII (Correct substitution
+    of 1 for I in generation suffixes.)
+-   if name contains zero and no other digits, map zero to O (Correct
+    substitution of 0 for O in names.)
+-   map each digit to an empty string (Remove random digit insertions)
+
+```{r}
+# map zero to O if there are no other digits in the string
+map_0_to_O <- function(x) { # x: vector of strings
+  dplyr::if_else(
+    stringr::str_detect( x, "0") & # if string contains zero AND
+      stringr::str_detect( x, "[1-9]", negate = TRUE), # string contains no other digits
+    stringr::str_replace_all( x, "0", "O"), # then map zero to O
+    x # else return x
+  )
+}
+
+# apply all-name cleaning
+clean_name_var <- function(x) { # x: vector of strings
+  x %>% 
+    stringr::str_replace_all("[^ A-Z0-9]", " ") %>% # map non-alphanumeric to " "
+    stringr::str_replace_all( # fix generation suffixes
+      c("\\b11\\b"   = "II", 
+        "\\b111\\b"  = "III", 
+        "\\b1111\\b" = "IIII")
+    ) %>% 
+    map_0_to_O() %>% 
+    stringr::str_remove_all("[0-9]") %>% # map remaining digits to ""
+    stringr::str_squish() # remove excess whitespace
+}
+
+d <- d %>%
+  dplyr::mutate(
+    across(
+      .cols = c(last_name, first_name, midl_name), # apply to all name vars
+      .fns = clean_name_var, 
+      .names = "{.col}_cln")
+  )
+```
+
+### Last name
+
+-   map words DR, II, III, IIII, IV, JR, MD, SR to empty string
+-   if number of letters in last name = 1, map name to empty string
+
+```{r}
+# remove words (w) from vector of strings (x)
+remove_words <- function(x, w) { # x, w: vectors of char (w = words to remove)
+  x %>% 
+    stringr::str_remove_all(
+      pattern =  paste0("\\b", w, "\\b", collapse = "|") #convert word list to regexp
+    ) %>% 
+    stringr::str_squish() # remove excess whitespace
+}
+
+d <- d %>% 
+  dplyr::mutate(
+    last_name_cln = last_name_cln %>% # remove special words
+      remove_words(c("DR", "II", "III", "IIII", "IV", "JR", "MD", "SR")),
+    
+    last_name_cln = dplyr::if_else( # remove very short names
+      stringr::str_length(last_name_cln) > 1,
+      last_name_cln,
+      ""
+    )
+  )
+```
+
+### Middle name
+
+-   map words AKA, DR, II, III, IV, JR, MD, MISS, MR, MRS, MS, NMN, NN,
+    REV, SR to empty string
+
+```{r}
+d <- d %>% 
+  dplyr::mutate(
+    midl_name_cln = midl_name_cln %>% # remove special words
+      remove_words(c("AKA", "DR", "II", "III", "IV", "JR", "MD", "MISS", 
+                     "MR", "MRS", "MS", "NMN", "NN", "REV", "SR"))
+  )
+```
+
+### First name
+
+-   map words DR, FATHER, III, IV, JR, MD, MISS, MR, MRS, NMN, REV,
+    SISTER, SR to empty string
+-   if number of letters in first name = 0, move first word of middle
+    name to first name
+
+```{r}
+# if no first name, move first word of middle name to first name
+move_name <- function(d) { # d: data frame of entity data
+  has_first_name <- d$first_name_cln != ""
+  
+  re_fword <- "^[A-Z]+\\b" # regular expression for first word
+  
+  midl <- d$midl_name_cln
+  
+  midl_head <- midl %>% # get first word
+    stringr::str_extract(re_fword) %>% 
+    tidyr::replace_na("")
+  
+  midl_tail <- midl %>% # get remainder of words
+    stringr::str_remove(re_fword) %>% 
+    stringr::str_squish()
+  
+  d %>% 
+    dplyr::mutate(
+      first_name_cln = dplyr::if_else(has_first_name,
+                                      first_name_cln,
+                                      midl_head
+      ),
+      midl_name_cln = dplyr::if_else(has_first_name,
+                                     midl_name_cln,
+                                     midl_tail
+      )
+    )
+}
+
+d <- d %>% 
+  dplyr::mutate(
+    first_name_cln = first_name_cln %>% # remove special words
+      remove_words(c("DR", "FATHER", "III", "IV", "JR", "MD", "MISS",
+                     "MR", "MRS", "NMN", "REV", "SISTER", "SR"))
+  ) %>% 
+  move_name()
+```
+
+### Postprocess all name variables
+
+-   map all spaces to empty strings (Remove variability of spacing.)
+-   add missing value indicator variables for all name variables
+
+```{r}
+d <- d %>%
+  dplyr::mutate(
+    # remove all spaces
+    last_name_cln  = last_name_cln  %>% stringr::str_remove_all(" "),
+    first_name_cln = first_name_cln %>% stringr::str_remove_all(" "),
+    midl_name_cln  = midl_name_cln  %>% stringr::str_remove_all(" "),
+    
+    # add missing value indicators
+    last_name_cln_miss  = last_name_cln  == "",
+    first_name_cln_miss = first_name_cln == "",
+    midl_name_cln_miss  = midl_name_cln  == ""
+  )
+```
+
+# Examples
+
+Show some examples of the cleaned data.
+
+Quick distributions
+
+```{r}
+d %>% 
+  dplyr::select(ends_with("cln"), ends_with("_miss")) %>% 
+  skimr::skim()
+```
+
+## Age
+
+```{r}
+d %>% 
+  dplyr::group_by(age_cln_miss) %>% 
+  dplyr::slice_sample(n = 10) %>% 
+  dplyr::select(age, age_cln, age_cln_miss) %>% 
+  knitr::kable()
+```
+
+## Last name
+
+```{r}
+d %>% 
+  dplyr::group_by(last_name_cln_miss) %>% 
+  dplyr::slice_sample(n = 10) %>% 
+  dplyr::select(
+    last_name, last_name_cln, last_name_cln_miss,
+    first_name, first_name_cln, first_name_cln_miss,
+    midl_name, midl_name_cln, midl_name_cln_miss
+  ) %>% 
+  knitr::kable()
+```
+
+
+```{r}
+d %>% 
+  dplyr::filter(stringr::str_detect(last_name, "[- ']")) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::select(
+    last_name, last_name_cln, last_name_cln_miss,
+    first_name, first_name_cln, first_name_cln_miss,
+    midl_name, midl_name_cln, midl_name_cln_miss
+  ) %>% 
+  knitr::kable()
+```
+
+## First name
+
+```{r}
+d %>% 
+  dplyr::group_by(first_name_cln_miss) %>% 
+  dplyr::slice_sample(n = 10) %>% 
+  dplyr::select(
+    last_name, last_name_cln, last_name_cln_miss,
+    first_name, first_name_cln, first_name_cln_miss,
+    midl_name, midl_name_cln, midl_name_cln_miss
+  ) %>% 
+  knitr::kable()
+```
+
+```{r}
+d %>% 
+  dplyr::filter(stringr::str_detect(first_name, "[- ']")) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::select(
+    last_name, last_name_cln, last_name_cln_miss,
+    first_name, first_name_cln, first_name_cln_miss,
+    midl_name, midl_name_cln, midl_name_cln_miss
+  ) %>% 
+  knitr::kable()
+```
+
+```{r}
+d %>% 
+  dplyr::filter(stringr::str_detect(first_name, "SISTER")) %>% 
+  dplyr::select(
+    last_name, last_name_cln, last_name_cln_miss,
+    first_name, first_name_cln, first_name_cln_miss,
+    midl_name, midl_name_cln, midl_name_cln_miss
+  ) %>% 
+  knitr::kable()
+```
+
+## Middle name
+
+```{r}
+d %>% 
+  dplyr::group_by(midl_name_cln_miss) %>% 
+  dplyr::slice_sample(n = 10) %>% 
+  dplyr::select(
+    last_name, last_name_cln, last_name_cln_miss,
+    first_name, first_name_cln, first_name_cln_miss,
+    midl_name, midl_name_cln, midl_name_cln_miss
+  ) %>% 
+  knitr::kable()
+```
+
+```{r}
+d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, "[- ']")) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::select(
+    last_name, last_name_cln, last_name_cln_miss,
+    first_name, first_name_cln, first_name_cln_miss,
+    midl_name, midl_name_cln, midl_name_cln_miss
+  ) %>% 
+  knitr::kable()
+```
+
+# Save data
+
+```{r}
+# Show the clean data file location
+# This is set in code/file_paths.R
+fs::path_file(f_entity_cln_fst)
+
+# save the usable entity data (cheap-skate caching)
+d %>% fst::write_fst(f_entity_cln_fst, compress = 100)
+```
+
+# Timing {.unnumbered}
+
+```{r echo=FALSE}
+tictoc::toc()
+```

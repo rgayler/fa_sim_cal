@@ -330,7 +330,7 @@ $(document).ready(function () {
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
 workflowr
-<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -340,7 +340,7 @@ workflowr
 </li>
 <li>
 <a data-toggle="tab" href="#checks">
-Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
 </a>
 </li>
 <li>
@@ -350,14 +350,14 @@ Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></sp
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-01-13
+<strong>Last updated:</strong> 2021-01-15
 </p>
 <p>
 <strong>Checks:</strong>
 <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-2
+1
 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
-0
+1
 </p>
 <p>
 <strong>Knit directory:</strong>
@@ -380,36 +380,41 @@ The <em>Past versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-<strong>R Markdown file:</strong> up-to-date
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+<strong>R Markdown file:</strong> uncommitted changes
 </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git repository, you
-know the exact version of the code that produced these results.</p>
+<p>The R Markdown file has unstaged changes.
+To know which version of the R Markdown file created these
+results, you’ll want to first commit it to the Git repo. If
+you’re still working on the analysis, you can ignore this
+warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and
+build the HTML.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree3be35590b7bc59f39f23f5f91b89019531b45be5targetblank3be3559a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree874917fb126d409c0156c69185866e2fcf22fa81targetblank874917fa">
 <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/3be35590b7bc59f39f23f5f91b89019531b45be5" target="_blank">3be3559</a>
+<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/874917fb126d409c0156c69185866e2fcf22fa81" target="_blank">874917f</a>
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree3be35590b7bc59f39f23f5f91b89019531b45be5targetblank3be3559a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree874917fb126d409c0156c69185866e2fcf22fa81targetblank874917fa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and
 connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/3be35590b7bc59f39f23f5f91b89019531b45be5" target="_blank">3be3559</a>.
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/874917fb126d409c0156c69185866e2fcf22fa81" target="_blank">874917f</a>.
 See the <em>Past versions</em> tab to see a history of the changes made to the
 R Markdown and HTML files.
 </p>
@@ -427,13 +432,25 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    .tresorit/
     Ignored:    data/VR_20051125.txt.xz
+    Ignored:    output/ent_cln.fst
     Ignored:    output/ent_raw.fst
     Ignored:    renv/library/
     Ignored:    renv/staging/
 
 Untracked files:
     Untracked:  analysis/01-6_clean_vars.Rmd
-    Untracked:  analysis/standardise.txt
+
+Unstaged changes:
+    Modified:   analysis/01-1_get_data.Rmd
+    Modified:   analysis/01-2_check_admin.Rmd
+    Modified:   analysis/01-3_check_resid.Rmd
+    Modified:   analysis/01-4_check_demog.Rmd
+    Modified:   analysis/01-5_check_name.Rmd
+    Modified:   analysis/index.Rmd
+    Modified:   analysis/notes.Rmd
+    Modified:   code/file_paths.R
+    Modified:   code/setup_project.R
+    Modified:   output/README.md
 
 </code></pre>
 <p>
@@ -478,6 +495,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/874917fb126d409c0156c69185866e2fcf22fa81/analysis/index.Rmd" target="_blank">874917f</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-13
+</td>
+<td>
+Revise conclusion re inserted 5 in name
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/c0c53136659b15e603fb7be95b91f6e011aeb766/docs/index.html" target="_blank">c0c5313</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-13
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1115,6 +1166,7 @@ Start workflowr project.
 <h1>Analysis Notebooks</h1>
 <div id="read-check-and-standardise-the-entity-data" class="section level2 unnumbered">
 <h2>01 Read, check, and standardise the entity data</h2>
+<p>Initial data preparation of imported entity records.</p>
 <div id="get-subset-check-and-save-data" class="section level3 unnumbered">
 <h3><a href="01-1_get_data.html">01-1 Get, subset, check, and save data</a></h3>
 <p>Import the raw data, cut it back to the subset of rows and columns that are possibly useful, sanity check the data, and save the data in an R-friendly format.</p>
@@ -1134,8 +1186,24 @@ Start workflowr project.
 <div id="check-name-variables" class="section level3 unnumbered">
 <h3><a href="01-5_check_name.html">01-5 Check name variables</a></h3>
 <p>Check the name variables.</p>
-<hr />
 </div>
+<div id="clean-variables" class="section level3 unnumbered">
+<h3><a href="01-6_clean_vars.html">01-6 Clean variables</a></h3>
+<p>Clean all the variables.</p>
+</div>
+</div>
+<div id="name-frequency" class="section level2 unnumbered">
+<h2>02 Name frequency</h2>
+<p>Detailed examination of the distributions of name frequencies.</p>
+</div>
+<div id="similarity-calibration" class="section level2 unnumbered">
+<h2>03 Similarity calibration</h2>
+<p>Detailed examination of the calibration from similarity to probability of identity match, both unconditionally and as a function of name frequency.</p>
+</div>
+<div id="compatibility-models" class="section level2 unnumbered">
+<h2>03 Compatibility models</h2>
+<p>Estimate multivariate compatibility models.</p>
+<hr />
 </div>
 </div>
 <div id="manuscripts" class="section level1 unnumbered">

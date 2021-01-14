@@ -33,7 +33,7 @@ This notebook is for keeping notes of any points that may be useful for later pr
 
 # Analysis Notebooks {.unnumbered}
 
-## 01 Read, check, and standardise the entity data {-}
+## 01 Read, check, and standardise the entity data {.unnumbered}
 
 Initial data preparation of imported entity records.
 
@@ -57,23 +57,21 @@ Check the demographic variables - sex, age, and birth place.
 
 Check the name variables.
 
-## 02 Name frequency {-}
+### [01-6 Clean variables](01-6_clean_vars.html) {.unnumbered}
+
+Clean all the variables.
+
+## 02 Name frequency {.unnumbered}
 
 Detailed examination of the distributions of name frequencies.
 
+## 03 Similarity calibration {.unnumbered}
 
-## 03 Similarity calibration {-}
+Detailed examination of the calibration from similarity to probability of identity match, both unconditionally and as a function of name frequency.
 
-Detailed examination of the calibration from similarity to probability of identity match,
-both unconditionally and as a function of name frequency.
-
-
-
-## 03 Compatibility models {-}
+## 03 Compatibility models {.unnumbered}
 
 Estimate multivariate compatibility models.
-
-
 
 ------------------------------------------------------------------------
 

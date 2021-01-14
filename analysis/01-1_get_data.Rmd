@@ -94,11 +94,11 @@ quoted values.
 ```{r}
 # Show the raw data file location
 # This is set in code/file_paths.R
-f_entity_uncln_tsv
+fs::path_file(f_entity_raw_tsv)
 
 # read the data
 d <- vroom::vroom( #read raw data
-  f_entity_uncln_tsv,
+  f_entity_raw_tsv,
   # n_max = 1e4, # limit the rows for testing
   col_select = c( # get all the columns that might conceivably be used
                   # the names and ordering are from the metadata file
@@ -231,14 +231,11 @@ so we don't have to be too worried about storing columns that aren't always need
 ```{r}
 # Show the raw data file location
 # This is set in code/file_paths.R
-f_entity_fst
+fs::path_file(f_entity_raw_fst)
 
 # save the usable entity data (cheap-skate caching)
-d %>% fst::write_fst(f_entity_fst, compress = 100) 
+d %>% fst::write_fst(f_entity_raw_fst, compress = 100) 
 ```
-
-
-
 
 # Timing {.unnumbered}
 

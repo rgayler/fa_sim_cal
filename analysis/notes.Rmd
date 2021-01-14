@@ -63,6 +63,12 @@ This document is for keeping notes of any points that may be useful for later pr
 
 # Modelling
 
+-   Use blocking to reduce the number of comparisons for practicality
+
+    -   Blocking on age will give more homogeneity of first names within blocks because of name popularity varying over time.
+
+    -   Blocking on county will give more homogeneity of last names within blocks because of families living together.
+
 -   Try indicators for missingness. Missingness may be differentially informative across different predictor variables.
 
 -   Try indicators for similarity == 1. The compatibility of exact string equality is not necessarily continuous with the compatibility of similarity just below 1.
@@ -78,6 +84,12 @@ This document is for keeping notes of any points that may be useful for later pr
     -   Do we need to apply frequency smoothing, as used in probabilistic linguistic models?
 
     -   Do we need to estimate the probability mass of unobserved names?
+
+-   In general, the dictionary will be a subset of the entities in the universe of queries. Consider the impact of this on modelling as the fraction of the query universe in the dictionary varies.
+
+    -   Consider whether this varies on a per query basis because of blocking. That is, is there effectively a separate dictionary per blocking value?
+    -   Can the sampling fraction be modelled as a prior probability (effectively, a change in the intercept term of a logistic regression)?
+    -   Consider using the same variable for blocking and as a predictor to compare the effect on estimated probability of identity match as a function of dictionary fraction.
 
 # Performance evaluation
 
@@ -97,5 +109,4 @@ This document is for keeping notes of any points that may be useful for later pr
 
 # Writing
 
-- Note relationship to Fellegi & Sunter / probilistic record linkage (in proposal?)
-
+-   Note relationship to Fellegi & Sunter / probilistic record linkage (in proposal?)

@@ -47,6 +47,7 @@ library(tictoc) # for timing the operations
 # suppressPackageStartupMessages(
   library(tidyverse) # for "tidy" operations
 # )
+library(fs) # for OS-independent file system operations
 library(fst) # for fast, compressed dataframe storage
 
 # ##### Load utility functions #####
