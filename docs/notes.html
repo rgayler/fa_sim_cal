@@ -14,7 +14,7 @@
 
 <title>Notes</title>
 
-<script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
@@ -27,8 +27,6 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
-<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -95,6 +93,7 @@ h6 {
   text-align: left;
 }
 </style>
+
 
 
 
@@ -385,7 +384,7 @@ div.tocify {
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/rgayler/fa_sim_cal">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
     Source code
   </a>
@@ -429,7 +428,7 @@ Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></sp
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-01-06
+<strong>Last updated:</strong> 2021-01-15
 </p>
 <p>
 <strong>Checks:</strong>
@@ -475,20 +474,20 @@ know the exact version of the code that produced these results.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreeec38ffcf7c8c70f12ca927f7d762b01d2a52be00targetblankec38ffca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreec674a51143f78ae013f84d528bfa8d4d55e42f87targetblankc674a51a">
 <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/ec38ffcf7c8c70f12ca927f7d762b01d2a52be00" target="_blank">ec38ffc</a>
+<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/c674a51143f78ae013f84d528bfa8d4d55e42f87" target="_blank">c674a51</a>
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreeec38ffcf7c8c70f12ca927f7d762b01d2a52be00targetblankec38ffca" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreec674a51143f78ae013f84d528bfa8d4d55e42f87targetblankc674a51a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and
 connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/ec38ffcf7c8c70f12ca927f7d762b01d2a52be00" target="_blank">ec38ffc</a>.
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/c674a51143f78ae013f84d528bfa8d4d55e42f87" target="_blank">c674a51</a>.
 See the <em>Past versions</em> tab to see a history of the changes made to the
 R Markdown and HTML files.
 </p>
@@ -506,7 +505,8 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    .tresorit/
     Ignored:    data/VR_20051125.txt.xz
-    Ignored:    output/d.fst
+    Ignored:    output/ent_cln.fst
+    Ignored:    output/ent_raw.fst
     Ignored:    renv/library/
     Ignored:    renv/staging/
 
@@ -553,6 +553,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/c674a51143f78ae013f84d528bfa8d4d55e42f87/analysis/notes.Rmd" target="_blank">c674a51</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-15
+</td>
+<td>
+Add 01-6 clean vars
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/0b67848ad7f059c14f7f8ec0a7f4904b9a65200c/docs/notes.html" target="_blank">0b67848</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -673,6 +707,11 @@ wflow_publish(c(“analysis/index.Rmd”, “analysis/notes.Rmd”))
 <div id="modelling" class="section level1" number="5">
 <h1><span class="header-section-number">5</span> Modelling</h1>
 <ul>
+<li><p>Use blocking to reduce the number of comparisons for practicality</p>
+<ul>
+<li><p>Blocking on age will give more homogeneity of first names within blocks because of name popularity varying over time.</p></li>
+<li><p>Blocking on county will give more homogeneity of last names within blocks because of families living together.</p></li>
+</ul></li>
 <li><p>Try indicators for missingness. Missingness may be differentially informative across different predictor variables.</p></li>
 <li><p>Try indicators for similarity == 1. The compatibility of exact string equality is not necessarily continuous with the compatibility of similarity just below 1.</p></li>
 <li><p>Try name frequency as an interactive predictor variable.</p>
@@ -684,6 +723,12 @@ wflow_publish(c(“analysis/index.Rmd”, “analysis/notes.Rmd”))
 <li><p>Queries may contain names that do not exist in the dictionary, so we need to deal with that case.</p></li>
 <li><p>Do we need to apply frequency smoothing, as used in probabilistic linguistic models?</p></li>
 <li><p>Do we need to estimate the probability mass of unobserved names?</p></li>
+</ul></li>
+<li><p>In general, the dictionary will be a subset of the entities in the universe of queries. Consider the impact of this on modelling as the fraction of the query universe in the dictionary varies.</p>
+<ul>
+<li>Consider whether this varies on a per query basis because of blocking. That is, is there effectively a separate dictionary per blocking value?</li>
+<li>Can the sampling fraction be modelled as a prior probability (effectively, a change in the intercept term of a logistic regression)?</li>
+<li>Consider using the same variable for blocking and as a predictor to compare the effect on estimated probability of identity match as a function of dictionary fraction.</li>
 </ul></li>
 </ul>
 </div>
