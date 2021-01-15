@@ -9,15 +9,22 @@ output:
     toc: false
 editor_options:
   chunk_output_type: console
+  markdown: 
+    wrap: 72
 ---
 
-This is the website for the research project "Frequency-Aware Similarity Calibration".
+This is the website for the research project "Frequency-Aware Similarity
+Calibration".
 
-If you have cloned the project to a local computer this website is rendered in the `docs` subdirectory of the project directory.
+If you have cloned the project to a local computer this website is
+rendered in the `docs` subdirectory of the project directory.
 
-If you are using `workflowr` to publish the research website it will also be rendered online to GitHub Pages.
+If you are using `workflowr` to publish the research website it will
+also be rendered online to GitHub Pages.
 
-This page acts as a table of contents for the website. There are links to the webpages generated from the analysis notebooks and to the rendered versions of manuscripts/documents/presentations.
+This page acts as a table of contents for the website. There are links
+to the webpages generated from the analysis notebooks and to the
+rendered versions of manuscripts/documents/presentations.
 
 ------------------------------------------------------------------------
 
@@ -27,7 +34,9 @@ This notebook explains the central ideas behind the project.
 
 ## [Notes](notes.html) {.unnumbered}
 
-This notebook is for keeping notes of any points that may be useful for later project or manuscript development and which are not covered in the analysis notebooks or at risk of getting lost in the notebooks.
+This notebook is for keeping notes of any points that may be useful for
+later project or manuscript development and which are not covered in the
+analysis notebooks or at risk of getting lost in the notebooks.
 
 ------------------------------------------------------------------------
 
@@ -39,11 +48,14 @@ Initial data preparation of imported entity records.
 
 ### [01-1 Get, subset, check, and save data](01-1_get_data.html) {.unnumbered}
 
-Import the raw data, cut it back to the subset of rows and columns that are possibly useful, sanity check the data, and save the data in an R-friendly format.
+Import the raw data, cut it back to the subset of rows and columns that
+are possibly useful, sanity check the data, and save the data in an
+R-friendly format.
 
 ### [01-2 Check administrative variables](01-2_check_admin.html) {.unnumbered}
 
-Check the "administrative" variables. This is data relating to the administration of voter registration.
+Check the "administrative" variables. This is data relating to the
+administration of voter registration.
 
 ### [01-3 Check residence variables](01-3_check_resid.html) {.unnumbered}
 
@@ -61,15 +73,37 @@ Check the name variables.
 
 Clean all the variables.
 
-## 02 Name frequency {.unnumbered}
+------------------------------------------------------------------------
 
-Detailed examination of the distributions of name frequencies.
+## 02 Blocking variables {.unnumbered}
 
-## 03 Similarity calibration {.unnumbered}
+Examine the distributions of potential blocking variables.
 
-Detailed examination of the calibration from similarity to probability of identity match, both unconditionally and as a function of name frequency.
+------------------------------------------------------------------------
 
-## 03 Compatibility models {.unnumbered}
+## 03 Name frequency (equality) {.unnumbered}
+
+Detailed examination of the distributions of name frequencies induced by
+the string equality relation.
+
+------------------------------------------------------------------------
+
+## 04 Name frequency (similarity) {.unnumbered}
+
+Detailed examination of the distributions of name frequencies induced by
+a string similarity relation.
+
+------------------------------------------------------------------------
+
+## 05 Similarity calibration {.unnumbered}
+
+Detailed examination of the calibration from similarity to probability
+of identity match, both unconditionally and as a function of name
+frequency.
+
+------------------------------------------------------------------------
+
+## 06 Compatibility models {.unnumbered}
 
 Estimate multivariate compatibility models.
 
