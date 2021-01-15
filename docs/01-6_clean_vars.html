@@ -559,20 +559,20 @@ makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree7021bf28291d09d3cf81532d7f30415019bed884targetblank7021bf2a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreea9a7cf498e98a98733e618965ef892bf7460bf3dtargetblanka9a7cf4a">
 <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/7021bf28291d09d3cf81532d7f30415019bed884" target="_blank">7021bf2</a>
+<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/a9a7cf498e98a98733e618965ef892bf7460bf3d" target="_blank">a9a7cf4</a>
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree7021bf28291d09d3cf81532d7f30415019bed884targetblank7021bf2a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreea9a7cf498e98a98733e618965ef892bf7460bf3dtargetblanka9a7cf4a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and
 connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/7021bf28291d09d3cf81532d7f30415019bed884" target="_blank">7021bf2</a>.
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/a9a7cf498e98a98733e618965ef892bf7460bf3d" target="_blank">a9a7cf4</a>.
 See the <em>Past versions</em> tab to see a history of the changes made to the
 R Markdown and HTML files.
 </p>
@@ -594,6 +594,9 @@ Ignored files:
     Ignored:    output/ent_raw.fst
     Ignored:    renv/library/
     Ignored:    renv/staging/
+
+Untracked files:
+    Untracked:  analysis/02-1_block_vars.Rmd
 
 </code></pre>
 <p>
@@ -638,6 +641,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/a9a7cf498e98a98733e618965ef892bf7460bf3d/analysis/01-6_clean_vars.Rmd" target="_blank">a9a7cf4</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-15
+</td>
+<td>
+Fix typo - birt_place
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/7adf4ede3ea88361e97b344e07f3821fcb596dff/docs/01-6_clean_vars.html" target="_blank">7adf4ed</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -708,7 +745,7 @@ standardisation because it is never a good idea to statistically model
 data without having an idea about the quality of the data. We will apply
 some basic standardisation to the name variables, if appropriate,
 because it parallels what would be necessary in practice.</p>
-<p>The demographic variables <code>sex</code>, <code>age</code>, <code>birt_place</code>, and the
+<p>The demographic variables <code>sex</code>, <code>age</code>, <code>birth_place</code>, and the
 administrative variable <code>county_id</code> may be used as predictors and/or
 blocking variables.</p>
 <p>The remainder of the variables (residence and administrative variables)
@@ -2942,7 +2979,7 @@ d %&gt;% fst::write_fst(f_entity_cln_fst, compress = 100)</code></pre>
 </div>
 <div id="timing" class="section level1 unnumbered">
 <h1>Timing</h1>
-<pre><code>Computation time (excl. render): 116.793 sec elapsed</code></pre>
+<pre><code>Computation time (excl. render): 126.774 sec elapsed</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
