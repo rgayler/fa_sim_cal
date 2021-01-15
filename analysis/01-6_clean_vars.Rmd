@@ -52,7 +52,7 @@ data without having an idea about the quality of the data. We will apply
 some basic standardisation to the name variables, if appropriate,
 because it parallels what would be necessary in practice.
 
-The demographic variables `sex`, `age`, `birt_place`, and the
+The demographic variables `sex`, `age`, `birth_place`, and the
 administrative variable `county_id` may be used as predictors and/or
 blocking variables.
 
