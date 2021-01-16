@@ -5,39 +5,58 @@ author: "Ross Gayler"
 output: workflowr::wflow_html
 editor_options:
   chunk_output_type: console
+  markdown: 
+    wrap: 72
 ---
 
-This document is for keeping notes of any points that may be useful for later project or manuscript development and which are not covered in the analysis notebooks or at risk of getting lost in the notebooks.
+This document is for keeping notes of any points that may be useful for
+later project or manuscript development and which are not covered in the
+analysis notebooks or at risk of getting lost in the notebooks.
 
 # Project infrastructure
 
--   Consider using the [targets](https://wlandau.github.io/targets/) package to control the computational workflow.
+-   Consider using the [targets](https://wlandau.github.io/targets/)
+    package to control the computational workflow.
 
 # Identity data
 
--   Get a sizeable publicly available data set with personal names (NCVR).
+-   Get a sizeable publicly available data set with personal names
+    (NCVR).
 
-    -   The focus of the empirical work is on string similarity metrics of names.
+    -   The focus of the empirical work is on string similarity metrics
+        of names.
 
--   Use sex and age in addition to personal names so that most records are discriminable.
+-   Use sex and age in addition to personal names so that most records
+    are discriminable.
 
-    -   High frequency names will likely not be discriminable with only these attributes.
+    -   High frequency names will likely not be discriminable with only
+        these attributes.
 
-        -   This is not a problem because we are really interested in whether the methods proposed here assist in quantifying the discriminability of records. We want records spanning a wide range of discriminability.
+        -   This is not a problem because we are really interested in
+            whether the methods proposed here assist in quantifying the
+            discriminability of records. We want records spanning a wide
+            range of discriminability.
 
     -   Age (and possibly sex) will be used as a blocking variable.
 
-        -   Blocking is probably needed to make the project computationally tractable.
+        -   Blocking is probably needed to make the project
+            computationally tractable.
 
-    -   Age and sex are also of interest in the calculation of name frequency because name distributions should vary conditional on age and sex.
+    -   Age and sex are also of interest in the calculation of name
+        frequency because name distributions should vary conditional on
+        age and sex.
 
--   Keep address and phone number as they may be useful for manually checking identity in otherwise nondiscriminable records.
+-   Keep address and phone number as they may be useful for manually
+    checking identity in otherwise nondiscriminable records.
 
-    -   As a fallback position, address and phone number can be used as discriminating attributes in the compatibility model.
+    -   As a fallback position, address and phone number can be used as
+        discriminating attributes in the compatibility model.
 
--   Get the oldest available data to minimise it's currency (NCVR 2005 snapshot).
+-   Get the oldest available data to minimise it's currency (NCVR 2005
+    snapshot).
 
--   Drop objectionable attributes such as race and political affiliation.
+-   Drop objectionable attributes such as race and political
+    affiliation.
 
 # Identity data preparation
 
@@ -45,68 +64,200 @@ This document is for keeping notes of any points that may be useful for later pr
 
     -   This is probably unnecessary given how the data will be used.
 
-    -   I can't bring myself to model data without scrutinising it first.
+    -   I can't bring myself to model data without scrutinising it
+        first.
 
 -   Only keep records that are ACTIVE and VERIFIED for modelling.
 
     -   These are likely to have the highest data quality attributes.
 
-    -   These are least likely to have duplicate records (i.e. referring to the same person).
+    -   These are least likely to have duplicate records (i.e. referring
+        to the same person).
 
 # Identity data characterisation
 
--   Look at frequency distributions of names conditional on name length. The Zipf distributions may have different shape parameters for different name lengths. Name length might be examined as an alternative to name frequency for interaction with similarity.
+-   Look at frequency distributions of names conditional on name length.
+    The Zipf distributions may have different shape parameters for
+    different name lengths. Name length might be examined as an
+    alternative to name frequency for interaction with similarity.
 
--   Look at frequency distributions of names conditional on age and/or sex
+-   Look at frequency distributions of names conditional on age and/or
+    sex
 
-    -   These conditional distributions may increase the predictive power of the compatibility model.
+    -   These conditional distributions may increase the predictive
+        power of the compatibility model.
+
+# Blocking
+
+-   Use blocking to reduce the number of comparisons, to keep the
+    computational cost feasible.
+
+-   This project is not an operational system and we are only using
+    blocking to reduce the computational cost, so we can choose blocking
+    that would not be acceptable for an operational system.
+
+-   Where the dictionary blocks vary widely in size we might choose to
+    work with only a subset of blocks that are a suitable size.
+
+-   If we think that the some aspect of the compatibility modelling
+    might vary as a function of block size we would probably want to
+    test this over a wide range of block sizes.
+
+-   We will probably be repeating analyses over some number of blocks to
+    assess the variability of results, but that might only be a subset
+    of blocks with no commitment to examine *all* the blocks.
+
+-   Blocking can induce changes in the distributions of names.
+
+    -   Blocking on sex (in combination with other variables) will
+        definitely give more homogeneity of first names within blocks
+        because of gendered names.
+
+    -   Blocking on age will give more homogeneity of first names within
+        blocks because of name popularity varying over time.
+
+    -   Blocking on county *may* give more homogeneity of last names
+        within blocks because of families living together.
 
 # Modelling
 
--   Use blocking to reduce the number of comparisons for practicality
+-   Try indicators for missingness. Missingness may be differentially
+    informative across different predictor variables.
 
-    -   Blocking on age will give more homogeneity of first names within blocks because of name popularity varying over time.
-
-    -   Blocking on county will give more homogeneity of last names within blocks because of families living together.
-
--   Try indicators for missingness. Missingness may be differentially informative across different predictor variables.
-
--   Try indicators for similarity == 1. The compatibility of exact string equality is not necessarily continuous with the compatibility of similarity just below 1.
+-   Try indicators for similarity == 1. The compatibility of exact
+    string equality is not necessarily continuous with the compatibility
+    of similarity just below 1.
 
 -   Try name frequency as an interactive predictor variable.
 
     -   Also consider frequency conditional on age and/or sex
 
--   There are *two* names in each lookup: dictionary and query. Therefore there are also two name frequencies to be considered. Consider how to use *both* frequencies (e.g. min, max, geometric mean, ...).
+-   There are *two* names in each lookup: dictionary and query.
+    Therefore there are also two name frequencies to be considered.
+    Consider how to use *both* frequencies (e.g. min, max, geometric
+    mean, ...).
 
-    -   Queries may contain names that do not exist in the dictionary, so we need to deal with that case.
+    -   Queries may contain names that do not exist in the dictionary,
+        so we need to deal with that case.
 
-    -   Do we need to apply frequency smoothing, as used in probabilistic linguistic models?
+    -   Do we need to apply frequency smoothing, as used in
+        probabilistic linguistic models?
 
     -   Do we need to estimate the probability mass of unobserved names?
 
--   In general, the dictionary will be a subset of the entities in the universe of queries. Consider the impact of this on modelling as the fraction of the query universe in the dictionary varies.
+-   In general, the dictionary will be a subset of the entities in the
+    universe of queries. Consider the impact of this on modelling as the
+    fraction of the query universe in the dictionary varies.
 
-    -   Consider whether this varies on a per query basis because of blocking. That is, is there effectively a separate dictionary per blocking value?
-    -   Can the sampling fraction be modelled as a prior probability (effectively, a change in the intercept term of a logistic regression)?
-    -   Consider using the same variable for blocking and as a predictor to compare the effect on estimated probability of identity match as a function of dictionary fraction.
+    -   Consider whether this varies on a per query basis because of
+        blocking. That is, is there effectively a separate dictionary
+        per blocking value?
+    -   Can the sampling fraction be modelled as a prior probability
+        (effectively, a change in the intercept term of a logistic
+        regression)?
+    -   Consider using the same variable for blocking and as a predictor
+        to compare the effect on estimated probability of identity match
+        as a function of dictionary fraction.
 
 # Performance evaluation
 
--   Partition the records into a dictionary and a set of queries (the $Q_U$ set).
+-   Partition the records into a dictionary and a set of queries (the
+    $Q_U$ set).
 
-    -   By the (reasonable) assumption that there are no duplicate records, each of the $Q_U$ queries will be unmatched in the dictionary.
+    -   By the (reasonable) assumption that there are no duplicate
+        records, each of the $Q_U$ queries will be unmatched in the
+        dictionary.
 
--   Select a subset of the dictionary records to use as the $Q_M$ query set.
+-   Select a subset of the dictionary records to use as the $Q_M$ query
+    set.
 
-    -   By the (reasonable) assumption that there are no duplicate records, each of the $Q_M$ queries will have exactly one matching record in the dictionary.
+    -   By the (reasonable) assumption that there are no duplicate
+        records, each of the $Q_M$ queries will have exactly one
+        matching record in the dictionary.
 
--   This is evaluation is different to the usual evaluation of entity resolution in that it doesn't consider the impact of transcription/typographical variation in the queries.
+-   This is evaluation is different to the usual evaluation of entity
+    resolution in that it doesn't consider the impact of
+    transcription/typographical variation in the queries.
 
-    -   It looks at the quantification of discriminability when the available attributes are not necessarily able to ensure that all records are discriminable.
+    -   It looks at the quantification of discriminability when the
+        available attributes are not necessarily able to ensure that all
+        records are discriminable.
 
--   If we are interested in the performance with respect to transcription/typographical variation we may need to consider artificially corrupting some of the queries.
+-   If we are interested in the performance with respect to
+    transcription/typographical variation we may need to consider
+    artificially corrupting some of the queries.
 
-# Writing
+# Writing/theory
 
--   Note relationship to Fellegi & Sunter / probilistic record linkage (in proposal?)
+-   Note relationship to Fellegi & Sunter / probabilistic record linkage
+    (in proposal?)
+
+## Blocking
+
+-   It might be possible to develop (or at least explain) most of the
+    maths in terms of blocking.
+
+-   Start with a universe $E$ of entities with the queries drawn
+    uniformly at random from that universe and the dictionary being
+    identical to the universe.
+
+-   In the absence of any other information, the probability of each
+    dictionary element being an identity match with the query is \$ 1 /
+    \|E\| \$.
+
+-   If the dictionary $D$ is a proper subset of $E$ it can be thought of
+    as a (not very informative) block. That is, a block can be thought
+    of as the dictionary induced by the query record.
+
+-   If $D$ is a random subset of $E$, and in the absence of any other
+    information, the probability of each dictionary element being an
+    identity match with the query is $(|D| / |E|) / |D| = 1 / |E|$.
+
+-   $|D|$ is the block size of the dictionary construed as a block. In
+    the absence of any information to discriminate between records in
+    the block, the larger the block, the lower the probability the any
+    block record is the identity match to the query record.
+
+-   $|D| / |E|$ is the probability that the entity corresponding to the
+    query record is in the dictionary/block, given that the dictionary
+    is a uniform random subset of the universe of entities.
+
+-   Consider the other extreme, where blocking is perfect. That is, the
+    entity query record is guaranteed to be in the dictionary. In this
+    case the blocking is very informative (not a random selection from
+    the universe of entities). The probability that the correctly
+    matching entity record is in the block is 1, and the probability of
+    each dictionary/block element being an identity match with the query
+    is $1 / |D|$.
+
+    -   That is, with perfect blocking, the probability of each entity
+        being the identity match depends only on the block size.
+
+    -   Where blocking is based on, say, name, the block size is the
+        frequency of the name in the dictionary.
+
+    -   Where blocking is less then perfect the probability that the
+        entity corresponding to the query record is contained in the
+        block will be less than 1.
+
+-   This suggests that the probability of each record in the block being
+    the correct match could be calculated as the product of conditional
+    probabilities:
+
+    $$ P(id(q) = id(d_i)) = P(id(q) = id(d_i) | d_i \in B_j) P(d_i \in B_j | d_i \in D)  P(d_i \in D) $$
+
+-   What we need are models to estimate those component probabilities. I
+    suspect that the cardinalities of those blocks would be very strong
+    predictors of the probabilities. If the blocks are defined in terms
+    of equality of names then the name frequencies determine the block
+    cardinalities.
+
+-   If there were multiple independent blockings, the probability of
+    correct match of each record in the intersection of the blocks id
+    the product of the probabilities associated with each block. This is
+    equivalent to naive Bayes and shows the equivalence between
+    construing the problem as a multivariate regression and construing
+    it as using multiple blocking variables.
+
+    -   Using regression rather than naive Bayes allows compensating for
+        the blocking variables not being independent.
