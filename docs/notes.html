@@ -428,7 +428,7 @@ Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></sp
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-01-15
+<strong>Last updated:</strong> 2021-01-16
 </p>
 <p>
 <strong>Checks:</strong>
@@ -474,20 +474,20 @@ know the exact version of the code that produced these results.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreec674a51143f78ae013f84d528bfa8d4d55e42f87targetblankc674a51a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreee6721d372917127574bdc931df4576a7bd2345c4targetblanke6721d3a">
 <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/c674a51143f78ae013f84d528bfa8d4d55e42f87" target="_blank">c674a51</a>
+<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/e6721d372917127574bdc931df4576a7bd2345c4" target="_blank">e6721d3</a>
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreec674a51143f78ae013f84d528bfa8d4d55e42f87targetblankc674a51a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreee6721d372917127574bdc931df4576a7bd2345c4targetblanke6721d3a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and
 connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/c674a51143f78ae013f84d528bfa8d4d55e42f87" target="_blank">c674a51</a>.
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/e6721d372917127574bdc931df4576a7bd2345c4" target="_blank">e6721d3</a>.
 See the <em>Past versions</em> tab to see a history of the changes made to the
 R Markdown and HTML files.
 </p>
@@ -509,6 +509,9 @@ Ignored files:
     Ignored:    output/ent_raw.fst
     Ignored:    renv/library/
     Ignored:    renv/staging/
+
+Untracked files:
+    Untracked:  analysis/02-1_block_vars.Rmd
 
 </code></pre>
 <p>
@@ -553,6 +556,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/e6721d372917127574bdc931df4576a7bd2345c4/analysis/notes.Rmd" target="_blank">e6721d3</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-16
+</td>
+<td>
+Add blocking to notes.Rmd
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/5ab5dc465e2faee2e8450ec148085b0ce634dee4/docs/notes.html" target="_blank">5ab5dc4</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -645,38 +682,55 @@ wflow_publish(c(“analysis/index.Rmd”, “analysis/notes.Rmd”))
 </div>
 </div>
 </div>
-<p>This document is for keeping notes of any points that may be useful for later project or manuscript development and which are not covered in the analysis notebooks or at risk of getting lost in the notebooks.</p>
+<p>This document is for keeping notes of any points that may be useful for
+later project or manuscript development and which are not covered in the
+analysis notebooks or at risk of getting lost in the notebooks.</p>
 <div id="project-infrastructure" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Project infrastructure</h1>
 <ul>
-<li>Consider using the <a href="https://wlandau.github.io/targets/">targets</a> package to control the computational workflow.</li>
+<li>Consider using the <a href="https://wlandau.github.io/targets/">targets</a>
+package to control the computational workflow.</li>
 </ul>
 </div>
 <div id="identity-data" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Identity data</h1>
 <ul>
-<li><p>Get a sizeable publicly available data set with personal names (NCVR).</p>
+<li><p>Get a sizeable publicly available data set with personal names
+(NCVR).</p>
 <ul>
-<li>The focus of the empirical work is on string similarity metrics of names.</li>
+<li>The focus of the empirical work is on string similarity metrics
+of names.</li>
 </ul></li>
-<li><p>Use sex and age in addition to personal names so that most records are discriminable.</p>
+<li><p>Use sex and age in addition to personal names so that most records
+are discriminable.</p>
 <ul>
-<li><p>High frequency names will likely not be discriminable with only these attributes.</p>
+<li><p>High frequency names will likely not be discriminable with only
+these attributes.</p>
 <ul>
-<li>This is not a problem because we are really interested in whether the methods proposed here assist in quantifying the discriminability of records. We want records spanning a wide range of discriminability.</li>
+<li>This is not a problem because we are really interested in
+whether the methods proposed here assist in quantifying the
+discriminability of records. We want records spanning a wide
+range of discriminability.</li>
 </ul></li>
 <li><p>Age (and possibly sex) will be used as a blocking variable.</p>
 <ul>
-<li>Blocking is probably needed to make the project computationally tractable.</li>
+<li>Blocking is probably needed to make the project
+computationally tractable.</li>
 </ul></li>
-<li><p>Age and sex are also of interest in the calculation of name frequency because name distributions should vary conditional on age and sex.</p></li>
+<li><p>Age and sex are also of interest in the calculation of name
+frequency because name distributions should vary conditional on
+age and sex.</p></li>
 </ul></li>
-<li><p>Keep address and phone number as they may be useful for manually checking identity in otherwise nondiscriminable records.</p>
+<li><p>Keep address and phone number as they may be useful for manually
+checking identity in otherwise nondiscriminable records.</p>
 <ul>
-<li>As a fallback position, address and phone number can be used as discriminating attributes in the compatibility model.</li>
+<li>As a fallback position, address and phone number can be used as
+discriminating attributes in the compatibility model.</li>
 </ul></li>
-<li><p>Get the oldest available data to minimise it’s currency (NCVR 2005 snapshot).</p></li>
-<li><p>Drop objectionable attributes such as race and political affiliation.</p></li>
+<li><p>Get the oldest available data to minimise it’s currency (NCVR 2005
+snapshot).</p></li>
+<li><p>Drop objectionable attributes such as race and political
+affiliation.</p></li>
 </ul>
 </div>
 <div id="identity-data-preparation" class="section level1" number="3">
@@ -685,76 +739,196 @@ wflow_publish(c(“analysis/index.Rmd”, “analysis/notes.Rmd”))
 <li><p>Apply basic data cleaning to the predictive attributes.</p>
 <ul>
 <li><p>This is probably unnecessary given how the data will be used.</p></li>
-<li><p>I can’t bring myself to model data without scrutinising it first.</p></li>
+<li><p>I can’t bring myself to model data without scrutinising it
+first.</p></li>
 </ul></li>
 <li><p>Only keep records that are ACTIVE and VERIFIED for modelling.</p>
 <ul>
 <li><p>These are likely to have the highest data quality attributes.</p></li>
-<li><p>These are least likely to have duplicate records (i.e. referring to the same person).</p></li>
+<li><p>These are least likely to have duplicate records (i.e. referring
+to the same person).</p></li>
 </ul></li>
 </ul>
 </div>
 <div id="identity-data-characterisation" class="section level1" number="4">
 <h1><span class="header-section-number">4</span> Identity data characterisation</h1>
 <ul>
-<li><p>Look at frequency distributions of names conditional on name length. The Zipf distributions may have different shape parameters for different name lengths. Name length might be examined as an alternative to name frequency for interaction with similarity.</p></li>
-<li><p>Look at frequency distributions of names conditional on age and/or sex</p>
+<li><p>Look at frequency distributions of names conditional on name length.
+The Zipf distributions may have different shape parameters for
+different name lengths. Name length might be examined as an
+alternative to name frequency for interaction with similarity.</p></li>
+<li><p>Look at frequency distributions of names conditional on age and/or
+sex</p>
 <ul>
-<li>These conditional distributions may increase the predictive power of the compatibility model.</li>
+<li>These conditional distributions may increase the predictive
+power of the compatibility model.</li>
 </ul></li>
 </ul>
 </div>
-<div id="modelling" class="section level1" number="5">
-<h1><span class="header-section-number">5</span> Modelling</h1>
+<div id="blocking" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Blocking</h1>
 <ul>
-<li><p>Use blocking to reduce the number of comparisons for practicality</p>
+<li><p>Use blocking to reduce the number of comparisons, to keep the
+computational cost feasible.</p></li>
+<li><p>This project is not an operational system and we are only using
+blocking to reduce the computational cost, so we can choose blocking
+that would not be acceptable for an operational system.</p></li>
+<li><p>Where the dictionary blocks vary widely in size we might choose to
+work with only a subset of blocks that are a suitable size.</p></li>
+<li><p>If we think that the some aspect of the compatibility modelling
+might vary as a function of block size we would probably want to
+test this over a wide range of block sizes.</p></li>
+<li><p>We will probably be repeating analyses over some number of blocks to
+assess the variability of results, but that might only be a subset
+of blocks with no commitment to examine <em>all</em> the blocks.</p></li>
+<li><p>Blocking can induce changes in the distributions of names.</p>
 <ul>
-<li><p>Blocking on age will give more homogeneity of first names within blocks because of name popularity varying over time.</p></li>
-<li><p>Blocking on county will give more homogeneity of last names within blocks because of families living together.</p></li>
+<li><p>Blocking on sex (in combination with other variables) will
+definitely give more homogeneity of first names within blocks
+because of gendered names.</p></li>
+<li><p>Blocking on age will give more homogeneity of first names within
+blocks because of name popularity varying over time.</p></li>
+<li><p>Blocking on county <em>may</em> give more homogeneity of last names
+within blocks because of families living together.</p></li>
 </ul></li>
-<li><p>Try indicators for missingness. Missingness may be differentially informative across different predictor variables.</p></li>
-<li><p>Try indicators for similarity == 1. The compatibility of exact string equality is not necessarily continuous with the compatibility of similarity just below 1.</p></li>
+</ul>
+</div>
+<div id="modelling" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> Modelling</h1>
+<ul>
+<li><p>Try indicators for missingness. Missingness may be differentially
+informative across different predictor variables.</p></li>
+<li><p>Try indicators for similarity == 1. The compatibility of exact
+string equality is not necessarily continuous with the compatibility
+of similarity just below 1.</p></li>
 <li><p>Try name frequency as an interactive predictor variable.</p>
 <ul>
 <li>Also consider frequency conditional on age and/or sex</li>
 </ul></li>
-<li><p>There are <em>two</em> names in each lookup: dictionary and query. Therefore there are also two name frequencies to be considered. Consider how to use <em>both</em> frequencies (e.g. min, max, geometric mean, …).</p>
+<li><p>There are <em>two</em> names in each lookup: dictionary and query.
+Therefore there are also two name frequencies to be considered.
+Consider how to use <em>both</em> frequencies (e.g. min, max, geometric
+mean, …).</p>
 <ul>
-<li><p>Queries may contain names that do not exist in the dictionary, so we need to deal with that case.</p></li>
-<li><p>Do we need to apply frequency smoothing, as used in probabilistic linguistic models?</p></li>
+<li><p>Queries may contain names that do not exist in the dictionary,
+so we need to deal with that case.</p></li>
+<li><p>Do we need to apply frequency smoothing, as used in
+probabilistic linguistic models?</p></li>
 <li><p>Do we need to estimate the probability mass of unobserved names?</p></li>
 </ul></li>
-<li><p>In general, the dictionary will be a subset of the entities in the universe of queries. Consider the impact of this on modelling as the fraction of the query universe in the dictionary varies.</p>
+<li><p>In general, the dictionary will be a subset of the entities in the
+universe of queries. Consider the impact of this on modelling as the
+fraction of the query universe in the dictionary varies.</p>
 <ul>
-<li>Consider whether this varies on a per query basis because of blocking. That is, is there effectively a separate dictionary per blocking value?</li>
-<li>Can the sampling fraction be modelled as a prior probability (effectively, a change in the intercept term of a logistic regression)?</li>
-<li>Consider using the same variable for blocking and as a predictor to compare the effect on estimated probability of identity match as a function of dictionary fraction.</li>
+<li>Consider whether this varies on a per query basis because of
+blocking. That is, is there effectively a separate dictionary
+per blocking value?</li>
+<li>Can the sampling fraction be modelled as a prior probability
+(effectively, a change in the intercept term of a logistic
+regression)?</li>
+<li>Consider using the same variable for blocking and as a predictor
+to compare the effect on estimated probability of identity match
+as a function of dictionary fraction.</li>
 </ul></li>
 </ul>
 </div>
-<div id="performance-evaluation" class="section level1" number="6">
-<h1><span class="header-section-number">6</span> Performance evaluation</h1>
+<div id="performance-evaluation" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> Performance evaluation</h1>
 <ul>
-<li><p>Partition the records into a dictionary and a set of queries (the <span class="math inline">\(Q_U\)</span> set).</p>
+<li><p>Partition the records into a dictionary and a set of queries (the
+<span class="math inline">\(Q_U\)</span> set).</p>
 <ul>
-<li>By the (reasonable) assumption that there are no duplicate records, each of the <span class="math inline">\(Q_U\)</span> queries will be unmatched in the dictionary.</li>
+<li>By the (reasonable) assumption that there are no duplicate
+records, each of the <span class="math inline">\(Q_U\)</span> queries will be unmatched in the
+dictionary.</li>
 </ul></li>
-<li><p>Select a subset of the dictionary records to use as the <span class="math inline">\(Q_M\)</span> query set.</p>
+<li><p>Select a subset of the dictionary records to use as the <span class="math inline">\(Q_M\)</span> query
+set.</p>
 <ul>
-<li>By the (reasonable) assumption that there are no duplicate records, each of the <span class="math inline">\(Q_M\)</span> queries will have exactly one matching record in the dictionary.</li>
+<li>By the (reasonable) assumption that there are no duplicate
+records, each of the <span class="math inline">\(Q_M\)</span> queries will have exactly one
+matching record in the dictionary.</li>
 </ul></li>
-<li><p>This is evaluation is different to the usual evaluation of entity resolution in that it doesn’t consider the impact of transcription/typographical variation in the queries.</p>
+<li><p>This is evaluation is different to the usual evaluation of entity
+resolution in that it doesn’t consider the impact of
+transcription/typographical variation in the queries.</p>
 <ul>
-<li>It looks at the quantification of discriminability when the available attributes are not necessarily able to ensure that all records are discriminable.</li>
+<li>It looks at the quantification of discriminability when the
+available attributes are not necessarily able to ensure that all
+records are discriminable.</li>
 </ul></li>
-<li><p>If we are interested in the performance with respect to transcription/typographical variation we may need to consider artificially corrupting some of the queries.</p></li>
+<li><p>If we are interested in the performance with respect to
+transcription/typographical variation we may need to consider
+artificially corrupting some of the queries.</p></li>
 </ul>
 </div>
-<div id="writing" class="section level1" number="7">
-<h1><span class="header-section-number">7</span> Writing</h1>
+<div id="writingtheory" class="section level1" number="8">
+<h1><span class="header-section-number">8</span> Writing/theory</h1>
 <ul>
-<li>Note relationship to Fellegi &amp; Sunter / probilistic record linkage (in proposal?)</li>
+<li>Note relationship to Fellegi &amp; Sunter / probabilistic record linkage
+(in proposal?)</li>
 </ul>
+<div id="blocking-1" class="section level2" number="8.1">
+<h2><span class="header-section-number">8.1</span> Blocking</h2>
+<ul>
+<li><p>It might be possible to develop (or at least explain) most of the
+maths in terms of blocking.</p></li>
+<li><p>Start with a universe <span class="math inline">\(E\)</span> of entities with the queries drawn
+uniformly at random from that universe and the dictionary being
+identical to the universe.</p></li>
+<li><p>In the absence of any other information, the probability of each
+dictionary element being an identity match with the query is $ 1 /
+|E| $.</p></li>
+<li><p>If the dictionary <span class="math inline">\(D\)</span> is a proper subset of <span class="math inline">\(E\)</span> it can be thought of
+as a (not very informative) block. That is, a block can be thought
+of as the dictionary induced by the query record.</p></li>
+<li><p>If <span class="math inline">\(D\)</span> is a random subset of <span class="math inline">\(E\)</span>, and in the absence of any other
+information, the probability of each dictionary element being an
+identity match with the query is <span class="math inline">\((|D| / |E|) / |D| = 1 / |E|\)</span>.</p></li>
+<li><p><span class="math inline">\(|D|\)</span> is the block size of the dictionary construed as a block. In
+the absence of any information to discriminate between records in
+the block, the larger the block, the lower the probability the any
+block record is the identity match to the query record.</p></li>
+<li><p><span class="math inline">\(|D| / |E|\)</span> is the probability that the entity corresponding to the
+query record is in the dictionary/block, given that the dictionary
+is a uniform random subset of the universe of entities.</p></li>
+<li><p>Consider the other extreme, where blocking is perfect. That is, the
+entity query record is guaranteed to be in the dictionary. In this
+case the blocking is very informative (not a random selection from
+the universe of entities). The probability that the correctly
+matching entity record is in the block is 1, and the probability of
+each dictionary/block element being an identity match with the query
+is <span class="math inline">\(1 / |D|\)</span>.</p>
+<ul>
+<li><p>That is, with perfect blocking, the probability of each entity
+being the identity match depends only on the block size.</p></li>
+<li><p>Where blocking is based on, say, name, the block size is the
+frequency of the name in the dictionary.</p></li>
+<li><p>Where blocking is less then perfect the probability that the
+entity corresponding to the query record is contained in the
+block will be less than 1.</p></li>
+</ul></li>
+<li><p>This suggests that the probability of each record in the block being
+the correct match could be calculated as the product of conditional
+probabilities:</p>
+<p><span class="math display">\[ P(id(q) = id(d_i)) = P(id(q) = id(d_i) | d_i \in B_j) P(d_i \in B_j | d_i \in D)  P(d_i \in D) \]</span></p></li>
+<li><p>What we need are models to estimate those component probabilities. I
+suspect that the cardinalities of those blocks would be very strong
+predictors of the probabilities. If the blocks are defined in terms
+of equality of names then the name frequencies determine the block
+cardinalities.</p></li>
+<li><p>If there were multiple independent blockings, the probability of
+correct match of each record in the intersection of the blocks id
+the product of the probabilities associated with each block. This is
+equivalent to naive Bayes and shows the equivalence between
+construing the problem as a multivariate regression and construing
+it as using multiple blocking variables.</p>
+<ul>
+<li>Using regression rather than naive Bayes allows compensating for
+the blocking variables not being independent.</li>
+</ul></li>
+</ul>
+</div>
 </div>
 
 
