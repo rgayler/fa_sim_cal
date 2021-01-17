@@ -79,6 +79,10 @@ Clean all the variables.
 
 Examine the distributions of potential blocking variables.
 
+### [02-1 Characterise blocking variables](02-1_block_vars.html) {.unnumbered}
+
+Characterise the potential blocking variables and combinations of variables.
+
 ------------------------------------------------------------------------
 
 ## 03 Name frequency (equality) {.unnumbered}

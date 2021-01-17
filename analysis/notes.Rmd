@@ -152,12 +152,24 @@ analysis notebooks or at risk of getting lost in the notebooks.
     -   Consider whether this varies on a per query basis because of
         blocking. That is, is there effectively a separate dictionary
         per blocking value?
+
     -   Can the sampling fraction be modelled as a prior probability
         (effectively, a change in the intercept term of a logistic
         regression)?
+
     -   Consider using the same variable for blocking and as a predictor
         to compare the effect on estimated probability of identity match
         as a function of dictionary fraction.
+
+        -   It is feasible to use the "same" variables for blocking and
+            as predictors. The blocks are based on the values of the
+            dictionary records and selected by the value in the query
+            record. The predictor variables are properties of record
+            *pairs* - so there will still be within-block variance of
+            the predictor even when there is no within-block variance of
+            properties of the query record. That is, they're not the
+            "same" variable when they are used for blocking and as a
+            predictor.
 
 # Performance evaluation
 
