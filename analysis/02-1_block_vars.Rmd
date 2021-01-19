@@ -497,6 +497,12 @@ My tentative conclusion is to use (sex, age) for blocking and to pool
 the higher ages into groups to ensure that all block sizes are above the
 lower limit of the useful block size.
 
+# (sex, age)
+
+Try pooling some of the highest ages to increase the smallest block sizes above the lower limit of useful block size.
+
+We don't need to use the same age pooling for males and females
+
 # Timing {.unnumbered}
 
 ```{r echo=FALSE}

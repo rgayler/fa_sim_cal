@@ -107,6 +107,21 @@ analysis notebooks or at risk of getting lost in the notebooks.
     assess the variability of results, but that might only be a subset
     of blocks with no commitment to examine *all* the blocks.
 
+-   Blocking variables may have missing values in the query and
+    dictionary records.
+
+    -   This can be handled but is fiddly and not the focus of this
+        project.
+    -   Handling missing predictor values in regression-based
+        compatibility models is simple.
+
+-   Exclude records with missing values on the blocking records from
+    use, so that missing values don't have to be allowed for in
+    blocking.
+
+-   Try to choose blocking variables with a small proportion of missing
+    values, so as to minimise systematic bias due to their exclusion.
+
 -   Blocking can induce changes in the distributions of names.
 
     -   Blocking on sex (in combination with other variables) will
