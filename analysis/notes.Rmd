@@ -99,7 +99,7 @@ analysis notebooks or at risk of getting lost in the notebooks.
 -   Where the dictionary blocks vary widely in size we might choose to
     work with only a subset of blocks that are a suitable size.
 
--   If we think that the some aspect of the compatibility modelling
+-   If we think that some aspect of the compatibility modelling
     might vary as a function of block size we would probably want to
     test this over a wide range of block sizes.
 
@@ -112,7 +112,7 @@ analysis notebooks or at risk of getting lost in the notebooks.
 
     -   This can be handled but is fiddly and not the focus of this
         project.
-    -   Handling missing predictor values in regression-based
+    -   Handling missing *predictor* values in regression-based
         compatibility models is simple.
 
 -   Exclude records with missing values on the blocking records from

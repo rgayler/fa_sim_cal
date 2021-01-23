@@ -77,8 +77,9 @@ data of birth we could then use date of birth as a blocking variable.
 Blocking variables can be composite variables, that is, the product of
 several variables. A person's gender would not normally be useful as a
 blocking variable because it would only create a small number of large
-blocks. However, it could usefully be combined with date of birth to
-yield roughly twice as many blocks of half the size.
+blocks. However, it could usefully be combined with another variable,
+such as date of birth, to yield roughly twice as many blocks of half the
+size.
 
 In this project we are not addressing issues of speed of response, so
 could ignore blocking. However, we will use blocking for the practical
@@ -95,16 +96,19 @@ same block are necessarily more similar to each other in that attribute.
 This may also induce greater variation in the block sizes.
 
 The demographic variables `sex`, `age`, `birth_place`, and the
-administrative variable `county_id` may be used as blocking variables in
-this project. This is not a claim that they are good blocking variable
-or that they *should* be used as blocking variables in any practical
-application. We are using blocking variables in this project only for
-the practical effect of reducing computational effort.
+administrative variable `county_id` will be considered for use as
+blocking variables in this project. This is not a claim that they are
+good blocking variables or that they *should* be used as blocking
+variables in any practical application. We are using blocking variables
+in this project only for the practical effect of reducing computational
+effort and to look for issues that may arise as a consequence of using
+blocking in combination with the entity resolution approach which is the
+focus of this project.
 
-This notebook characterises those variables with respect to their
+This notebook characterises those four variables with respect to their
 properties that are relevant to their use as potential blocking
-variables. The selection and use of the blocking variables will occur
-much later in the project.
+variables. The final selection and use of the blocking variables will
+occur much later in the project.
 
 ## Characterisation
 
@@ -138,8 +142,11 @@ selection of blocks:
     over blocks to allow estimation of the variability of the results.
 
 Unfortunately, we don't currently know what the upper and lower bounds
-on practical block size should be. I will pull some numbers from the air
-and say the usable block sizes should be between 50 and 50,000 records.
+on practical block size should be for this project. I will pull some
+numbers from the air and say the usable block sizes should be between 50
+and 50,000 records.
+
+If any blocks are too small we can pool them to make them a useful size.
 
 At this stage we should be cataloguing the distributions of block sizes
 to allow us to make informed choices later.
@@ -251,6 +258,10 @@ d_blk %>%
     -   The blocks corresponding to ages 18 to 63 inclusive are larger
         than the "useful" range.
 
+        -   However, thee are all considerably less than 100k records,
+            so combining age with sex would bring all these blocks into
+            the useful size range.
+
     -   In a real application we would likely have date of birth rather
         than age. This would give many more, much smaller blocks.
 
@@ -306,6 +317,9 @@ d_blk %>%
 
     -   **But** \~46% of the probability mass is in one block (born in
         North Carolina).
+    -   The next largest block s "unknown".
+    -   All the other known birthplace blocks are small to miniscule
+        relative to the NC block.
     -   This would not be used in practice as a blocking variable.
 
 -   We *could* exclude the North Carolina block from experiments, but
@@ -357,12 +371,14 @@ d_blk %>%
 
 -   There are 100 unique levels (blocks).
 
+-   County ID is never missing.
+
 -   There are 75 blocks with sizes in the "useful" range.
 
     -   The distribution of block sizes is not as wide as the "useful"
         range and is shifted to the high end of the range.
-    -   More blocks would be a useful size if the county ID was
-        coombined with another blocking variable, e.g. sex.
+    -   More blocks would be a useful size if the county ID was combined
+        with another blocking variable, e.g. sex.
 
 -   Blocking on county ID *might* induce greater within-block
     homogeneity of first and last names if, for example, family members
@@ -471,6 +487,16 @@ d_blk_summ %>%
 -   county and age have too many blocks/records in the high block size
     range.
 
+-   county and age have too few blocks/records in the low block size
+    range.
+
+-   (sex, age, county) and (age, county) have too few blocks/records in
+    the high block size range.
+
+-   The largest block sizes for (sex, age, county) and (age, county) are
+    quite small relative to the upper limit of the useful block size
+    range.
+
 -   (sex, age, county) and (age, county) have too many blocks/records in
     the low block size range.
 
@@ -480,14 +506,21 @@ d_blk_summ %>%
     -   Large blocks can not be made smaller without combining another
         blocking variable.
 
--   The largest block sizes for (sex, age, county) and (age, county) are
-    quite small relative to the upper limit of the useful block size
-    range.
-
 -   (sex, age) and (sex, county) have the highest proportion of usefully
     sized blocks.
 
+-   (sex, age) has \~89% of blocks in the useful block size range.
+
+    -   The blocks that are too small could be fixed by pooling ages.
+
 -   (sex, age) has \~100% of records in useful sized blocks.
+
+-   (sex, county) has \~82% of blocks in the useful block size range.
+
+    -   \~4% of blocks (\~36% of records) are too large
+    -   \~14% of blocks (\~0% of records) are too small
+    -   The blocks that are too small could be fixed by pooling
+        counties.
 
 -   (sex, county) has only 64% of records in useful sized blocks.
 
@@ -497,9 +530,152 @@ My tentative conclusion is to use (sex, age) for blocking and to pool
 the higher ages into groups to ensure that all block sizes are above the
 lower limit of the useful block size.
 
-# (sex, age)
+I will also look at (sex, county) as a possible blocking variable by
+pooling counties into groups to ensure that all block sizes are above
+the lower limit of the useful block size.
 
-Try pooling some of the highest ages to increase the smallest block sizes above the lower limit of useful block size.
+# Modified multivariate blocking
+
+Create modified sex age, and county ID variables for potential use in
+(sex, age) and (sex, county) as blocking variables.
+
+Exclude missing values to avoid the nuisance of having to deal with them
+properly.
+
+Pool the smaller age and county groups so that the smallest blocking
+groups are not too small.
+
+## Missing values
+
+Identify the missing values and flag them as exclusions for blocking and
+modelling.
+
+```{r}
+# updating d is probably poor form
+# but I am only adding variables, so it is idempotent
+d <- d %>% 
+  dplyr::mutate(
+    sex_miss = sex == "UNK",
+    excl_blk_miss = sex_miss | age_cln_miss # county ID is never missing
+  )
+
+table(d$excl_blk_miss)
+table(d$excl_blk_miss) %>% prop.table() %>% round(3)
+```
+
+This will exclude \~47k (\~1%) of records from blocking and modelling.
+
+Look at the distributions of block sizes after excluding the records
+with missing values in the blocking variables.
+
+```{r}
+# Calculate all the block sizes for each interesting combination of blocking variables.
+# For only 6 combinations I will manually enumerate them.
+x <- d %>% 
+  dplyr::filter(!excl_blk_miss)
+
+d_blk <- dplyr::bind_rows(
+  list(
+    sex_age_cnty = dplyr::count( x, sex, age_cln, county_id, name = "blk_sz"),
+    sex_age      = dplyr::count( x, sex, age_cln           , name = "blk_sz"),
+    sex_cnty     = dplyr::count( x, sex,          county_id, name = "blk_sz"),
+    age_cnty     = dplyr::count( x,      age_cln, county_id, name = "blk_sz"),
+    age          = dplyr::count( x,      age_cln           , name = "blk_sz"),
+    cnty         = dplyr::count( x,               county_id, name = "blk_sz")
+  ),
+  .id = "blk_vars"
+) %>% 
+  dplyr::mutate(
+    blk_vars = forcats::fct_infreq(blk_vars)
+  )
+
+d_blk %>% 
+  ggplot(aes(x = blk_vars, y = blk_sz)) +
+  geom_hline(yintercept = c(blk_sz_min, blk_sz_max), colour = "blue") +
+  geom_jitter(width = 0.4, alpha = 0.1) +
+  geom_boxplot(outlier.shape = NA, colour = "red", alpha = 0.0) +
+  scale_y_log10(n.breaks = 7) + annotation_logticks(sides = "l") +
+  theme(panel.grid.major.x = element_blank(), panel.grid.minor.y = element_line())
+```
+
+-   It is clear that (sex, age) is the only combination worth
+    considering and it wil need some pooling of the smallest age groups.
+
+## Age poolng
+
+The 17 year old and oldest age groups are the smallest, so they will
+need pooling with other age groups.
+
+The ordering of age is meaningful, so only pool adjacent ages (in order
+to maintain the meaningfulness of the ordering).
+
+Age will be combined with sex, so it is the size of the combined (sex,
+age) blocks which is relevant.
+
+The distribution of age is likely to be different for males and females.
+We could have different pooling of age for males and females. However,
+for simplicity I will use the same pooling of age for males and females.
+
+Look at the distribution of block sizes for the relevant age groups.
+
+```{r}
+d %>% 
+  dplyr::filter(!excl_blk_miss & 
+                  (age_cln <= 18 | age_cln >= 95)) %>%
+  dplyr::select(sex, age_cln) %>% 
+  with(table(age_cln, sex))
+```
+
+-   Pool the 17 year olds with the 18 year olds
+
+-   Pooling 102 and 103 would be adequate.
+
+    -   However the spikes of records at 101 and 104 are somewhat
+        suspect. So I will pool al the records with ages over 100 in
+        order to put all the questionable records in the one block.
+
+```{r}
+# updating d is probably poor form
+# but I am only adding variables, so it is idempotent
+d <- d %>% 
+  dplyr::mutate(
+    age_blk = dplyr::case_when(
+      excl_blk_miss  ~ NA_integer_, # make value NA for safety
+      # code using NA is likely to fail if I forget to exclude these cases
+      age_cln == 17  ~ 18L, # map 17 to 18
+      age_cln >= 101 ~ 101L, # map all ages >= 101 to 101
+      TRUE           ~ age_cln # all ages < 101, accept as is
+    ),
+    # create the new combined blocking variable
+    sex_age_blk = dplyr::if_else(excl_blk_miss,
+                                 NA_character_, # make value NA for safety
+                                 paste(sex, age_blk, sep = ":")
+    )
+  ) %>% 
+  dplyr::select(-age_blk) # we won't use age alone as a blocking variable
+
+# look at the distribution of block sizes for (sex, age)
+x <- d %>% 
+  dplyr::filter(!excl_blk_miss)
+
+d_blk <- d %>% 
+  dplyr::filter(!excl_blk_miss) %>% 
+  dplyr::count(sex_age_blk, name = "blk_sz")
+
+d_blk %>% 
+  ggplot(aes(x = 0, y = blk_sz)) +
+  geom_hline(yintercept = c(blk_sz_min, blk_sz_max), colour = "blue") +
+  geom_jitter(width = 0.35, alpha = 0.2) +
+  geom_boxplot(outlier.shape = NA, colour = "red", alpha = 0.0) +
+  scale_y_log10(n.breaks = 7) + annotation_logticks(sides = "l") +
+  theme(panel.grid.minor.y = element_line(),
+        panel.grid.major.x = element_blank(),  panel.grid.minor.x = element_blank(), 
+        axis.title.x = element_blank(), axis.ticks.x = element_blank(), axis.text.x = element_blank()) +
+  coord_fixed(ratio = 2)
+```
+
+Try pooling some of the highest ages to increase the smallest block
+sizes above the lower limit of useful block size.
 
 We don't need to use the same age pooling for males and females
 
