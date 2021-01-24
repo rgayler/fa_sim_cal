@@ -19,7 +19,7 @@ library(here)
 source(here::here("code", "setup_project.R"))
 
 # Extra set up for the 02*.Rmd notebooks
-# source(here::here("code", "setup_02.R"))
+source(here::here("code", "setup_02.R"))
 
 # Extra set up for this notebook
 # ???
@@ -228,11 +228,16 @@ For convenience, we will probably end up excluding records with missing
 age. So look at the distributions after excluding records with age
 missing.
 
-```{r}
-# arbitrary lower and upper bound on useful block size
-blk_sz_min <- 50
-blk_sz_max <- 50e3
+Show the assumed range of useful block sizes.
 
+```{r}
+# Arbitrary lower and upper bound on useful block size
+# These are set in setup_02.R
+blk_sz_min
+blk_sz_max
+```
+
+```{r}
 # distribution of age (linear count)
 d %>% 
   dplyr::filter(!age_cln_miss) %>% 
