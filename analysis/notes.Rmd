@@ -125,6 +125,9 @@ analysis notebooks or at risk of getting lost in the notebooks.
 
 # Identity data characterisation
 
+These sections are about looking at the properties of the identity data
+that will be most relevant to their use in the compatibility models.
+
 ## Structure induced by equality
 
 -   Prior work on name frequency has (implicitly) only considered
@@ -179,19 +182,31 @@ analysis notebooks or at risk of getting lost in the notebooks.
         $f_{sim}(q, d_i)$ is defined as
         $\vert \{ d_j : d_j \in B_q \land sim(name(q), name(d_j)) \ge sim(name(q), name(d_i))\} \vert$.
 
--   Look at frequency distributions of names conditional on name length.
-    The Zipf distributions may have different shape parameters for
-    different name lengths. Name length might be examined as an
-    alternative to name frequency for interaction with similarity.
+-   Look at similarity frequency distributions of names. It's not
+    obvious that these should be Zipf distributions. For example, the
+    rare names might be quite similar to more frequent names, which
+    might obscure the long tail of the underlying distribution of names.
 
--   Look at frequency distributions of names conditional on age and/or
-    sex.
+-   Look at similarity frequency distributions of names conditional on
+    name length. The Zipf distributions may have different shape
+    parameters for different name lengths.
+
+    -   This is of interest because similarity is usually scaled to be
+        between 1 (equality) and 0 (completely different) regardless of
+        the string length. The longer the strings the greater the size
+        of the space of possible strings and the higher the
+        dimensionality of the space. It's not obvious to me that
+        equality (inequality) of very short strings carries the same
+        evidential value as equality (inequality) of long strings.
+
+-   Look at similarity frequency distributions of names conditional on
+    age and/or sex.
 
     -   These conditional distributions may increase the predictive
         power of the compatibility model.
 
--   Look at frequency distributions of names conditional on blocking
-    variables.
+-   Look at similarity frequency distributions of names conditional on
+    blocking variables.
 
     -   This is to get an understanding of the effect of blocking on
         name frequency distributions.
