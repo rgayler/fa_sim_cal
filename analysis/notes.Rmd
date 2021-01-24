@@ -74,19 +74,6 @@ analysis notebooks or at risk of getting lost in the notebooks.
     -   These are least likely to have duplicate records (i.e. referring
         to the same person).
 
-# Identity data characterisation
-
--   Look at frequency distributions of names conditional on name length.
-    The Zipf distributions may have different shape parameters for
-    different name lengths. Name length might be examined as an
-    alternative to name frequency for interaction with similarity.
-
--   Look at frequency distributions of names conditional on age and/or
-    sex
-
-    -   These conditional distributions may increase the predictive
-        power of the compatibility model.
-
 # Blocking
 
 -   Use blocking to reduce the number of comparisons, to keep the
@@ -99,9 +86,9 @@ analysis notebooks or at risk of getting lost in the notebooks.
 -   Where the dictionary blocks vary widely in size we might choose to
     work with only a subset of blocks that are a suitable size.
 
--   If we think that some aspect of the compatibility modelling
-    might vary as a function of block size we would probably want to
-    test this over a wide range of block sizes.
+-   If we think that some aspect of the compatibility modelling might
+    vary as a function of block size we would probably want to test this
+    over a wide range of block sizes.
 
 -   We will probably be repeating analyses over some number of blocks to
     assess the variability of results, but that might only be a subset
@@ -122,6 +109,8 @@ analysis notebooks or at risk of getting lost in the notebooks.
 -   Try to choose blocking variables with a small proportion of missing
     values, so as to minimise systematic bias due to their exclusion.
 
+-   Construct a few potentially useful blocking variables.
+
 -   Blocking can induce changes in the distributions of names.
 
     -   Blocking on sex (in combination with other variables) will
@@ -133,6 +122,81 @@ analysis notebooks or at risk of getting lost in the notebooks.
 
     -   Blocking on county *may* give more homogeneity of last names
         within blocks because of families living together.
+
+# Identity data characterisation
+
+## Structure induced by equality
+
+-   Prior work on name frequency has (implicitly) only considered
+    equality of names. That is two name tokens are either absolutely
+    identical or absolutely different. (No gradations of difference are
+    entertained.) Counting the frequency of names is finding the
+    cardinality of each set of identical name tokens.
+
+    -   Name frequency will be used as a predictor in a compatibility
+        model, $compat(q, d_i)$.
+    -   For a query record $q$ the compatibility will be estimated for
+        every dictionary record $d_i$ in the block $B_q$ (the set of
+        dictionary records in the block selected by the query).
+    -   The estimated compatibility will vary over $d_i$, so we expect
+        the predictors to be functions of $d_i$ (in the context of the
+        set of dictionary records, $B_q$ selected by the query record.)
+    -   The (first attempt at) name equality frequency $f_{eq}(q, d_i)$
+        is defined as
+        $\vert \{ d_j : d_j \in B_q \land name(d_j) = name(d_i)\} \vert$.
+
+-   Look at frequency distributions of names conditional on name length.
+    The Zipf distributions may have different shape parameters for
+    different name lengths. Name length might be examined as an
+    alternative to name frequency for interaction with similarity.
+
+-   Look at frequency distributions of names conditional on age and/or
+    sex.
+
+    -   These conditional distributions may increase the predictive
+        power of the compatibility model.
+
+-   Look at frequency distributions of names conditional on blocking
+    variables.
+
+    -   This is to get an understanding of the effect of blocking on
+        name frequency distributions.
+    -   In particular, look at any effects of block size (which has a
+        very wide range).
+    -   The anticipated usage is that name frequency will be calculated
+        within the dictionary block selected by the query record. (The
+        block can be construed as the only dictionary that matters for
+        the purposes of the query.)
+
+## Structure induced by similarity
+
+-   The similarity version of name frequency is an extension of the
+    equality version. It counts the number of dictionary records in the
+    block that are at least as similar to the query record as the
+    currently considered dictionary record.
+
+    -   The (first attempt at) name similarity frequency
+        $f_{sim}(q, d_i)$ is defined as
+        $\vert \{ d_j : d_j \in B_q \land sim(name(q), name(d_j)) \ge sim(name(q), name(d_i))\} \vert$.
+
+-   Look at frequency distributions of names conditional on name length.
+    The Zipf distributions may have different shape parameters for
+    different name lengths. Name length might be examined as an
+    alternative to name frequency for interaction with similarity.
+
+-   Look at frequency distributions of names conditional on age and/or
+    sex.
+
+    -   These conditional distributions may increase the predictive
+        power of the compatibility model.
+
+-   Look at frequency distributions of names conditional on blocking
+    variables.
+
+    -   This is to get an understanding of the effect of blocking on
+        name frequency distributions.
+    -   In particular, look at any effects of block size (which has a
+        very wide range).
 
 # Modelling
 
@@ -213,6 +277,10 @@ analysis notebooks or at risk of getting lost in the notebooks.
 -   If we are interested in the performance with respect to
     transcription/typographical variation we may need to consider
     artificially corrupting some of the queries.
+
+-   Consider assigning some of the dictionary records to randomly chosen
+    wrong blocks. (Is this equivalent to randomly selecting some
+    out-of-block query records to run against each dictionary block?)
 
 # Writing/theory
 

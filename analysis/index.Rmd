@@ -79,9 +79,13 @@ Clean all the variables.
 
 Examine the distributions of potential blocking variables.
 
-### [02-1 Characterise blocking variables](02-1_block_vars.html) {.unnumbered}
+### [02-1 Characterise blocking variables](02-1_char_block_vars.html) {.unnumbered}
 
 Characterise the potential blocking variables and combinations of variables.
+
+### [02-2 Make blocking variables](02-2_mk_block_vars.html) {.unnumbered}
+
+Construct the most promising potential combination blocking variables.
 
 ------------------------------------------------------------------------
 
