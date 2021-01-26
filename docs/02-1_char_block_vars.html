@@ -431,7 +431,7 @@ Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></sp
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-01-24
+<strong>Last updated:</strong> 2021-01-26
 </p>
 <p>
 <strong>Checks:</strong>
@@ -559,20 +559,20 @@ makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreed0307f532f9997d04a892312867534577972227ctargetblankd0307f5a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreee76546b6cfc7b3755f6fa0ebbeb19a981c77e4aatargetblanke76546ba">
 <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/d0307f532f9997d04a892312867534577972227c" target="_blank">d0307f5</a>
+<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/e76546b6cfc7b3755f6fa0ebbeb19a981c77e4aa" target="_blank">e76546b</a>
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreed0307f532f9997d04a892312867534577972227ctargetblankd0307f5a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreee76546b6cfc7b3755f6fa0ebbeb19a981c77e4aatargetblanke76546ba" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and
 connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/d0307f532f9997d04a892312867534577972227c" target="_blank">d0307f5</a>.
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/e76546b6cfc7b3755f6fa0ebbeb19a981c77e4aa" target="_blank">e76546b</a>.
 See the <em>Past versions</em> tab to see a history of the changes made to the
 R Markdown and HTML files.
 </p>
@@ -643,6 +643,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/a9042322070a49ca70773cc2997f57cdd784c02c/analysis/02-1_char_block_vars.Rmd" target="_blank">a904232</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-24
+</td>
+<td>
+Add setup_02.R
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/23d740f2d8fd203c7453cb6cdd5428c9d9c4d1a4/docs/02-1_char_block_vars.html" target="_blank">23d740f</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-24
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/rgayler/fa_sim_cal/blob/d0307f532f9997d04a892312867534577972227c/analysis/02-1_char_block_vars.Rmd" target="_blank">d0307f5</a>
 </td>
 <td>
@@ -694,7 +728,7 @@ source(here::here(&quot;code&quot;, &quot;setup_project.R&quot;))</code></pre>
 x dplyr::filter() masks stats::filter()
 x dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code># Extra set up for the 02*.Rmd notebooks
-# source(here::here(&quot;code&quot;, &quot;setup_02.R&quot;))
+source(here::here(&quot;code&quot;, &quot;setup_02.R&quot;))
 
 # Extra set up for this notebook
 # ???
@@ -908,17 +942,20 @@ FALSE  TRUE
 <p>For convenience, we will probably end up excluding records with missing
 age. So look at the distributions after excluding records with age
 missing.</p>
-<pre class="r"><code># arbitrary lower and upper bound on useful block size
-blk_sz_min &lt;- 50
-blk_sz_max &lt;- 50e3
-
-# distribution of age (linear count)
+<p>Show the assumed range of useful block sizes.</p>
+<pre class="r"><code># Arbitrary lower and upper bound on useful block size
+# These are set in setup_02.R
+blk_sz_min</code></pre>
+<pre><code>[1] 50</code></pre>
+<pre class="r"><code>blk_sz_max</code></pre>
+<pre><code>[1] 50000</code></pre>
+<pre class="r"><code># distribution of age (linear count)
 d %&gt;% 
   dplyr::filter(!age_cln_miss) %&gt;% 
   ggplot() +
   geom_hline(yintercept = c(blk_sz_min, blk_sz_max), colour = &quot;blue&quot;) +
   geom_histogram(aes(x = age_cln), binwidth = 1)</code></pre>
-<p><img src="figure/02-1_char_block_vars.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/02-1_char_block_vars.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># distribution of age (log count)
 d %&gt;% 
   dplyr::filter(!age_cln_miss) %&gt;% 
@@ -926,7 +963,7 @@ d %&gt;%
   geom_hline(yintercept = c(blk_sz_min, blk_sz_max), colour = &quot;blue&quot;) +
   geom_histogram(aes(x = age_cln), binwidth = 1) +
   scale_y_log10() + annotation_logticks(sides = &quot;l&quot;)</code></pre>
-<p><img src="figure/02-1_char_block_vars.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/02-1_char_block_vars.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># count the records in each level/block
 d_blk &lt;- d %&gt;% 
   dplyr::filter(!age_cln_miss) %&gt;% 
@@ -948,7 +985,7 @@ summary(d_blk$blk_sz)</code></pre>
   geom_histogram(aes(y = ..density..), bins = 10) +
   geom_density(colour = &quot;orange&quot;) +
   scale_x_log10()</code></pre>
-<p><img src="figure/02-1_char_block_vars.Rmd/unnamed-chunk-4-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/02-1_char_block_vars.Rmd/unnamed-chunk-5-3.png" width="672" style="display: block; margin: auto;" /></p>
 <ul>
 <li><p>There are 88 unique nonmissing levels (blocks).</p></li>
 <li><p>There are 42 blocks with sizes in the “useful” range.</p>
@@ -1000,7 +1037,44 @@ d %&gt;%
   geom_hline(yintercept = c(blk_sz_min, blk_sz_max), colour = &quot;blue&quot;) +
   geom_bar(aes(x = birth_place)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))</code></pre>
-<p><img src="figure/02-1_char_block_vars.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/02-1_char_block_vars.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/23d740f2d8fd203c7453cb6cdd5428c9d9c4d1a4/docs/figure/02-1_char_block_vars.Rmd/unnamed-chunk-7-1.png" target="_blank">23d740f</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># count the records in each level/block
 d_blk &lt;- d %&gt;% dplyr::count(birth_place, name = &quot;blk_sz&quot;, sort = TRUE)
 
@@ -1020,7 +1094,44 @@ summary(d_blk$blk_sz)</code></pre>
   geom_histogram(aes(y = ..density..), bins = 10) +
   geom_density(colour = &quot;orange&quot;) +
   scale_x_log10()</code></pre>
-<p><img src="figure/02-1_char_block_vars.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/02-1_char_block_vars.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-2">
+Past versions of unnamed-chunk-7-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/23d740f2d8fd203c7453cb6cdd5428c9d9c4d1a4/docs/figure/02-1_char_block_vars.Rmd/unnamed-chunk-7-2.png" target="_blank">23d740f</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <ul>
 <li><p>There are 57 unique levels.</p></li>
 <li><p>There are 44 blocks with sizes in the “useful” range.</p>
@@ -1050,7 +1161,44 @@ d %&gt;%
   geom_hline(yintercept = c(blk_sz_min, blk_sz_max), colour = &quot;blue&quot;) +
   geom_bar(aes(x = county_id)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))</code></pre>
-<p><img src="figure/02-1_char_block_vars.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/02-1_char_block_vars.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/23d740f2d8fd203c7453cb6cdd5428c9d9c4d1a4/docs/figure/02-1_char_block_vars.Rmd/unnamed-chunk-8-1.png" target="_blank">23d740f</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>d %&gt;% 
   dplyr::mutate(county_id = forcats::fct_infreq(county_id)) %&gt;% 
   ggplot() +
@@ -1058,7 +1206,44 @@ d %&gt;%
   geom_bar(aes(x = county_id)) +
   scale_y_log10() + annotation_logticks(sides = &quot;l&quot;) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))</code></pre>
-<p><img src="figure/02-1_char_block_vars.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/02-1_char_block_vars.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-2">
+Past versions of unnamed-chunk-8-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/23d740f2d8fd203c7453cb6cdd5428c9d9c4d1a4/docs/figure/02-1_char_block_vars.Rmd/unnamed-chunk-8-2.png" target="_blank">23d740f</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># count the records in each level/block
 d_blk &lt;- d %&gt;% dplyr::count(county_id, name = &quot;blk_sz&quot;, sort = TRUE)
 
@@ -1078,7 +1263,7 @@ summary(d_blk$blk_sz)</code></pre>
   geom_histogram(aes(y = ..density..), bins = 10) +
   geom_density(colour = &quot;orange&quot;) +
   scale_x_log10()</code></pre>
-<p><img src="figure/02-1_char_block_vars.Rmd/unnamed-chunk-7-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/02-1_char_block_vars.Rmd/unnamed-chunk-8-3.png" width="672" style="display: block; margin: auto;" /></p>
 <ul>
 <li><p>There are 100 unique levels (blocks).</p></li>
 <li><p>County ID is never missing.</p></li>
@@ -1137,7 +1322,7 @@ d_blk %&gt;%
   geom_boxplot(outlier.shape = NA, colour = &quot;red&quot;, alpha = 0.0) +
   scale_y_log10(n.breaks = 7) + annotation_logticks(sides = &quot;l&quot;) +
   theme(panel.grid.major.x = element_blank(), panel.grid.minor.y = element_line())</code></pre>
-<p><img src="figure/02-1_char_block_vars.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/02-1_char_block_vars.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>d_blk %&gt;% 
   ggplot(aes(x = blk_sz)) +
   geom_vline(xintercept = c(blk_sz_min, blk_sz_max), colour = &quot;blue&quot;) +
@@ -1145,7 +1330,7 @@ d_blk %&gt;%
   geom_density(colour = &quot;orange&quot;) +
   scale_x_log10() +
   facet_grid(rows = vars(blk_vars))</code></pre>
-<p><img src="figure/02-1_char_block_vars.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/02-1_char_block_vars.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># Characterise the blocking schemes
 d_blk_summ &lt;- d_blk %&gt;% 
   dplyr::group_by(blk_vars) %&gt;% 
@@ -1482,7 +1667,7 @@ used to bring the block sizes into the useful range.</p>
 </div>
 <div id="timing" class="section level1 unnumbered">
 <h1>Timing</h1>
-<pre><code>Computation time (excl. render): 18.677 sec elapsed</code></pre>
+<pre><code>Computation time (excl. render): 19.037 sec elapsed</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1512,10 +1697,10 @@ attached base packages:
 [1] stats     graphics  grDevices datasets  utils     methods   base     
 
 other attached packages:
- [1] fst_0.9.4       fs_1.5.0        forcats_0.5.0   stringr_1.4.0  
- [5] dplyr_1.0.3     purrr_0.3.4     readr_1.4.0     tidyr_1.1.2    
- [9] tibble_3.0.5    ggplot2_3.3.3   tidyverse_1.3.0 tictoc_1.0     
-[13] here_1.0.1      workflowr_1.6.2
+ [1] knitr_1.30      fst_0.9.4       fs_1.5.0        forcats_0.5.0  
+ [5] stringr_1.4.0   dplyr_1.0.3     purrr_0.3.4     readr_1.4.0    
+ [9] tidyr_1.1.2     tibble_3.0.5    ggplot2_3.3.3   tidyverse_1.3.0
+[13] tictoc_1.0      here_1.0.1      workflowr_1.6.2
 
 loaded via a namespace (and not attached):
  [1] Rcpp_1.0.6        lubridate_1.7.9.2 assertthat_0.2.1  rprojroot_2.0.2  
@@ -1532,8 +1717,7 @@ loaded via a namespace (and not attached):
 [45] stringi_1.5.3     farver_2.0.3      renv_0.12.5       promises_1.1.1   
 [49] xml2_1.3.2        ellipsis_0.3.1    generics_0.1.0    vctrs_0.3.6      
 [53] tools_4.0.3       glue_1.4.2        hms_1.0.0         parallel_4.0.3   
-[57] yaml_2.2.1        colorspace_2.0-0  rvest_0.3.6       knitr_1.30       
-[61] haven_2.3.1      </code></pre>
+[57] yaml_2.2.1        colorspace_2.0-0  rvest_0.3.6       haven_2.3.1      </code></pre>
 </div>
 </div>
 
