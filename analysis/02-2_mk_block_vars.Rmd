@@ -318,8 +318,6 @@ d_blk_age <- d_blk_age %>%
     grp = cumrec_to_grp(cum_rec)
   )
 
-d_blk_age %>% knitr::kable(format.args = list(big.mark = ","))
-
 # map from age to group number
 age_to_grp <- stepfun(
   x = c(16L, d_blk_age$age_cln), # x value is the upper/right boundary of each group
@@ -335,8 +333,6 @@ d_blk_age <- d_blk_age %>%
   dplyr::mutate(
     grp_from_age = age_to_grp(age_cln)
   )
-
-d_blk_age %>% knitr::kable(format.args = list(big.mark = ","))
 ```
 
 Construct the (age, county) blocking variable.
@@ -402,10 +398,6 @@ d_blk %>%
 
 # (sex, age, county)
 
-```{r}
-knitr::knit_exit()
-```
-
 There are 5,127 (31%) blocks in (sex, age, county) that are too small.
 None are too large and the largest block is significantly smaller than
 the upper bound on useful block size. I hope this can be fixed with some
@@ -421,47 +413,45 @@ of records at each age is never large, so we have good control over the
 boundaries between pooled ages.
 
 ```{r}
-# get the block sizes for (sex, age), age and county
-d_blk_age <- d %>% 
-  dplyr::filter(!excl_blk_age_county_miss) %>% 
-  dplyr::count(age_cln, name = "blk_sz") 
+# get the unpooled block sizes for (sex, age, county), (sex, age), age, and county
+d_blk_sex_age_county <- d %>% 
+  dplyr::filter(!excl_blk_sex_age_county_miss) %>% 
+  dplyr::count(sex, age_cln, county_id, name = "blk_sz") 
+summary(d_blk_sex_age_county$blk_sz)
 
-d_blk_cnty <- d %>% 
-  dplyr::filter(!excl_blk_age_county_miss) %>% 
-  dplyr::count(county_id, name = "blk_sz") 
-
-# summaries of block sizes for age and county in isolation
-summary(d_blk_age$blk_sz)
-summary(d_blk_cnty$blk_sz)
+d_blk_sex_county <- d %>% 
+  dplyr::filter(!excl_blk_sex_age_county_miss) %>% 
+  dplyr::count(sex, county_id, name = "blk_sz") 
+summary(d_blk_sex_county$blk_sz)
 ```
 
-For county ID, the maximum block size is 410,466 records and the minimum
-block size is 1,027 records.
+For (sex, county), the maximum block size is 226,197 records and the minimum
+block size is 435 records.
 
 -   To reduce the maximum block size to 50k records we need to combine
-    it with an age group with no more than 50,000 / 410,466 =
-    `r floor(100 * 50e3 / 410466)`% of the records.
+    it with an age group with no more than 50,000 / 226,197 =
+    `r floor(100 * 50e3 / 226197)`% of the records.
 
 -   To reduce the minimum block size to 50 records we need to combine it
-    with an age group with no less than 50 / 1,027 =
-    `r ceiling(100 * 50 / 1027)`% of the records.
+    with an age group with no less than 50 / 435 =
+    `r ceiling(100 * 50 / 435)`% of the records.
     
 -   The previous points assume that sex, age, and county are independent,
     which is unlikely to be exactly true. So the figures calculated here
     should be regarded as back of the envelope approximations.
 
--   The largest pooled age group is 12% of records and the smallest is
-    5%. That leaves 83% of the records to be distributed over the pooled
+-   The largest pooled age group is 22% of records and the smallest is
+    12%. That leaves 66% of the records to be distributed over the pooled
     groups of intermediate size.
 
     -   The intermediate pooled groups can't be larger than the largest
-        group, so there must be at least ceiling(83 / 12) =
-        `r ceiling(83/12)` intermediate groups.
+        group, so there must be at least ceiling(66 / 22) =
+        `r ceiling(66/22)` intermediate groups.
     -   The intermediate pooled groups can't be smaller than the
-        smallest group, so there must be no more than floor(83 / 5) =
-        `r floor(83/5)` intermediate groups.
+        smallest group, so there must be no more than floor(66 / 12) =
+        `r floor(66/12)` intermediate groups.
 
--   So, there must be between 5 and 16 intermediate pooled age groups.
+-   So, there must be between 3 and 5 intermediate pooled age groups.
 
     -   Use 10 intermediate groups because experimentation shows this
         gives pleasing results with the following code.
@@ -478,12 +468,12 @@ block size is 1,027 records.
 The target boundaries for the age groups are calculated as follows:
 
 ```{r}
-n_grp <- 10 + 1 + 1 # 10 intermediate + 1 largest + 1 smallest
+n_grp <- 4 + 1 + 1 # 10 intermediate + 1 largest + 1 smallest
 
 n_rec <- sum(d_blk_age$blk_sz) # number of records
 
-p_max <- 0.12 # fraction of records in largest group
-p_min <- 0.05 # fraction of records in smallest group
+p_max <- 0.22 # fraction of records in largest group
+p_min <- 0.12 # fraction of records in smallest group
 
 groups <- tibble::tibble(
   grp = 1:n_grp
@@ -532,8 +522,6 @@ d_blk_age <- d_blk_age %>%
     grp = cumrec_to_grp(cum_rec)
   )
 
-d_blk_age %>% knitr::kable(format.args = list(big.mark = ","))
-
 # map from age to group number
 age_to_grp <- stepfun(
   x = c(16L, d_blk_age$age_cln), # x value is the upper/right boundary of each group
@@ -549,8 +537,6 @@ d_blk_age <- d_blk_age %>%
   dplyr::mutate(
     grp_from_age = age_to_grp(age_cln)
   )
-
-d_blk_age %>% knitr::kable(format.args = list(big.mark = ","))
 ```
 
 Construct the (age, county) blocking variable.
@@ -563,9 +549,9 @@ Construct the (age, county) blocking variable.
 d <- d %>% 
   dplyr::mutate(
     # create the new combined blocking variable
-    blk_age_county = dplyr::if_else(excl_blk_age_county_miss,
+    blk_sex_age_county = dplyr::if_else(excl_blk_sex_age_county_miss,
                                     NA_character_, # make value NA for safety
-                                    paste0("AgeGrp=", age_to_grp(age_cln), ":County=", county_id)
+                                    paste0("Sex=", sex, ":AgeGrp=", age_to_grp(age_cln), ":County=", county_id)
     )
   )
 ```
@@ -575,8 +561,8 @@ Characterise the newly constructed (age, county) blocking variable.
 ```{r}
 # calculate the distribution of block sizes
 d_blk <- d %>% 
-  dplyr::filter(!excl_blk_age_county_miss) %>% 
-  dplyr::count(blk_age_county, name = "blk_sz") 
+  dplyr::filter(!excl_blk_sex_age_county_miss) %>% 
+  dplyr::count(blk_sex_age_county, name = "blk_sz") 
 
 # number of blocks
 nrow(d_blk)
@@ -602,9 +588,9 @@ d_blk %>%
 -   \~99.8%% of blocks in the useful size range and covering the entire
     useful range
 
-    -   Only three blocks lie just outside the useful block size range
-    -   Minimum block size: 44 records
-    -   Maximum block size: 54,013 records
+    -   Only two blocks lie just outside the useful block size range
+    -   Minimum block size: 45 records
+    -   Maximum block size: 51,009 records
 
 -   Mean block size (most relevant for computational effort): \~3.4k
     records
@@ -614,154 +600,20 @@ d_blk %>%
 
     -   Median block size \~1.8k records
 
-# Compare blocking variables
-
-Look at the distributions of block sizes for all reasonable combinations
-of potential blocking variables.
-
--   Don't consider place of birth because the distribution of levels is
-    too concentrated.
--   Only consider sex in combination with other variables, not in
-    isolation.
+# Save data
 
 ```{r}
-# Calculate all the block sizes for each combination of blocking variables.
-# For only 6 combinations I will manually enumerate them.
-d_blk <- dplyr::bind_rows(
-  list(
-    sex_age_cnty = dplyr::count( d, sex, age_cln, county_id, name = "blk_sz"),
-    sex_age      = dplyr::count( d, sex, age_cln           , name = "blk_sz"),
-    sex_cnty     = dplyr::count( d, sex,          county_id, name = "blk_sz"),
-    age_cnty     = dplyr::count( d,      age_cln, county_id, name = "blk_sz"),
-    age          = dplyr::count( d,      age_cln           , name = "blk_sz"),
-    cnty         = dplyr::count( d,               county_id, name = "blk_sz")
-  ),
-  .id = "blk_vars"
-) %>% 
-  dplyr::mutate(
-    blk_vars = forcats::fct_infreq(blk_vars)
-  )
+# Show the clean data file location
+# This is set in code/file_paths.R
+fs::path_file(f_entity_cln_fst)
 
-d_blk %>% 
-  ggplot(aes(x = blk_vars, y = blk_sz)) +
-  geom_hline(yintercept = c(blk_sz_min, blk_sz_max), colour = "blue") +
-  geom_jitter(width = 0.4, alpha = 0.1) +
-  geom_boxplot(outlier.shape = NA, colour = "red", alpha = 0.0) +
-  scale_y_log10(n.breaks = 7) + annotation_logticks(sides = "l") +
-  theme(panel.grid.major.x = element_blank(), panel.grid.minor.y = element_line())
+# save the entity data with added blocking variables (cheap-skate caching)
+# updating the file is probably poor form
+# but I am only adding variables, so it is idempotent
+d %>% fst::write_fst(f_entity_cln_fst, compress = 100)
 
-d_blk %>% 
-  ggplot(aes(x = blk_sz)) +
-  geom_vline(xintercept = c(blk_sz_min, blk_sz_max), colour = "blue") +
-  geom_histogram(aes(y = ..density..), bins = 10) +
-  geom_density(colour = "orange") +
-  scale_x_log10() +
-  facet_grid(rows = vars(blk_vars))
-
-# Characterise the blocking schemes
-d_blk_summ <- d_blk %>% 
-  dplyr::group_by(blk_vars) %>% 
-  dplyr::summarise(
-    n_blk = n(),
-    n_rec = sum(blk_sz),
-    
-    min_blk_sz = min(blk_sz),
-    max_blk_sz = max(blk_sz),
-    
-    n_blk_low = sum(blk_sz < blk_sz_min),
-    p_blk_low = (n_blk_low / n_blk) %>% round(2),
-    n_rec_low = sum(blk_sz[blk_sz < blk_sz_min]),
-    p_rec_low = (n_rec_low / n_rec) %>% round(2),
-
-    n_blk_high = sum(blk_sz > blk_sz_max),
-    p_blk_high = (n_blk_high / n_blk) %>% round(2),
-    n_rec_high = sum(blk_sz[blk_sz > blk_sz_max]),
-    p_rec_high = (n_rec_high / n_rec) %>% round(2),
-    
-    n_blk_useful = sum(between(blk_sz, blk_sz_min, blk_sz_max)),
-    p_blk_useful = (n_blk_useful / n_blk) %>% round(2),
-    n_rec_useful = sum(blk_sz[between(blk_sz, blk_sz_min, blk_sz_max)]),
-    p_rec_useful = (n_rec_useful / n_rec) %>% round(2),
-    
-    gm_useful_blk_sz = blk_sz[between(blk_sz, blk_sz_min, blk_sz_max)] %>% 
-      log() %>% mean() %>% exp() %>% round() # geometric mean of useful block sizes
-  )
-
-# number of blocks
-d_blk_summ %>% 
-  dplyr::select(blk_vars, n_blk, n_blk_low, n_blk_high, n_blk_useful) %>% 
-  knitr::kable(format.args = list(big.mark = ","))
-
-# proportion of blocks
-d_blk_summ %>% 
-  dplyr::select(blk_vars, n_blk, p_blk_low, p_blk_high, p_blk_useful) %>% 
-  knitr::kable(format.args = list(big.mark = ","))
-
-# number of records
-d_blk_summ %>% 
-  dplyr::select(blk_vars, n_rec_low, n_rec_high, n_rec_useful) %>% 
-  knitr::kable(format.args = list(big.mark = ","))
-
-# proportion of records
-d_blk_summ %>% 
-  dplyr::select(blk_vars, p_rec_low, p_rec_high, p_rec_useful) %>% 
-  knitr::kable(format.args = list(big.mark = ","))
-
-# block size
-d_blk_summ %>% 
-  dplyr::select(blk_vars, min_blk_sz, max_blk_sz, gm_useful_blk_sz) %>% 
-  knitr::kable(format.args = list(big.mark = ","))
+dplyr::glimpse(d)
 ```
-
--   county and age have too many blocks/records in the high block size
-    range.
-
--   county and age have too few blocks/records in the low block size
-    range.
-
--   (sex, age, county) and (age, county) have too few blocks/records in
-    the high block size range.
-
--   The largest block sizes for (sex, age, county) and (age, county) are
-    quite small relative to the upper limit of the useful block size
-    range.
-
--   (sex, age, county) and (age, county) have too many blocks/records in
-    the low block size range.
-
-    -   This can be fixed by pooling the smallest levels of the
-        individual variables.
-    -   Small blocks can be made larger by pooling.
-    -   Large blocks can not be made smaller without combining another
-        blocking variable.
-
--   (sex, age) and (sex, county) have the highest proportion of usefully
-    sized blocks.
-
--   (sex, age) has \~89% of blocks in the useful block size range.
-
-    -   The blocks that are too small could be fixed by pooling ages.
-
--   (sex, age) has \~100% of records in useful sized blocks.
-
--   (sex, county) has \~82% of blocks in the useful block size range.
-
-    -   \~4% of blocks (\~36% of records) are too large
-    -   \~14% of blocks (\~0% of records) are too small
-    -   The blocks that are too small could be fixed by pooling
-        counties.
-
--   (sex, county) has only 64% of records in useful sized blocks.
-
-**Conclusion**
-
-My tentative conclusion is to use (sex, age) for blocking and to pool
-the higher ages into groups to ensure that all block sizes are above the
-lower limit of the useful block size.
-
-I will also look at (sex, county) as a possible blocking variable by
-pooling counties into groups to ensure that all block sizes are above
-the lower limit of the useful block size.
 
 # Timing {.unnumbered}
 
