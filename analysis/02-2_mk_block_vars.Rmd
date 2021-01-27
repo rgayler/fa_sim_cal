@@ -600,7 +600,7 @@ d_blk %>%
 
     -   Median block size \~1.8k records
 
-# Save data
+# Save enity blocking variables
 
 Save the blocking variables as a separate file that can be joined to the clean entity data.
 
@@ -610,11 +610,90 @@ Save the blocking variables as a separate file that can be joined to the clean e
 fs::path_file(f_entity_blk_fst)
 
 # save the entity blocking variables (cheap-skate caching)
-x <- d %>% 
+d %>% 
   dplyr::select(id, starts_with(c("excl_blk_", "blk_"))) %>% 
-  fst::write_fst(f_entity_blk_fst, compress = 100)
+  fst::write_fst(f_entity_blk_fst, compress = 100) %>% 
+  dplyr::glimpse()
+```
 
-dplyr::glimpse(x)
+# Characterise the blocks
+
+Characterise the blocks. This may be useful later for selecting the blocks to use.
+
+```{r}
+# function to characterise the contents of 1 block
+char_1_block <- function(
+  .x, # data frame containing all the records of one block
+  .y  # one-row data frame - the grouping key (must be one-column only)
+  # value: a data frame of one row giving all the summary statistics for the block
+) {
+  tibble::tibble(
+    blk_id = .y[[1]],
+    blk_sz = nrow(.x),
+    sex_p_female = sum(.x$sex == "FEMALE") / blk_sz,
+    sex_n = .x$sex %>% unique() %>% length(),
+    sex_n_eff = .x$sex %>% n_eff(),
+    age_mean = mean(.x$age_cln),
+    age_min = min(.x$age_cln),
+    age_max = max(.x$age_cln),
+    age_range = age_max - age_min + 1,
+    county_n = .x$county_id %>% unique() %>% length(),
+    county_n_eff = .x$county_id %>% n_eff()
+  )
+}
+
+# Function to calculate the effective number of levels of a categorical variable
+# Based on Shannon entropy
+# This is the number of levels a uniformly distributed variable would need to have the same entropy
+n_eff <- function (
+  x # vector of discrete levels
+) {
+  p <- table(x) %>% prop.table() %>% as.vector() # probabilities of levels
+  -sum( p * log(p)) %>% exp()
+}
+
+# characterise each of the blocks created by each of the blocking variables
+# and put all the results in a single data frame
+d_blks <- dplyr::bind_rows(
+  list(
+    blk_sex_age = d %>% 
+      dplyr::filter(!excl_blk_sex_age_miss) %>% 
+      dplyr::group_by(blk_sex_age) %>% 
+      group_modify(char_1_block) %>% 
+      dplyr::ungroup() %>% 
+      dplyr::select(-blk_sex_age),
+    
+    blk_age_county = d %>% 
+      dplyr::filter(!excl_blk_age_county_miss) %>% 
+      dplyr::group_by(blk_age_county) %>% 
+      group_modify(char_1_block) %>% 
+      dplyr::ungroup() %>% 
+      dplyr::select(-blk_age_county),
+    
+    blk_sex_age_county = d %>% 
+      dplyr::filter(!excl_blk_sex_age_county_miss) %>% 
+      dplyr::group_by(blk_sex_age_county) %>% 
+      group_modify(char_1_block) %>% 
+      dplyr::ungroup() %>% 
+      dplyr::select(-blk_sex_age_county)
+  ),
+  .id = "blk_var"
+)
+```
+
+# Save the block characterisations
+
+Save the characterisation of each block created by each blocking variable.
+
+```{r}
+# Show the clean data file location
+# This is set in code/file_paths.R
+fs::path_file(f_blk_char.fst)
+
+# save the entity blocking variables (cheap-skate caching)
+d_blks %>% 
+  fst::write_fst(f_blk_char.fst, compress = 100) %>% 
+  dplyr::glimpse()
 ```
 
 # Timing {.unnumbered}
