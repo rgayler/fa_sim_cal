@@ -59,7 +59,7 @@ fs::path_file(f_entity_cln_fst)
 # get entity data
 d <- fst::read_fst(
   f_entity_cln_fst,
-  columns = c("sex", "age_cln", "age_cln_miss", "birth_place", "county_id")
+  columns = c("id", "sex", "age_cln", "age_cln_miss", "birth_place", "county_id")
   ) %>% 
   tibble::as_tibble()
 
@@ -147,7 +147,7 @@ d <- d %>%
     # create the new combined blocking variable
     blk_sex_age = dplyr::if_else(excl_blk_sex_age_miss,
                                  NA_character_, # make value NA for safety
-                                 paste(sex, blk_age, sep = ":")
+                                 paste0("Sex=", sex,  ":AgeGrp=", blk_age)
     )
   ) %>% 
   dplyr::select(-blk_age) # we won't use age alone as a blocking variable
@@ -602,17 +602,19 @@ d_blk %>%
 
 # Save data
 
+Save the blocking variables as a separate file that can be joined to the clean entity data.
+
 ```{r}
 # Show the clean data file location
 # This is set in code/file_paths.R
-fs::path_file(f_entity_cln_fst)
+fs::path_file(f_entity_blk_fst)
 
-# save the entity data with added blocking variables (cheap-skate caching)
-# updating the file is probably poor form
-# but I am only adding variables, so it is idempotent
-d %>% fst::write_fst(f_entity_cln_fst, compress = 100)
+# save the entity blocking variables (cheap-skate caching)
+x <- d %>% 
+  dplyr::select(id, starts_with(c("excl_blk_", "blk_"))) %>% 
+  fst::write_fst(f_entity_blk_fst, compress = 100)
 
-dplyr::glimpse(d)
+dplyr::glimpse(x)
 ```
 
 # Timing {.unnumbered}
