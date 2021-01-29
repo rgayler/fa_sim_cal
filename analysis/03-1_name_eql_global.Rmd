@@ -1,0 +1,124 @@
+---
+title: "03-1_name_freq_eql_global"
+subtitle: "Name frequency induced by equality - Global analysis"
+author: "Ross Gayler"
+date: "2021-01-29"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+  markdown: 
+    wrap: 72
+---
+
+```{r setup}
+# Set up the project environment, because each Rmd file knits in a new R session
+# so doesn't get the project setup from .Rprofile
+
+# Project setup
+library(here)
+source(here::here("code", "setup_project.R"))
+
+# Extra set up for the 02*.Rmd notebooks
+# source(here::here("code", "setup_03.R"))
+
+# Extra set up for this notebook
+library(zipfR)
+
+# start the execution time clock
+tictoc::tic("Computation time (excl. render)")
+```
+
+# Introduction
+
+This notebook (`02-2_mk_block_vars`) constructs the potential blocking
+variables identified in the previous notebook:
+
+-   (sex, age)
+-   (age, county)
+-   (sex, age, county)
+
+
+# Read data
+
+Read the usable data. Remember that this consists of only the ACTIVE &
+VERIFIED records.
+
+```{r}
+# Show the entity data file location
+# This is set in code/file_paths.R
+fs::path_file(f_entity_cln_fst)
+
+# get entity data
+d <- fst::read_fst(
+  f_entity_cln_fst#,
+  # columns = c("id", "sex", "age_cln", "age_cln_miss", "birth_place", "county_id")
+  ) %>% 
+  tibble::as_tibble()
+
+dim(d)
+```
+
+# xxx
+
+Identify the missing values in the blocking variables and flag those
+records as exclusions for blocking and modelling.
+
+Sex and age have missing values, county ID does not.
+
+```{r}
+
+tfl_last_name <- zipfR::vec2tfl(d$last_name_cln)
+
+tfl_last_name
+
+plot(tfl_last_name, log = "xy")
+
+spc_last_name <- tfl2spc(tfl_last_name)
+
+spc_last_name
+
+summary(spc_last_name)
+
+plot(spc_last_name, log = "xy")
+
+vgc_last_name <- zipfR::vec2vgc(d$last_name_cln, m.max = 9)
+
+vgc_last_name
+
+summary(vgc_last_name)
+
+plot(vgc_last_name, add.m = 1:9)
+
+abline(0, 1)
+
+
+
+```
+
+-   (age, county) excludes \~31k (\~0.8%) of records from blocking and
+    modelling.
+-   (sex, age) and (sex, age, county) excludes \~47k (\~1.1%) of records
+    from blocking and modelling.
+
+# Save enity blocking variables
+
+Save the blocking variables as a separate file that can be joined to the clean entity data.
+
+```{r}
+# # Show the clean data file location
+# # This is set in code/file_paths.R
+# fs::path_file(f_entity_blk_fst)
+# 
+# # save the entity blocking variables (cheap-skate caching)
+# d %>% 
+#   dplyr::select(id, starts_with(c("excl_blk_", "blk_"))) %>% 
+#   fst::write_fst(f_entity_blk_fst, compress = 100) %>% 
+#   dplyr::glimpse()
+
+```
+
+# Timing {.unnumbered}
+
+```{r echo=FALSE}
+tictoc::toc()
+```
