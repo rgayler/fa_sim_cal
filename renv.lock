@@ -806,6 +806,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "2826c5d9efb0a88f657c7a679c7106db"
+    },
+    "zipfR": {
+      "Package": "zipfR",
+      "Version": "0.6-70",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "d9f5db3d5667bed8d453192e6917e2fd"
     }
   }
 }
