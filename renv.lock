@@ -186,10 +186,10 @@
     },
     "dbplyr": {
       "Package": "dbplyr",
-      "Version": "2.0.0",
+      "Version": "2.1.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "714005206038b1dda74cb1de85029a20"
+      "Hash": "f30247ffeeebe8d9842dc68fe63e043b"
     },
     "desc": {
       "Package": "desc",
@@ -214,10 +214,10 @@
     },
     "dplyr": {
       "Package": "dplyr",
-      "Version": "1.0.3",
+      "Version": "1.0.4",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "365f8c3650ab95582e600f160fd5fb88"
+      "Hash": "01c82e3b053eb7660a8ace8d932265b8"
     },
     "ellipsis": {
       "Package": "ellipsis",
@@ -753,10 +753,10 @@
     },
     "vroom": {
       "Package": "vroom",
-      "Version": "1.3.2",
+      "Version": "1.4.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "8ef9e70084c957bda561bfd090707568"
+      "Hash": "06340eb63f5095463420837782c084c1"
     },
     "waldo": {
       "Package": "waldo",
