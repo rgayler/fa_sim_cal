@@ -18,7 +18,7 @@ analysis notebooks or at risk of getting lost in the notebooks.
 -   Consider using the [targets](https://wlandau.github.io/targets/)
     package to control the computational workflow.
 
-# Identity data
+# Entity data
 
 -   Get a sizeable publicly available data set with personal names
     (NCVR).
@@ -58,7 +58,10 @@ analysis notebooks or at risk of getting lost in the notebooks.
 -   Drop objectionable attributes such as race and political
     affiliation.
 
-# Identity data preparation
+-   A note about the irregularity of names:
+    <https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/>
+
+# Entity data preparation
 
 -   Apply basic data cleaning to the predictive attributes.
 
@@ -123,9 +126,9 @@ analysis notebooks or at risk of getting lost in the notebooks.
     -   Blocking on county *may* give more homogeneity of last names
         within blocks because of families living together.
 
-# Identity data characterisation
+# Entity data characterisation
 
-These sections are about looking at the properties of the identity data
+These sections are about looking at the properties of the entity data
 that will be most relevant to their use in the compatibility models.
 
 ## Structure induced by equality
@@ -228,8 +231,15 @@ that will be most relevant to their use in the compatibility models.
 
 -   There are *two* names in each lookup: dictionary and query.
     Therefore there are also two name frequencies to be considered.
-    Consider how to use *both* frequencies (e.g. min, max, geometric
-    mean, ...).
+
+    -   We are interested in calculating the probability of a correct
+        match for each query, so the sought probability is conditional
+        on the query. Consequently the conditional probability of a
+        correct match should *not* depend on the frequency of the query
+        name.
+
+    -   I am not entirely convinced by that argument, so consider how to
+        use *both* frequencies (e.g. min, max, geometric mean, ...).
 
     -   Queries may contain names that do not exist in the dictionary,
         so we need to deal with that case.
@@ -243,13 +253,23 @@ that will be most relevant to their use in the compatibility models.
     universe of queries. Consider the impact of this on modelling as the
     fraction of the query universe in the dictionary varies.
 
-    -   Consider whether this varies on a per query basis because of
-        blocking. That is, is there effectively a separate dictionary
-        per blocking value?
-
     -   Can the sampling fraction be modelled as a prior probability
         (effectively, a change in the intercept term of a logistic
         regression)?
+
+        -   This can be investigated by varying the fraction of
+            dictionary records randomly sampled from the universe and
+            treating the sampling fraction as a predictor in the model.
+            The fitted coefficients for the sampling fraction can be
+            compared to what would be expected treating the same
+            sampling probabilities as a prior for the logistic
+            regression.
+
+        -   
+
+    -   Consider whether this varies on a per query basis because of
+        blocking. That is, is there effectively a separate dictionary
+        per blocking value?
 
     -   Consider using the same variable for blocking and as a predictor
         to compare the effect on estimated probability of identity match
@@ -267,8 +287,32 @@ that will be most relevant to their use in the compatibility models.
 
 # Performance evaluation
 
--   Partition the records into a dictionary and a set of queries (the
-    $Q_U$ set).
+-   Performance evaluation should always be performed on a disjoint set
+    of records from those used in estimation of the model.
+
+    -   The obvious (and probably best) way to partition the data is to
+        randomly select records. This means that for more frequent
+        names, the same name will appear in the fitting and testing
+        sets. So, if the model is in some sense "learning" details of
+        individual names, this knowledge will be carried over from the
+        fitting to testing sets and the performance of the model will be
+        overstated.
+
+    -   An alternative approach would be to partition the name types (as
+        opposed to tokens). This would ensure that the names in the
+        fitting and testing sets were completely disjoint, completely
+        excluding any possibility of name-specific information being
+        carried from fitting to testing.
+
+        -   This would be easy if there were only one name field, but
+            there are three. Partitioning name types in the most obvious
+            way and making a 50:50 partition on each name field would
+            mean that only 1/8 of records would be in the fitting set
+            and 1/8 in the test set. This may make the data sets
+            uncomfortably small.
+
+-   Partition the entity data records into a dictionary and a set of
+    queries (the $Q_U$ set).
 
     -   By the (reasonable) assumption that there are no duplicate
         records, each of the $Q_U$ queries will be unmatched in the

@@ -18,7 +18,7 @@ editor_options:
 library(here)
 source(here::here("code", "setup_project.R"))
 
-# Extra set up for the 02*.Rmd notebooks
+# Extra set up for the 03*.Rmd notebooks
 # source(here::here("code", "setup_03.R"))
 
 # Extra set up for this notebook
@@ -30,18 +30,24 @@ tictoc::tic("Computation time (excl. render)")
 
 # Introduction
 
-This notebook (`02-2_mk_block_vars`) constructs the potential blocking
-variables identified in the previous notebook:
+This series of notebooks (`03`) only considers the equality relation on names.
+That is, two names are either identical or equal.
+This can be considered as a very coarse and extreme quantisation of an underlying continuous similarity relation.
 
--   (sex, age)
--   (age, county)
--   (sex, age, county)
+This notebook (`03-1_name_freq_eql_global`) looks at the frequencies of names in the entire identity data set.
 
+The basic idea of this project is that the information provided by a given level of name similarity between a query record and a dictionary record depends on the frequency of the names.
+High similarity (equality) between the query and dictionary records is presumed to be less informativeif the names are common in the data.
 
-# Read data
+# Read entity data
 
-Read the usable data. Remember that this consists of only the ACTIVE &
+Read the usable entity data. Remember that this consists of only the ACTIVE &
 VERIFIED records.
+
+The analyses in this notebook do not involve blocking,
+so ignore the missing value indicators for the blocking records.
+The name frequencies will be based on all usable records
+regardless of whether those records have missing blocking values.
 
 ```{r}
 # Show the entity data file location
