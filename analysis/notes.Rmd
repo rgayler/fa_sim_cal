@@ -9,6 +9,11 @@ editor_options:
     wrap: 72
 ---
 
+```{r setup}
+library(DiagrammeR)
+```
+
+
 This document is for keeping notes of any points that may be useful for
 later project or manuscript development and which are not covered in the
 analysis notebooks or at risk of getting lost in the notebooks.
@@ -216,6 +221,107 @@ that will be most relevant to their use in the compatibility models.
     -   In particular, look at any effects of block size (which has a
         very wide range).
 
+# Sampling
+
+-   Both modelling and performance evaluation will be based on random
+    samples of the entity data, so sort out the sampling first.
+
+-   Modelling is necessarily based on query/dictionary record pairs.
+    That is, the record pair is the unit of analysis.
+
+-   Performance assessment of calibration will also be at the record
+    pair level.
+
+-   Performance assessment of overall model performance (e.g. AUC or
+    F-score) is at the query record level, because these are calculated
+    by aggregation across dictionary records corresponding to each query
+    record.
+
+-   We need some sort of training/testing partition to keep performance
+    assessment honest.
+
+-   Remember that queries are run against a dictionary, so in principle,
+    it would be possible to have separate test/train queries run against
+    one fixed dictionary.
+
+    -   I am inclined to think that running training/testing queries
+        against the same dictionary is probably OK because in a
+        practical application the modelling would be done with respect
+        to the dictionary as it existed at some point in time and then
+        queries applied against essentially the same dictionary. (Given
+        a large dictionary, subsequent queries would update it
+        relatively slowly.)
+
+    -   On the other hand, I am inclined to think that using separate
+        dictionaries for training/test would not cause a problem,
+        because the proposed models are not intended to rely on the
+        actual names, but properties of the names (like frequency and
+        length), which are likely to be very similar for different
+        dictionaries based on random samples of the universe of names.
+
+    -   On balance, I think I will have different dictionaries for
+        train/test because it is probably harmless, probably
+        conservative with respect to performance assessment, and
+        probably easy to implement.
+
+-   Dictionaries are constructed from entity data records, so having
+    separate train/test dictionaries implies partitioning the entity
+    data records prior to constructing the dictionaries.
+
+    -   The easiest way to partition the records is to literally
+        partition the entity data record into train and test universes.
+
+        -   Note that common names will occur in both data sets.
+
+    -   Partitioning the entity records so that each name type occurred
+        in only one of the train or test data sets would be easy if
+        there was only one name field. However, we have three name
+        fields (first, middle, last). Partitioning the data so that all
+        the names occurred in only one data set would drastically reduce
+        the number of records able to be used and bias the data towards
+        names that only occur once (because it is impossible for those
+        names to occur in two data sets).
+
+    -   
+
+
+```{r sampling_diagram}
+grViz("
+digraph sampling_diagram {
+
+node [shape = circle, fixedsize = true, fontsize = 6]
+
+total  [label = 'total data set', style = filled, fillcolor = gray]
+
+tt_1  [label = 'train/test\nsplit 1']
+tt_2  [label = 'train/test\nsplit 2', shape = plaintext]
+tt_k  [label = 'train/test\nsplit ', shape = plaintext]
+
+total -> {tt_1 tt_2 tt_k}
+
+train [label = 'train\nuniverse', style = filled, fillcolor = gray]
+test  [label = 'test\nuniverse', style = filled, fillcolor = gray]
+
+tt_1 -> {train test}
+
+qry   [label = 'queries', style = filled, fillcolor = gray]
+ds_90 [label = 'dictionary\nsplit 90:10']
+ds_70 [label = 'dictionary\nsplit 70:30', shape = plaintext]
+ds_50 [label = 'dictionary\nsplit 50:50', shape = plaintext]
+ds_30 [label = 'dictionary\nsplit 30:70', shape = plaintext]
+ds_10 [label = 'dictionary\nsplit 10:90', shape = plaintext]
+
+train -> {qry ds_90 ds_70 ds_50 ds_30 ds_10}
+
+dict [label = 'dictionary', style = filled, fillcolor = gray]
+comp [label = 'complement', style = filled, fillcolor = gray]
+
+ds_90 -> {dict comp}
+
+}
+")
+```
+
 # Modelling
 
 -   Try indicators for missingness. Missingness may be differentially
@@ -344,7 +450,42 @@ that will be most relevant to their use in the compatibility models.
 # Writing/theory
 
 -   Note relationship to Fellegi & Sunter / probabilistic record linkage
-    (in proposal?)
+    (in proposal?).
+
+## Quantity to be modelled
+
+-   The unit of analysis is a dictionary/query record pair.
+
+-   The logistic regression model is modelling the probability that the
+    dictionary record refers to the same entity as the query record.
+
+    -   That is, the record-pair modelling yields an unconditional
+        probability that does not depend on how that predicted
+        probability will be used (e.g. compared to a threshold).
+
+    -   However, the logic behind the name frequency induced by
+        similarity *does* appear to incorporate a dependence on usage.
+        The frequency is calculated as the sum of the frequncies of the
+        names (in the same block) that have similarity to the query name
+        greater than or equal to the query similarity to the dictionary
+        name being considered. This is based on an implicit *ceteris
+        paribus* usage of similarity: If I were to accept this
+        particular name as indicating an entity match, then logically I
+        should also accept all other names that are at least as similar.
+
+        -   The name frequency induced as equality can be construed as
+            compatible with this definition by interpreting equality as
+            a degenerate similarity relation.
+
+        -   Is this a reasonable argument?
+
+        -   Should this implied comparison across names within block be
+            incorporated somehow in the mathematical formulae?
+
+            -   This feels like it ought to be notated as a conditional
+                probability (i.e. conditional on the dictionary record
+                being accepted as a match) rather than an unconditional
+                probability.
 
 ## Blocking
 
