@@ -480,10 +480,10 @@
     },
     "mgcv": {
       "Package": "mgcv",
-      "Version": "1.8-33",
+      "Version": "1.8-34",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "eb7b6439bc6d812eed2cddba5edc6be3"
+      "Hash": "bd4a6c4b600f58651d60d381b0e9a397"
     },
     "mime": {
       "Package": "mime",
