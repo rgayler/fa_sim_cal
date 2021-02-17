@@ -10,9 +10,11 @@ editor_options:
 ---
 
 ```{r setup}
+# Don't echo the chunk code in these notes
+knitr::opts_chunk$set(include = FALSE)
+
 library(DiagrammeR)
 ```
-
 
 This document is for keeping notes of any points that may be useful for
 later project or manuscript development and which are not covered in the
@@ -237,6 +239,14 @@ that will be most relevant to their use in the compatibility models.
     by aggregation across dictionary records corresponding to each query
     record.
 
+-   However, the query/dictionary record pairs are generated as
+    combinations of a set of queries with a fixed dictionary. The record
+    pairs can't be independently sampled because that wouldn't respect
+    the dictionary. That is, we need to create dictionaries by some
+    sampling process and create a set of queries by some sampling
+    process, and those two sets of records will jointly determine the
+    query/dictionary record pairs that are in-sample.
+
 -   We need some sort of training/testing partition to keep performance
     assessment honest.
 
@@ -268,13 +278,13 @@ that will be most relevant to their use in the compatibility models.
     separate train/test dictionaries implies partitioning the entity
     data records prior to constructing the dictionaries.
 
-    -   The easiest way to partition the records is to literally
-        partition the entity data record into train and test universes.
+    -   The easiest way to partition the records is to partition independently at the record level.
 
-        -   Note that common names will occur in both data sets.
+        -   Note that common names will occur in both data sets (train and test).
 
     -   Partitioning the entity records so that each name type occurred
-        in only one of the train or test data sets would be easy if
+        in only one of the train or test data sets would be the most conservative in terms of separation of the train and test data sets.
+        - This would be easy if
         there was only one name field. However, we have three name
         fields (first, middle, last). Partitioning the data so that all
         the names occurred in only one data set would drastically reduce
@@ -282,18 +292,17 @@ that will be most relevant to their use in the compatibility models.
         names that only occur once (because it is impossible for those
         names to occur in two data sets).
 
-    -   
+    -   Partition the data at independently into
 
-
-```{r sampling_diagram}
+```{r sampling_diagram, echo=FALSE}
 grViz("
 digraph sampling_diagram {
 
-node [shape = circle, fixedsize = true, fontsize = 6]
+node [shape = square, fixedsize = true, fontsize = 6]
 
 total  [label = 'total data set', style = filled, fillcolor = gray]
 
-tt_1  [label = 'train/test\nsplit 1']
+tt_1  [label = 'train/test\nsplit 1', shape = triangle]
 tt_2  [label = 'train/test\nsplit 2', shape = plaintext]
 tt_k  [label = 'train/test\nsplit ', shape = plaintext]
 
@@ -304,14 +313,18 @@ test  [label = 'test\nuniverse', style = filled, fillcolor = gray]
 
 tt_1 -> {train test}
 
-qry   [label = 'queries', style = filled, fillcolor = gray]
-ds_90 [label = 'dictionary\nsplit 90:10']
-ds_70 [label = 'dictionary\nsplit 70:30', shape = plaintext]
-ds_50 [label = 'dictionary\nsplit 50:50', shape = plaintext]
-ds_30 [label = 'dictionary\nsplit 30:70', shape = plaintext]
-ds_10 [label = 'dictionary\nsplit 10:90', shape = plaintext]
+qry_samp [label = 'query\nsampler', shape = triangle]
+ds_90    [label = 'dictionary\nsplit 90:10', shape = triangle]
+ds_70    [label = 'dictionary\nsplit 70:30', shape = plaintext]
+ds_50    [label = 'dictionary\nsplit 50:50', shape = plaintext]
+ds_30    [label = 'dictionary\nsplit 30:70', shape = plaintext]
+ds_10    [label = 'dictionary\nsplit 10:90', shape = plaintext]
 
-train -> {qry ds_90 ds_70 ds_50 ds_30 ds_10}
+train -> {qry_samp ds_90 ds_70 ds_50 ds_30 ds_10}
+
+qry   [label = 'queries', style = filled, fillcolor = gray]
+
+qry_samp -> qry
 
 dict [label = 'dictionary', style = filled, fillcolor = gray]
 comp [label = 'complement', style = filled, fillcolor = gray]
