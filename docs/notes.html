@@ -27,6 +27,10 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<script src="site_libs/viz-1.8.2/viz.js"></script>
+<link href="site_libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+<script src="site_libs/grViz-binding-1.0.6.1/grViz.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -428,12 +432,12 @@ Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></sp
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-01-26
+<strong>Last updated:</strong> 2021-02-19
 </p>
 <p>
 <strong>Checks:</strong>
 <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-2
+7
 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
 0
 </p>
@@ -474,20 +478,102 @@ know the exact version of the code that produced these results.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreee76546b6cfc7b3755f6fa0ebbeb19a981c77e4aatargetblanke76546ba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
 <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/e76546b6cfc7b3755f6fa0ebbeb19a981c77e4aa" target="_blank">e76546b</a>
+<strong>Environment:</strong> empty
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreee76546b6cfc7b3755f6fa0ebbeb19a981c77e4aatargetblanke76546ba" class="panel-collapse collapse">
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global
+environment can affect the analysis in your R Markdown file in unknown ways.
+For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20201104code">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Seed:</strong> <code>set.seed(20201104)</code>
+</a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20201104code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20201104)</code> was run prior to running the code in the R Markdown file.
+Setting a seed ensures that any results that rely on randomness, e.g.
+subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Session information:</strong> recorded
+</a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is
+critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Cache:</strong> none
+</a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident
+that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>File paths:</strong> relative
+</a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project
+makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree815af1ebb85d85305cf6efd60ef55ed943be66c3targetblank815af1ea">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/815af1ebb85d85305cf6efd60ef55ed943be66c3" target="_blank">815af1e</a>
+</a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree815af1ebb85d85305cf6efd60ef55ed943be66c3targetblank815af1ea" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and
 connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/e76546b6cfc7b3755f6fa0ebbeb19a981c77e4aa" target="_blank">e76546b</a>.
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/815af1ebb85d85305cf6efd60ef55ed943be66c3" target="_blank">815af1e</a>.
 See the <em>Past versions</em> tab to see a history of the changes made to the
 R Markdown and HTML files.
 </p>
@@ -505,6 +591,8 @@ Ignored files:
     Ignored:    .Rproj.user/
     Ignored:    .tresorit/
     Ignored:    data/VR_20051125.txt.xz
+    Ignored:    output/blk_char.fst
+    Ignored:    output/ent_blk.fst
     Ignored:    output/ent_cln.fst
     Ignored:    output/ent_raw.fst
     Ignored:    renv/library/
@@ -553,6 +641,91 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/815af1ebb85d85305cf6efd60ef55ed943be66c3/analysis/notes.Rmd" target="_blank">815af1e</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-02-19
+</td>
+<td>
+Add sampling to notes
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/a2cde2d5b9b50d3642903d1568d076c741dab8db/analysis/notes.Rmd" target="_blank">a2cde2d</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-02-17
+</td>
+<td>
+end of day
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/a0936555e849a37dcbdf2ead14f6dd2e22b644b5/analysis/notes.Rmd" target="_blank">a093655</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-02-16
+</td>
+<td>
+end of day
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/0935c13a4028690bb34cafa7c02c3b793c4d5bb8/analysis/notes.Rmd" target="_blank">0935c13</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-02-10
+</td>
+<td>
+end of day
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/0d30c5bdc45b74957e36aec8f0b95ae7080f36c9/docs/notes.html" target="_blank">0d30c5b</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-26
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -825,8 +998,8 @@ analysis notebooks or at risk of getting lost in the notebooks.</p>
 package to control the computational workflow.</li>
 </ul>
 </div>
-<div id="identity-data" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> Identity data</h1>
+<div id="entity-data" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Entity data</h1>
 <ul>
 <li><p>Get a sizeable publicly available data set with personal names
 (NCVR).</p>
@@ -864,10 +1037,12 @@ discriminating attributes in the compatibility model.</li>
 snapshot).</p></li>
 <li><p>Drop objectionable attributes such as race and political
 affiliation.</p></li>
+<li><p>A note about the irregularity of names:
+<a href="https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/" class="uri">https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/</a></p></li>
 </ul>
 </div>
-<div id="identity-data-preparation" class="section level1" number="3">
-<h1><span class="header-section-number">3</span> Identity data preparation</h1>
+<div id="entity-data-preparation" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Entity data preparation</h1>
 <ul>
 <li><p>Apply basic data cleaning to the predictive attributes.</p>
 <ul>
@@ -925,9 +1100,9 @@ within blocks because of families living together.</p></li>
 </ul></li>
 </ul>
 </div>
-<div id="identity-data-characterisation" class="section level1" number="5">
-<h1><span class="header-section-number">5</span> Identity data characterisation</h1>
-<p>These sections are about looking at the properties of the identity data
+<div id="entity-data-characterisation" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Entity data characterisation</h1>
+<p>These sections are about looking at the properties of the entity data
 that will be most relevant to their use in the compatibility models.</p>
 <div id="structure-induced-by-equality" class="section level2" number="5.1">
 <h2><span class="header-section-number">5.1</span> Structure induced by equality</h2>
@@ -1019,8 +1194,183 @@ very wide range).</li>
 </ul>
 </div>
 </div>
-<div id="modelling" class="section level1" number="6">
-<h1><span class="header-section-number">6</span> Modelling</h1>
+<div id="sampling" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> Sampling</h1>
+<ul>
+<li><p>Both modelling and performance evaluation will be based on random
+samples of the entity data, so sort out the sampling first.</p></li>
+<li><p>Modelling is necessarily based on query/dictionary record pairs.
+That is, the record pair is the unit of analysis.</p></li>
+<li><p>Performance assessment of model calibration will also be at the
+record pair level.</p></li>
+<li><p>Performance assessment of overall model performance at identifying
+the correctly matching dictionary record (e.g. AUC or F-score) is at
+the query record level.</p>
+<ul>
+<li>The query-level response is calculated by a computation across
+all the dictionary/query record pairs induced by the query
+record.</li>
+<li>Assessment of query-level performance requires that the query
+records be an appropriately defined random sample of the entity
+data records.</li>
+<li>The query records should be a uniform random sample of the
+entity data records. Because to do otherwise is equivalent to
+assuming that the queries are a systematically biased subset of
+the universe of entities, which is another whole research topic
+which we will not be addressing in this project.</li>
+</ul></li>
+<li><p>The query/dictionary record pairs are generated as combinations of a
+set of queries with a fixed dictionary. The record pairs can’t be
+uniformly sampled from the set of all possible record pairs because
+that wouldn’t respect the dictionary definition.</p>
+<ul>
+<li>We need to create dictionaries by some sampling process; create
+a set of queries by some sampling process; then those two sets
+of records will jointly determine the query/dictionary record
+pairs that are in-sample.</li>
+</ul></li>
+<li><p>We need some sort of training/testing partition to keep performance
+assessment honest.</p></li>
+<li><p>Remember that queries are run against a dictionary, so in principle,
+it would be possible to have separate test/train queries run against
+one fixed dictionary.</p>
+<ul>
+<li><p>I am inclined to think that running training/testing queries
+against the same dictionary is probably OK because in a
+practical application the modelling would be done with respect
+to the dictionary as it existed at some point in time and then
+queries applied against essentially the same dictionary. (Given
+a large dictionary, subsequent queries would update it
+relatively slowly.)</p></li>
+<li><p>On the other hand, I am inclined to think that using separate
+dictionaries for training/test would not cause a problem,
+because the proposed models are not intended to rely on the
+actual names in the dictionary, but on properties of the names
+(like frequency and length), which are likely to be very similar
+for different dictionaries based on random samples of the
+universe of names.</p></li>
+<li><p>On balance, I think I will have different dictionaries for
+train/test because it is probably harmless, probably
+conservative with respect to performance assessment, and
+probably easy to implement.</p></li>
+</ul></li>
+<li><p>Dictionaries are constructed from entity data records, so having
+separate train/test dictionaries implies partitioning the entity
+data records prior to constructing the dictionaries.</p>
+<ul>
+<li><p>The easiest way to partition the records is to partition
+independently at the record level.</p>
+<ul>
+<li>Note that records containing common names will occur in both
+data sets (train and test).</li>
+</ul></li>
+<li><p>Partitioning the entity records so that each name type occurred
+in only one of the train or test data sets would be the most
+conservative in terms of separation of the train and test data
+sets.</p>
+<ul>
+<li>This would be easy if there was only one name field.
+However, we have three name fields (first, middle, last).
+Partitioning the data so that all the names occurred in only
+one data set would drastically reduce the number of records
+able to be used and bias the data towards names that only
+occur once (because it is impossible for those names to
+occur in two data sets).</li>
+</ul></li>
+</ul></li>
+<li><p>Partition the entity data records uniformly and independently into
+training and testing data sets.</p>
+<ul>
+<li>Make the training and testing sets of equal size so that the
+dictionary statistics are similar.</li>
+<li>The construction of all subsamples of the training set will be
+paralleled in the construction of subsamples of the testing set.</li>
+</ul></li>
+<li><p>We will want to repeat the entire analytic process multiple times on
+different samples in order to assess the variability of the results.</p>
+<ul>
+<li><p>Repeat the partitioning into training and test sets for as many
+replicates as are needed.</p></li>
+<li><p>The number of replicates is yet to be determined.</p>
+<ul>
+<li><p>It needs to be large enough to give a reasonable view of
+variability of the results.</p></li>
+<li><p>It needs to be not so large as to be too computationally
+expensive.</p></li>
+</ul></li>
+</ul></li>
+<li><p>The dictionary will be a randomly sampled subset of the test or
+train universe, because it is usual in reality for the dictionary to
+be a subset of the universe of entities.</p></li>
+<li><p>The dictionary sampling will be repeated at a range of sampling
+rates. This will allow us to investigate calibration of the model as
+the fraction of the universe present in the dictionary varies.</p>
+<ul>
+<li><p>It is expected that this can be captured as a change of value of
+the intercept term of the logistic regression.</p></li>
+<li><p>In practice, we usually don’t know the size of the universe
+relative to the dictionary.</p></li>
+<li><p>If this effect is captured as an intercept term it will be
+simple to adjust the model to reflect the <em>assumed</em> size of the
+universe.</p></li>
+</ul></li>
+<li><p>The queries are selected as a random subset of the relevant
+universe.</p>
+<ul>
+<li><p>Use the same queries across all the corresponding dictionaries.</p>
+<ul>
+<li><p>This is marginally less effort than choosing different
+queries per dictionary</p></li>
+<li><p>This should result in the evaluations across dictionaries
+being somewhat more similar than if the queries were chosen
+separately for each dictionary, because the “difficulty” of
+the queries is fixed across dictionaries.</p></li>
+<li><p>The fraction of queries having matches in the dictionary
+will (obviously) vary with the sampling rate that created
+the dictionary.</p></li>
+</ul></li>
+<li><p>Sample some fixed number of queries (yet to be determined)</p>
+<ul>
+<li><p>The number of queries needs to be large enough to reasonably
+cover the blocks in the directory, the range of the
+predictors used in the model, and provide a reasonable
+observations to parameters ratio for estimating the model.</p></li>
+<li><p>The number of queries needs to be not so large as to be
+infeasibly expensive to compute the models.</p></li>
+</ul></li>
+</ul></li>
+</ul>
+<p>The entire sampling process is summarised in the following diagram.</p>
+<div id="htmlwidget-a38284e755db9bcdfd2d" style="width:672px;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a38284e755db9bcdfd2d">{"x":{"diagram":"\ndigraph sampling_diagram {\n\nnode [shape = square, fixedsize = true, fontsize = 6]\n\ntotal  [label = \"total data set\", style = filled, fillcolor = gray]\n\ntt_1  [label = \"train/test\n50:50 splitter 1\", shape = triangle]\ntt_2  [label = \"train/test\n50:50 splitter 2\", shape = plaintext]\ntt_k  [label = \"train/test\n50:50 splitter k\", shape = plaintext]\n\ntotal -> {tt_1 tt_2 tt_k}\n\ntrain [label = \"train\nuniverse\", style = filled, fillcolor = gray]\ntest  [label = \"test\nuniverse\", style = filled, fillcolor = gray]\n\ntt_1 -> {train test}\n\ntrn_qry_samp [label = \"query\nsampler: n_q\", shape = triangle]\ntrn_ds_90    [label = \"dictionary\nsampler: 90%\", shape = triangle]\ntrn_ds_70    [label = \"dictionary\nsampler: 70%\", shape = plaintext]\ntrn_ds_50    [label = \"dictionary\nsampler: 50%\", shape = plaintext]\ntrn_ds_30    [label = \"dictionary\nsampler: 30%\", shape = plaintext]\ntrn_ds_10    [label = \"dictionary\nsampler: 10%\", shape = plaintext]\n\ntrain -> {trn_qry_samp trn_ds_90 trn_ds_70 trn_ds_50 trn_ds_30 trn_ds_10}\n\ntrn_qry   [label = \"train\nqueries\", style = filled, fillcolor = gray]\n\ntrn_qry_samp -> trn_qry\n\ntrn_dict [label = \"train\ndictionary:\n90%\", style = filled, fillcolor = gray]\n\ntrn_ds_90 -> trn_dict\n\ntst_qry_samp [label = \"query\nsampler: n_q\", shape = triangle]\ntst_ds_90    [label = \"dictionary\nsampler: 90%\", shape = triangle]\n\ntest -> {tst_qry_samp tst_ds_90}\n\ntst_qry  [label = \"test\nqueries\", style = filled, fillcolor = gray]\ntst_dict [label = \"test\ndictionary:\n90%\", style = filled, fillcolor = gray]\n\ntst_qry_samp -> tst_qry\ntst_ds_90    -> tst_dict\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<p>The square nodes represent sets of entity data records.</p>
+<p>The triangular nodes represent random sampling processes.</p>
+<p>The text-only nodes represent replicates of random sampling nodes (just
+made less visually obtrusive, for clarity).</p>
+<p>The top data node represents the complete data set of entity data
+records.</p>
+<p>The “train/test 50:50 splitter 1” node randomly partitions the total
+data into two data sets of (approximately) equal size: the “train
+universe” and the “test universe”.</p>
+<p>The “train/test 50:50 splitter” nodes represent the replication of the
+train/test split as many times as are needed.</p>
+<p>The “query sampler: n_q” node randomly samples <span class="math inline">\(n_q\)</span> records from the
+“train universe” to be used as the “train queries” to be run against all
+of the dictionaries sampled from the “train universe”.</p>
+<p>The “dictionary sampler: 90%” node randomly selects 90% of the “train
+universe” records to use as a dictionary.</p>
+<p>The remaining “dictionary sampler” nodes create more dictionaries with
+different selection rates.</p>
+<p>The one query data set is applied to all the corresponding dictionary
+data sets.</p>
+<p>The construction of the query and dictionary data sets from the “test
+universe” exactly parallels the construction from the “train universe”.</p>
+<p>The construction of the data sets under each of the “train/test 50:50
+splitter” nodes exactly parallels the construction under the “train/test
+50:50 splitter 1” node.</p>
+</div>
+<div id="modelling" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> Modelling</h1>
 <ul>
 <li><p>Try indicators for missingness. Missingness may be differentially
 informative across different predictor variables.</p></li>
@@ -1032,10 +1382,15 @@ of similarity just below 1.</p></li>
 <li>Also consider frequency conditional on age and/or sex</li>
 </ul></li>
 <li><p>There are <em>two</em> names in each lookup: dictionary and query.
-Therefore there are also two name frequencies to be considered.
-Consider how to use <em>both</em> frequencies (e.g. min, max, geometric
-mean, …).</p>
+Therefore there are also two name frequencies to be considered.</p>
 <ul>
+<li><p>We are interested in calculating the probability of a correct
+match for each query, so the sought probability is conditional
+on the query. Consequently the conditional probability of a
+correct match should <em>not</em> depend on the frequency of the query
+name.</p></li>
+<li><p>I am not entirely convinced by that argument, so consider how to
+use <em>both</em> frequencies (e.g. min, max, geometric mean, …).</p></li>
 <li><p>Queries may contain names that do not exist in the dictionary,
 so we need to deal with that case.</p></li>
 <li><p>Do we need to apply frequency smoothing, as used in
@@ -1046,12 +1401,22 @@ probabilistic linguistic models?</p></li>
 universe of queries. Consider the impact of this on modelling as the
 fraction of the query universe in the dictionary varies.</p>
 <ul>
+<li><p>Can the sampling fraction be modelled as a prior probability
+(effectively, a change in the intercept term of a logistic
+regression)?</p>
+<ul>
+<li><p>This can be investigated by varying the fraction of
+dictionary records randomly sampled from the universe and
+treating the sampling fraction as a predictor in the model.
+The fitted coefficients for the sampling fraction can be
+compared to what would be expected treating the same
+sampling probabilities as a prior for the logistic
+regression.</p></li>
+<li></li>
+</ul></li>
 <li><p>Consider whether this varies on a per query basis because of
 blocking. That is, is there effectively a separate dictionary
 per blocking value?</p></li>
-<li><p>Can the sampling fraction be modelled as a prior probability
-(effectively, a change in the intercept term of a logistic
-regression)?</p></li>
 <li><p>Consider using the same variable for blocking and as a predictor
 to compare the effect on estimated probability of identity match
 as a function of dictionary fraction.</p>
@@ -1069,11 +1434,35 @@ predictor.</li>
 </ul></li>
 </ul>
 </div>
-<div id="performance-evaluation" class="section level1" number="7">
-<h1><span class="header-section-number">7</span> Performance evaluation</h1>
+<div id="performance-evaluation" class="section level1" number="8">
+<h1><span class="header-section-number">8</span> Performance evaluation</h1>
 <ul>
-<li><p>Partition the records into a dictionary and a set of queries (the
-<span class="math inline">\(Q_U\)</span> set).</p>
+<li><p>Performance evaluation should always be performed on a disjoint set
+of records from those used in estimation of the model.</p>
+<ul>
+<li><p>The obvious (and probably best) way to partition the data is to
+randomly select records. This means that for more frequent
+names, the same name will appear in the fitting and testing
+sets. So, if the model is in some sense “learning” details of
+individual names, this knowledge will be carried over from the
+fitting to testing sets and the performance of the model will be
+overstated.</p></li>
+<li><p>An alternative approach would be to partition the name types (as
+opposed to tokens). This would ensure that the names in the
+fitting and testing sets were completely disjoint, completely
+excluding any possibility of name-specific information being
+carried from fitting to testing.</p>
+<ul>
+<li>This would be easy if there were only one name field, but
+there are three. Partitioning name types in the most obvious
+way and making a 50:50 partition on each name field would
+mean that only 1/8 of records would be in the fitting set
+and 1/8 in the test set. This may make the data sets
+uncomfortably small.</li>
+</ul></li>
+</ul></li>
+<li><p>Partition the entity data records into a dictionary and a set of
+queries (the <span class="math inline">\(Q_U\)</span> set).</p>
 <ul>
 <li>By the (reasonable) assumption that there are no duplicate
 records, each of the <span class="math inline">\(Q_U\)</span> queries will be unmatched in the
@@ -1102,14 +1491,50 @@ wrong blocks. (Is this equivalent to randomly selecting some
 out-of-block query records to run against each dictionary block?)</p></li>
 </ul>
 </div>
-<div id="writingtheory" class="section level1" number="8">
-<h1><span class="header-section-number">8</span> Writing/theory</h1>
+<div id="writingtheory" class="section level1" number="9">
+<h1><span class="header-section-number">9</span> Writing/theory</h1>
 <ul>
 <li>Note relationship to Fellegi &amp; Sunter / probabilistic record linkage
-(in proposal?)</li>
+(in proposal?).</li>
 </ul>
-<div id="blocking-1" class="section level2" number="8.1">
-<h2><span class="header-section-number">8.1</span> Blocking</h2>
+<div id="quantity-to-be-modelled" class="section level2" number="9.1">
+<h2><span class="header-section-number">9.1</span> Quantity to be modelled</h2>
+<ul>
+<li><p>The unit of analysis is a dictionary/query record pair.</p></li>
+<li><p>The logistic regression model is modelling the probability that the
+dictionary record refers to the same entity as the query record.</p>
+<ul>
+<li><p>That is, the record-pair modelling yields an unconditional
+probability that does not depend on how that predicted
+probability will be used (e.g. compared to a threshold).</p></li>
+<li><p>However, the logic behind the name frequency induced by
+similarity <em>does</em> appear to incorporate a dependence on usage.
+The frequency is calculated as the sum of the frequncies of the
+names (in the same block) that have similarity to the query name
+greater than or equal to the query similarity to the dictionary
+name being considered. This is based on an implicit <em>ceteris
+paribus</em> usage of similarity: If I were to accept this
+particular name as indicating an entity match, then logically I
+should also accept all other names that are at least as similar.</p>
+<ul>
+<li><p>The name frequency induced as equality can be construed as
+compatible with this definition by interpreting equality as
+a degenerate similarity relation.</p></li>
+<li><p>Is this a reasonable argument?</p></li>
+<li><p>Should this implied comparison across names within block be
+incorporated somehow in the mathematical formulae?</p>
+<ul>
+<li>This feels like it ought to be notated as a conditional
+probability (i.e. conditional on the dictionary record
+being accepted as a match) rather than an unconditional
+probability.</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<div id="blocking-1" class="section level2" number="9.2">
+<h2><span class="header-section-number">9.2</span> Blocking</h2>
 <ul>
 <li><p>It might be possible to develop (or at least explain) most of the
 maths in terms of blocking.</p></li>
@@ -1168,6 +1593,48 @@ it as using multiple blocking variables.</p>
 the blocking variables not being independent.</li>
 </ul></li>
 </ul>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre><code>R version 4.0.3 (2020-10-10)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 20.10
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.9.0
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.9.0
+
+locale:
+ [1] LC_CTYPE=en_AU.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_AU.UTF-8        LC_COLLATE=en_AU.UTF-8    
+ [5] LC_MONETARY=en_AU.UTF-8    LC_MESSAGES=en_AU.UTF-8   
+ [7] LC_PAPER=en_AU.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_AU.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] DiagrammeR_1.0.6.1 here_1.0.1         workflowr_1.6.2   
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.6         rstudioapi_0.13    whisker_0.4        knitr_1.31        
+ [5] magrittr_2.0.1     R6_2.5.0           rlang_0.4.10       stringr_1.4.0     
+ [9] visNetwork_2.0.9   tools_4.0.3        xfun_0.21          git2r_0.28.0      
+[13] htmltools_0.5.1.1  ellipsis_0.3.1     yaml_2.2.1         digest_0.6.27     
+[17] rprojroot_2.0.2    tibble_3.0.6       lifecycle_1.0.0    bookdown_0.21     
+[21] crayon_1.4.1       RColorBrewer_1.1-2 later_1.1.0.1      htmlwidgets_1.5.3 
+[25] vctrs_0.3.6        promises_1.2.0.1   fs_1.5.0           glue_1.4.2        
+[29] evaluate_0.14      rmarkdown_2.6      stringi_1.5.3      compiler_4.0.3    
+[33] pillar_1.4.7       jsonlite_1.7.2     httpuv_1.5.5       renv_0.12.5       
+[37] pkgconfig_2.0.3   </code></pre>
+</div>
 </div>
 </div>
 
