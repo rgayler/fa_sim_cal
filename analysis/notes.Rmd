@@ -9,9 +9,9 @@ editor_options:
     wrap: 72
 ---
 
-```{r setup}
+```{r setup, echo = FALSE}
 # Don't echo the chunk code in these notes
-knitr::opts_chunk$set(include = FALSE)
+knitr::opts_chunk$set(echo = FALSE)
 
 library(DiagrammeR)
 ```
@@ -231,21 +231,34 @@ that will be most relevant to their use in the compatibility models.
 -   Modelling is necessarily based on query/dictionary record pairs.
     That is, the record pair is the unit of analysis.
 
--   Performance assessment of calibration will also be at the record
-    pair level.
+-   Performance assessment of model calibration will also be at the
+    record pair level.
 
--   Performance assessment of overall model performance (e.g. AUC or
-    F-score) is at the query record level, because these are calculated
-    by aggregation across dictionary records corresponding to each query
-    record.
+-   Performance assessment of overall model performance at identifying
+    the correctly matching dictionary record (e.g. AUC or F-score) is at
+    the query record level.
 
--   However, the query/dictionary record pairs are generated as
-    combinations of a set of queries with a fixed dictionary. The record
-    pairs can't be independently sampled because that wouldn't respect
-    the dictionary. That is, we need to create dictionaries by some
-    sampling process and create a set of queries by some sampling
-    process, and those two sets of records will jointly determine the
-    query/dictionary record pairs that are in-sample.
+    -   The query-level response is calculated by a computation across
+        all the dictionary/query record pairs induced by the query
+        record.
+    -   Assessment of query-level performance requires that the query
+        records be an appropriately defined random sample of the entity
+        data records.
+    -   The query records should be a uniform random sample of the
+        entity data records. Because to do otherwise is equivalent to
+        assuming that the queries are a systematically biased subset of
+        the universe of entities, which is another whole research topic
+        which we will not be addressing in this project.
+
+-   The query/dictionary record pairs are generated as combinations of a
+    set of queries with a fixed dictionary. The record pairs can't be
+    uniformly sampled from the set of all possible record pairs because
+    that wouldn't respect the dictionary definition.
+
+    -   We need to create dictionaries by some sampling process; create
+        a set of queries by some sampling process; then those two sets
+        of records will jointly determine the query/dictionary record
+        pairs that are in-sample.
 
 -   We need some sort of training/testing partition to keep performance
     assessment honest.
@@ -265,9 +278,10 @@ that will be most relevant to their use in the compatibility models.
     -   On the other hand, I am inclined to think that using separate
         dictionaries for training/test would not cause a problem,
         because the proposed models are not intended to rely on the
-        actual names, but properties of the names (like frequency and
-        length), which are likely to be very similar for different
-        dictionaries based on random samples of the universe of names.
+        actual names in the dictionary, but on properties of the names
+        (like frequency and length), which are likely to be very similar
+        for different dictionaries based on random samples of the
+        universe of names.
 
     -   On balance, I think I will have different dictionaries for
         train/test because it is probably harmless, probably
@@ -278,33 +292,105 @@ that will be most relevant to their use in the compatibility models.
     separate train/test dictionaries implies partitioning the entity
     data records prior to constructing the dictionaries.
 
-    -   The easiest way to partition the records is to partition independently at the record level.
+    -   The easiest way to partition the records is to partition
+        independently at the record level.
 
-        -   Note that common names will occur in both data sets (train and test).
+        -   Note that records containing common names will occur in both
+            data sets (train and test).
 
     -   Partitioning the entity records so that each name type occurred
-        in only one of the train or test data sets would be the most conservative in terms of separation of the train and test data sets.
-        - This would be easy if
-        there was only one name field. However, we have three name
-        fields (first, middle, last). Partitioning the data so that all
-        the names occurred in only one data set would drastically reduce
-        the number of records able to be used and bias the data towards
-        names that only occur once (because it is impossible for those
-        names to occur in two data sets).
+        in only one of the train or test data sets would be the most
+        conservative in terms of separation of the train and test data
+        sets.
 
-    -   Partition the data at independently into
+        -   This would be easy if there was only one name field.
+            However, we have three name fields (first, middle, last).
+            Partitioning the data so that all the names occurred in only
+            one data set would drastically reduce the number of records
+            able to be used and bias the data towards names that only
+            occur once (because it is impossible for those names to
+            occur in two data sets).
 
-```{r sampling_diagram, echo=FALSE}
-grViz("
+-   Partition the entity data records uniformly and independently into
+    training and testing data sets.
+
+    -   Make the training and testing sets of equal size so that the
+        dictionary statistics are similar.
+    -   The construction of all subsamples of the training set will be
+        paralleled in the construction of subsamples of the testing set.
+
+-   We will want to repeat the entire analytic process multiple times on
+    different samples in order to assess the variability of the results.
+
+    -   Repeat the partitioning into training and test sets for as many
+        replicates as are needed.
+
+    -   The number of replicates is yet to be determined.
+
+        -   It needs to be large enough to give a reasonable view of
+            variability of the results.
+
+        -   It needs to be not so large as to be too computationally
+            expensive.
+
+-   The dictionary will be a randomly sampled subset of the test or
+    train universe, because it is usual in reality for the dictionary to
+    be a subset of the universe of entities.
+
+-   The dictionary sampling will be repeated at a range of sampling
+    rates. This will allow us to investigate calibration of the model as
+    the fraction of the universe present in the dictionary varies.
+
+    -   It is expected that this can be captured as a change of value of
+        the intercept term of the logistic regression.
+
+    -   In practice, we usually don't know the size of the universe
+        relative to the dictionary.
+
+    -   If this effect is captured as an intercept term it will be
+        simple to adjust the model to reflect the *assumed* size of the
+        universe.
+
+-   The queries are selected as a random subset of the relevant
+    universe.
+
+    -   Use the same queries across all the corresponding dictionaries.
+
+        -   This is marginally less effort than choosing different
+            queries per dictionary
+
+        -   This should result in the evaluations across dictionaries
+            being somewhat more similar than if the queries were chosen
+            separately for each dictionary, because the "difficulty" of
+            the queries is fixed across dictionaries.
+
+        -   The fraction of queries having matches in the dictionary
+            will (obviously) vary with the sampling rate that created
+            the dictionary.
+
+    -   Sample some fixed number of queries (yet to be determined)
+
+        -   The number of queries needs to be large enough to reasonably
+            cover the blocks in the directory, the range of the
+            predictors used in the model, and provide a reasonable
+            observations to parameters ratio for estimating the model.
+
+        -   The number of queries needs to be not so large as to be
+            infeasibly expensive to compute the models.
+
+The entire sampling process is summarised in the following diagram.
+
+```{r sampling_diagram}
+DiagrammeR::grViz("
 digraph sampling_diagram {
 
 node [shape = square, fixedsize = true, fontsize = 6]
 
 total  [label = 'total data set', style = filled, fillcolor = gray]
 
-tt_1  [label = 'train/test\nsplit 1', shape = triangle]
-tt_2  [label = 'train/test\nsplit 2', shape = plaintext]
-tt_k  [label = 'train/test\nsplit ', shape = plaintext]
+tt_1  [label = 'train/test\n50:50 splitter 1', shape = triangle]
+tt_2  [label = 'train/test\n50:50 splitter 2', shape = plaintext]
+tt_k  [label = 'train/test\n50:50 splitter k', shape = plaintext]
 
 total -> {tt_1 tt_2 tt_k}
 
@@ -313,27 +399,73 @@ test  [label = 'test\nuniverse', style = filled, fillcolor = gray]
 
 tt_1 -> {train test}
 
-qry_samp [label = 'query\nsampler', shape = triangle]
-ds_90    [label = 'dictionary\nsplit 90:10', shape = triangle]
-ds_70    [label = 'dictionary\nsplit 70:30', shape = plaintext]
-ds_50    [label = 'dictionary\nsplit 50:50', shape = plaintext]
-ds_30    [label = 'dictionary\nsplit 30:70', shape = plaintext]
-ds_10    [label = 'dictionary\nsplit 10:90', shape = plaintext]
+trn_qry_samp [label = 'query\nsampler: n_q', shape = triangle]
+trn_ds_90    [label = 'dictionary\nsampler: 90%', shape = triangle]
+trn_ds_70    [label = 'dictionary\nsampler: 70%', shape = plaintext]
+trn_ds_50    [label = 'dictionary\nsampler: 50%', shape = plaintext]
+trn_ds_30    [label = 'dictionary\nsampler: 30%', shape = plaintext]
+trn_ds_10    [label = 'dictionary\nsampler: 10%', shape = plaintext]
 
-train -> {qry_samp ds_90 ds_70 ds_50 ds_30 ds_10}
+train -> {trn_qry_samp trn_ds_90 trn_ds_70 trn_ds_50 trn_ds_30 trn_ds_10}
 
-qry   [label = 'queries', style = filled, fillcolor = gray]
+trn_qry   [label = 'train\nqueries', style = filled, fillcolor = gray]
 
-qry_samp -> qry
+trn_qry_samp -> trn_qry
 
-dict [label = 'dictionary', style = filled, fillcolor = gray]
-comp [label = 'complement', style = filled, fillcolor = gray]
+trn_dict [label = 'train\ndictionary:\n90%', style = filled, fillcolor = gray]
 
-ds_90 -> {dict comp}
+trn_ds_90 -> trn_dict
 
+tst_qry_samp [label = 'query\nsampler: n_q', shape = triangle]
+tst_ds_90    [label = 'dictionary\nsampler: 90%', shape = triangle]
+
+test -> {tst_qry_samp tst_ds_90}
+
+tst_qry  [label = 'test\nqueries', style = filled, fillcolor = gray]
+tst_dict [label = 'test\ndictionary:\n90%', style = filled, fillcolor = gray]
+
+tst_qry_samp -> tst_qry
+tst_ds_90    -> tst_dict
 }
 ")
 ```
+
+The square nodes represent sets of entity data records.
+
+The triangular nodes represent random sampling processes.
+
+The text-only nodes represent replicates of random sampling nodes (just
+made less visually obtrusive, for clarity).
+
+The top data node represents the complete data set of entity data
+records.
+
+The "train/test 50:50 splitter 1" node randomly partitions the total
+data into two data sets of (approximately) equal size: the "train
+universe" and the "test universe".
+
+The "train/test 50:50 splitter" nodes represent the replication of the
+train/test split as many times as are needed.
+
+The "query sampler: n_q" node randomly samples $n_q$ records from the
+"train universe" to be used as the "train queries" to be run against all
+of the dictionaries sampled from the "train universe".
+
+The "dictionary sampler: 90%" node randomly selects 90% of the "train
+universe" records to use as a dictionary.
+
+The remaining "dictionary sampler" nodes create more dictionaries with
+different selection rates.
+
+The one query data set is applied to all the corresponding dictionary
+data sets.
+
+The construction of the query and dictionary data sets from the "test
+universe" exactly parallels the construction from the "train universe".
+
+The construction of the data sets under each of the "train/test 50:50
+splitter" nodes exactly parallels the construction under the "train/test
+50:50 splitter 1" node.
 
 # Modelling
 
