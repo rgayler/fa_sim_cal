@@ -20,18 +20,18 @@ This document is for keeping notes of any points that may be useful for
 later project or manuscript development and which are not covered in the
 analysis notebooks or at risk of getting lost in the notebooks.
 
-# Project infrastructure
-
--   Consider using the [targets](https://wlandau.github.io/targets/)
-    package to control the computational workflow.
-
 # Entity data
 
+This section refers to data about the entities to be resolved. I have
+qualified 'data' with 'entity' on the grounds that we might possibly use
+some other data (not directly about entities) in the project (e.g. data
+about the frequencies of names in the population).
+
 -   Get a sizeable publicly available data set with personal names
-    (NCVR).
+    (North Carolina Voter Registration).
 
     -   The focus of the empirical work is on string similarity metrics
-        of names.
+        of names and the frequencies of the names.
 
 -   Use sex and age in addition to personal names so that most records
     are discriminable.
@@ -44,7 +44,8 @@ analysis notebooks or at risk of getting lost in the notebooks.
             discriminability of records. We want records spanning a wide
             range of discriminability.
 
-    -   Age (and possibly sex) will be used as a blocking variable.
+    -   Age (and possibly other variables, such as sex) will be used as
+        blocking variables.
 
         -   Blocking is probably needed to make the project
             computationally tractable.
@@ -59,10 +60,10 @@ analysis notebooks or at risk of getting lost in the notebooks.
     -   As a fallback position, address and phone number can be used as
         discriminating attributes in the compatibility model.
 
--   Get the oldest available data to minimise it's currency (NCVR 2005
-    snapshot).
+-   Get the oldest available data (NCVR 2005 snapshot) to minimise it's
+    currency and privacy risk.
 
--   Drop objectionable attributes such as race and political
+-   Drop objectionable NCVR attributes such as race and political
     affiliation.
 
 -   A note about the irregularity of names:
@@ -79,10 +80,10 @@ analysis notebooks or at risk of getting lost in the notebooks.
 
 -   Only keep records that are ACTIVE and VERIFIED for modelling.
 
-    -   These are likely to have the highest data quality attributes.
+    -   These are likely to have the highest data quality.
 
-    -   These are least likely to have duplicate records (i.e. referring
-        to the same person).
+    -   These are least likely to have duplicate records (i.e. be
+        referring to the same person).
 
 # Blocking
 
@@ -112,8 +113,8 @@ analysis notebooks or at risk of getting lost in the notebooks.
     -   Handling missing *predictor* values in regression-based
         compatibility models is simple.
 
--   Exclude records with missing values on the blocking records from
-    use, so that missing values don't have to be allowed for in
+-   Exclude from use all records with missing values on the blocking
+    records, so that missing values don't have to be allowed for in
     blocking.
 
 -   Try to choose blocking variables with a small proportion of missing
@@ -124,14 +125,14 @@ analysis notebooks or at risk of getting lost in the notebooks.
 -   Blocking can induce changes in the distributions of names.
 
     -   Blocking on sex (in combination with other variables) will
-        definitely give more homogeneity of first names within blocks
+        definitely give more within-block homogeneity of first names
         because of gendered names.
 
     -   Blocking on age will give more homogeneity of first names within
         blocks because of name popularity varying over time.
 
-    -   Blocking on county *may* give more homogeneity of last names
-        within blocks because of families living together.
+    -   Blocking on registration county *may* give more homogeneity of
+        last names within blocks because of families living together.
 
 # Entity data characterisation
 
@@ -229,7 +230,7 @@ that will be most relevant to their use in the compatibility models.
     samples of the entity data, so sort out the sampling first.
 
 -   Modelling is necessarily based on query/dictionary record pairs.
-    That is, the record pair is the unit of analysis.
+    That is, the record pair is the unit of analysis for modelling.
 
 -   Performance assessment of model calibration will also be at the
     record pair level.
@@ -247,8 +248,9 @@ that will be most relevant to their use in the compatibility models.
     -   The query records should be a uniform random sample of the
         entity data records. Because to do otherwise is equivalent to
         assuming that the queries are a systematically biased subset of
-        the universe of entities, which is another whole research topic
-        which we will not be addressing in this project.
+        the universe of entities, which is entirely plausible but is
+        another whole research topic which we will not be addressing in
+        this project.
 
 -   The query/dictionary record pairs are generated as combinations of a
     set of queries with a fixed dictionary. The record pairs can't be
@@ -264,8 +266,8 @@ that will be most relevant to their use in the compatibility models.
     assessment honest.
 
 -   Remember that queries are run against a dictionary, so in principle,
-    it would be possible to have separate test/train queries run against
-    one fixed dictionary.
+    it would be possible to have separate train and test queries run
+    against the same fixed dictionary.
 
     -   I am inclined to think that running training/testing queries
         against the same dictionary is probably OK because in a
@@ -283,7 +285,7 @@ that will be most relevant to their use in the compatibility models.
         for different dictionaries based on random samples of the
         universe of names.
 
-    -   On balance, I think I will have different dictionaries for
+    -   On balance, I think I will use different dictionaries for
         train/test because it is probably harmless, probably
         conservative with respect to performance assessment, and
         probably easy to implement.
@@ -316,8 +318,9 @@ that will be most relevant to their use in the compatibility models.
 
     -   Make the training and testing sets of equal size so that the
         dictionary statistics are similar.
-    -   The construction of all subsamples of the training set will be
-        paralleled in the construction of subsamples of the testing set.
+    -   The construction of subsamples (queries, and dictionaries of
+        different sizes) of the training set will be paralleled in the
+        construction of subsamples of the testing set.
 
 -   We will want to repeat the entire analytic process multiple times on
     different samples in order to assess the variability of the results.
@@ -435,7 +438,7 @@ The square nodes represent sets of entity data records.
 The triangular nodes represent random sampling processes.
 
 The text-only nodes represent replicates of random sampling nodes (just
-made less visually obtrusive, for clarity).
+made less visually intrusive, for clarity).
 
 The top data node represents the complete data set of entity data
 records.
@@ -444,15 +447,15 @@ The "train/test 50:50 splitter 1" node randomly partitions the total
 data into two data sets of (approximately) equal size: the "train
 universe" and the "test universe".
 
-The "train/test 50:50 splitter" nodes represent the replication of the
-train/test split as many times as are needed.
+The other "train/test 50:50 splitter" nodes represent the replication of
+the train/test split as many times as are needed.
 
-The "query sampler: n_q" node randomly samples $n_q$ records from the
-"train universe" to be used as the "train queries" to be run against all
-of the dictionaries sampled from the "train universe".
+The left-most "query sampler: n_q" node randomly samples $n_q$ records
+from the "train universe" to be used as the "train queries" to be run
+against all of the dictionaries sampled from the "train universe".
 
-The "dictionary sampler: 90%" node randomly selects 90% of the "train
-universe" records to use as a dictionary.
+The left-most "dictionary sampler: 90%" node randomly selects 90% of the
+"train universe" records to use as a dictionary.
 
 The remaining "dictionary sampler" nodes create more dictionaries with
 different selection rates.
@@ -463,9 +466,9 @@ data sets.
 The construction of the query and dictionary data sets from the "test
 universe" exactly parallels the construction from the "train universe".
 
-The construction of the data sets under each of the "train/test 50:50
-splitter" nodes exactly parallels the construction under the "train/test
-50:50 splitter 1" node.
+The construction of the data sets under each of the other "train/test
+50:50 splitter" nodes exactly parallels the construction under the
+"train/test 50:50 splitter 1" node.
 
 # Modelling
 
@@ -476,7 +479,8 @@ splitter" nodes exactly parallels the construction under the "train/test
     string equality is not necessarily continuous with the compatibility
     of similarity just below 1.
 
--   Try name frequency as an interactive predictor variable.
+-   Try name frequency as an interactive predictor variable (interacting
+    with similarity).
 
     -   Also consider frequency conditional on age and/or sex
 
@@ -516,61 +520,39 @@ splitter" nodes exactly parallels the construction under the "train/test
             sampling probabilities as a prior for the logistic
             regression.
 
-        -   
+        -   Consider whether this varies on a per query basis because of
+            blocking. That is, is there effectively a separate
+            dictionary per blocking value?
 
-    -   Consider whether this varies on a per query basis because of
-        blocking. That is, is there effectively a separate dictionary
-        per blocking value?
-
-    -   Consider using the same variable for blocking and as a predictor
-        to compare the effect on estimated probability of identity match
-        as a function of dictionary fraction.
-
-        -   It is feasible to use the "same" variables for blocking and
-            as predictors. The blocks are based on the values of the
-            dictionary records and selected by the value in the query
-            record. The predictor variables are properties of record
-            *pairs* - so there will still be within-block variance of
-            the predictor even when there is no within-block variance of
-            properties of the query record. That is, they're not the
-            "same" variable when they are used for blocking and as a
-            predictor.
+    -   It is feasible to use the "same" variables for blocking and as
+        (components of) predictors. The blocks are based on the values
+        of the dictionary records and selected by the value in the query
+        record. The predictor variables are properties of record
+        *pairs* - so there will still be within-block variance of the
+        predictor even when there is no within-block variance of
+        properties of the query record. That is, they're not the "same"
+        variable when they are used for blocking and as a predictor.
 
 # Performance evaluation
 
 -   Performance evaluation should always be performed on a disjoint set
     of records from those used in estimation of the model.
 
-    -   The obvious (and probably best) way to partition the data is to
-        randomly select records. This means that for more frequent
-        names, the same name will appear in the fitting and testing
-        sets. So, if the model is in some sense "learning" details of
-        individual names, this knowledge will be carried over from the
-        fitting to testing sets and the performance of the model will be
-        overstated.
+-   The query records are a random sample from the relevant universe of
+    entity records.
 
-    -   An alternative approach would be to partition the name types (as
-        opposed to tokens). This would ensure that the names in the
-        fitting and testing sets were completely disjoint, completely
-        excluding any possibility of name-specific information being
-        carried from fitting to testing.
+-   The dictionary records are an independent random sample from the
+    same universe of entity records.
 
-        -   This would be easy if there were only one name field, but
-            there are three. Partitioning name types in the most obvious
-            way and making a 50:50 partition on each name field would
-            mean that only 1/8 of records would be in the fitting set
-            and 1/8 in the test set. This may make the data sets
-            uncomfortably small.
-
--   Partition the entity data records into a dictionary and a set of
-    queries (the $Q_U$ set).
+-   Consequently some of the query records will be absent from
+    dictionary (the $Q_U$ set of query records).
 
     -   By the (reasonable) assumption that there are no duplicate
         records, each of the $Q_U$ queries will be unmatched in the
         dictionary.
 
--   Select a subset of the dictionary records to use as the $Q_M$ query
-    set.
+-   The rest of the query records will be present in the dictionary (the
+    $Q_M$ set of query records).
 
     -   By the (reasonable) assumption that there are no duplicate
         records, each of the $Q_M$ queries will have exactly one
@@ -588,14 +570,15 @@ splitter" nodes exactly parallels the construction under the "train/test
     transcription/typographical variation we may need to consider
     artificially corrupting some of the queries.
 
--   Consider assigning some of the dictionary records to randomly chosen
-    wrong blocks. (Is this equivalent to randomly selecting some
-    out-of-block query records to run against each dictionary block?)
+    -   Consider assigning some of the dictionary records to randomly
+        chosen wrong blocks. (Is this equivalent to randomly selecting
+        some out-of-block query records to run against each dictionary
+        block?)
 
 # Writing/theory
 
--   Note relationship to Fellegi & Sunter / probabilistic record linkage
-    (in proposal?).
+-   Note the relationship to Fellegi & Sunter / probabilistic record
+    linkage (in proposal?).
 
 ## Quantity to be modelled
 
@@ -610,7 +593,7 @@ splitter" nodes exactly parallels the construction under the "train/test
 
     -   However, the logic behind the name frequency induced by
         similarity *does* appear to incorporate a dependence on usage.
-        The frequency is calculated as the sum of the frequncies of the
+        The frequency is calculated as the sum of the frequencies of the
         names (in the same block) that have similarity to the query name
         greater than or equal to the query similarity to the dictionary
         name being considered. This is based on an implicit *ceteris
@@ -642,8 +625,8 @@ splitter" nodes exactly parallels the construction under the "train/test
     identical to the universe.
 
 -   In the absence of any other information, the probability of each
-    dictionary element being an identity match with the query is \$ 1 /
-    \|E\| \$.
+    dictionary element being an identity match with the query is
+    $1 / |E|$.
 
 -   If the dictionary $D$ is a proper subset of $E$ it can be thought of
     as a (not very informative) block. That is, a block can be thought
@@ -651,7 +634,7 @@ splitter" nodes exactly parallels the construction under the "train/test
 
 -   If $D$ is a random subset of $E$, and in the absence of any other
     information, the probability of each dictionary element being an
-    identity match with the query is $(|D| / |E|) / |D| = 1 / |E|$.
+    identity match with the query is $(|D| / |E|) / |D| = 1 / |E|$
 
 -   $|D|$ is the block size of the dictionary construed as a block. In
     the absence of any information to discriminate between records in
@@ -693,7 +676,7 @@ splitter" nodes exactly parallels the construction under the "train/test
     cardinalities.
 
 -   If there were multiple independent blockings, the probability of
-    correct match of each record in the intersection of the blocks id
+    correct match of each record in the intersection of the blocks is
     the product of the probabilities associated with each block. This is
     equivalent to naive Bayes and shows the equivalence between
     construing the problem as a multivariate regression and construing
