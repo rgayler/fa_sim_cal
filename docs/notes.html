@@ -14,13 +14,22 @@
 
 <title>Notes</title>
 
-<script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
@@ -54,11 +63,6 @@ div.section {
     </style>
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -71,32 +75,6 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
 
 
 
@@ -107,10 +85,6 @@ h6 {
   max-width: 940px;
   margin-left: auto;
   margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
 }
 img {
   max-width:100%;
@@ -127,40 +101,13 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+pre code {
+  padding: 0;
+}
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 51px;
-  padding-bottom: 40px;
-}
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
 .dropdown-submenu {
   position: relative;
 }
@@ -188,7 +135,7 @@ body {
   margin-right: -10px;
 }
 .dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
+  border-left-color: #adb5bd;
 }
 .dropdown-submenu.pull-left {
   float: none;
@@ -200,7 +147,7 @@ body {
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -211,10 +158,23 @@ $(document).ready(function () {
   var menuAnchor = $('a[href="' + href + '"]');
 
   // mark it active
-  menuAnchor.parent().addClass('active');
+  menuAnchor.tab('show');
 
   // if it's got a parent navbar menu mark it active as well
   menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
 
@@ -226,7 +186,6 @@ $(document).ready(function () {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
-  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -352,13 +311,13 @@ div.tocify {
 
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row-fluid">
-<div class="col-xs-12 col-sm-4 col-md-3">
+<div class="row">
+<div class="col-sm-12 col-md-4 col-lg-3">
 <div id="TOC" class="tocify">
 </div>
 </div>
 
-<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+<div class="toc-content col-sm-12 col-md-8 col-lg-9">
 
 
 
@@ -398,7 +357,7 @@ div.tocify {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
@@ -432,7 +391,7 @@ Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></sp
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-02-19
+<strong>Last updated:</strong> 2021-02-26
 </p>
 <p>
 <strong>Checks:</strong>
@@ -560,20 +519,20 @@ makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree815af1ebb85d85305cf6efd60ef55ed943be66c3targetblank815af1ea">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreefbd4d7963fff6196c1e570065343cc508feffe49targetblankfbd4d79a">
 <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/815af1ebb85d85305cf6efd60ef55ed943be66c3" target="_blank">815af1e</a>
+<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/fbd4d7963fff6196c1e570065343cc508feffe49" target="_blank">fbd4d79</a>
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree815af1ebb85d85305cf6efd60ef55ed943be66c3targetblank815af1ea" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreefbd4d7963fff6196c1e570065343cc508feffe49targetblankfbd4d79a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and
 connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/815af1ebb85d85305cf6efd60ef55ed943be66c3" target="_blank">815af1e</a>.
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/fbd4d7963fff6196c1e570065343cc508feffe49" target="_blank">fbd4d79</a>.
 See the <em>Past versions</em> tab to see a history of the changes made to the
 R Markdown and HTML files.
 </p>
@@ -597,6 +556,12 @@ Ignored files:
     Ignored:    output/ent_raw.fst
     Ignored:    renv/library/
     Ignored:    renv/staging/
+
+Untracked files:
+    Untracked:  analysis/workflow.Rmd
+
+Unstaged changes:
+    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -641,6 +606,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/fbd4d7963fff6196c1e570065343cc508feffe49/analysis/notes.Rmd" target="_blank">fbd4d79</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-02-26
+</td>
+<td>
+Add sampling section to notes.Rmd
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/c421bb599ffcd6f165500dc7161a13e45235bf39/docs/notes.html" target="_blank">c421bb5</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-02-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -991,21 +990,18 @@ wflow_publish(c(“analysis/index.Rmd”, “analysis/notes.Rmd”))
 <p>This document is for keeping notes of any points that may be useful for
 later project or manuscript development and which are not covered in the
 analysis notebooks or at risk of getting lost in the notebooks.</p>
-<div id="project-infrastructure" class="section level1" number="1">
-<h1><span class="header-section-number">1</span> Project infrastructure</h1>
-<ul>
-<li>Consider using the <a href="https://wlandau.github.io/targets/">targets</a>
-package to control the computational workflow.</li>
-</ul>
-</div>
-<div id="entity-data" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> Entity data</h1>
+<div id="entity-data" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Entity data</h1>
+<p>This section refers to data about the entities to be resolved. I have
+qualified ‘data’ with ‘entity’ on the grounds that we might possibly use
+some other data (not directly about entities) in the project (e.g. data
+about the frequencies of names in the population).</p>
 <ul>
 <li><p>Get a sizeable publicly available data set with personal names
-(NCVR).</p>
+(North Carolina Voter Registration).</p>
 <ul>
 <li>The focus of the empirical work is on string similarity metrics
-of names.</li>
+of names and the frequencies of the names.</li>
 </ul></li>
 <li><p>Use sex and age in addition to personal names so that most records
 are discriminable.</p>
@@ -1018,7 +1014,8 @@ whether the methods proposed here assist in quantifying the
 discriminability of records. We want records spanning a wide
 range of discriminability.</li>
 </ul></li>
-<li><p>Age (and possibly sex) will be used as a blocking variable.</p>
+<li><p>Age (and possibly other variables, such as sex) will be used as
+blocking variables.</p>
 <ul>
 <li>Blocking is probably needed to make the project
 computationally tractable.</li>
@@ -1033,16 +1030,16 @@ checking identity in otherwise nondiscriminable records.</p>
 <li>As a fallback position, address and phone number can be used as
 discriminating attributes in the compatibility model.</li>
 </ul></li>
-<li><p>Get the oldest available data to minimise it’s currency (NCVR 2005
-snapshot).</p></li>
-<li><p>Drop objectionable attributes such as race and political
+<li><p>Get the oldest available data (NCVR 2005 snapshot) to minimise it’s
+currency and privacy risk.</p></li>
+<li><p>Drop objectionable NCVR attributes such as race and political
 affiliation.</p></li>
 <li><p>A note about the irregularity of names:
 <a href="https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/" class="uri">https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/</a></p></li>
 </ul>
 </div>
-<div id="entity-data-preparation" class="section level1" number="3">
-<h1><span class="header-section-number">3</span> Entity data preparation</h1>
+<div id="entity-data-preparation" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Entity data preparation</h1>
 <ul>
 <li><p>Apply basic data cleaning to the predictive attributes.</p>
 <ul>
@@ -1052,14 +1049,14 @@ first.</p></li>
 </ul></li>
 <li><p>Only keep records that are ACTIVE and VERIFIED for modelling.</p>
 <ul>
-<li><p>These are likely to have the highest data quality attributes.</p></li>
-<li><p>These are least likely to have duplicate records (i.e. referring
-to the same person).</p></li>
+<li><p>These are likely to have the highest data quality.</p></li>
+<li><p>These are least likely to have duplicate records (i.e. be
+referring to the same person).</p></li>
 </ul></li>
 </ul>
 </div>
-<div id="blocking" class="section level1" number="4">
-<h1><span class="header-section-number">4</span> Blocking</h1>
+<div id="blocking" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Blocking</h1>
 <ul>
 <li><p>Use blocking to reduce the number of comparisons, to keep the
 computational cost feasible.</p></li>
@@ -1082,8 +1079,8 @@ project.</li>
 <li>Handling missing <em>predictor</em> values in regression-based
 compatibility models is simple.</li>
 </ul></li>
-<li><p>Exclude records with missing values on the blocking records from
-use, so that missing values don’t have to be allowed for in
+<li><p>Exclude from use all records with missing values on the blocking
+records, so that missing values don’t have to be allowed for in
 blocking.</p></li>
 <li><p>Try to choose blocking variables with a small proportion of missing
 values, so as to minimise systematic bias due to their exclusion.</p></li>
@@ -1091,21 +1088,21 @@ values, so as to minimise systematic bias due to their exclusion.</p></li>
 <li><p>Blocking can induce changes in the distributions of names.</p>
 <ul>
 <li><p>Blocking on sex (in combination with other variables) will
-definitely give more homogeneity of first names within blocks
+definitely give more within-block homogeneity of first names
 because of gendered names.</p></li>
 <li><p>Blocking on age will give more homogeneity of first names within
 blocks because of name popularity varying over time.</p></li>
-<li><p>Blocking on county <em>may</em> give more homogeneity of last names
-within blocks because of families living together.</p></li>
+<li><p>Blocking on registration county <em>may</em> give more homogeneity of
+last names within blocks because of families living together.</p></li>
 </ul></li>
 </ul>
 </div>
-<div id="entity-data-characterisation" class="section level1" number="5">
-<h1><span class="header-section-number">5</span> Entity data characterisation</h1>
+<div id="entity-data-characterisation" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Entity data characterisation</h1>
 <p>These sections are about looking at the properties of the entity data
 that will be most relevant to their use in the compatibility models.</p>
-<div id="structure-induced-by-equality" class="section level2" number="5.1">
-<h2><span class="header-section-number">5.1</span> Structure induced by equality</h2>
+<div id="structure-induced-by-equality" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> Structure induced by equality</h2>
 <ul>
 <li><p>Prior work on name frequency has (implicitly) only considered
 equality of names. That is two name tokens are either absolutely
@@ -1149,8 +1146,8 @@ the purposes of the query.)</li>
 </ul></li>
 </ul>
 </div>
-<div id="structure-induced-by-similarity" class="section level2" number="5.2">
-<h2><span class="header-section-number">5.2</span> Structure induced by similarity</h2>
+<div id="structure-induced-by-similarity" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> Structure induced by similarity</h2>
 <ul>
 <li><p>The similarity version of name frequency is an extension of the
 equality version. It counts the number of dictionary records in the
@@ -1194,13 +1191,13 @@ very wide range).</li>
 </ul>
 </div>
 </div>
-<div id="sampling" class="section level1" number="6">
-<h1><span class="header-section-number">6</span> Sampling</h1>
+<div id="sampling" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Sampling</h1>
 <ul>
 <li><p>Both modelling and performance evaluation will be based on random
 samples of the entity data, so sort out the sampling first.</p></li>
 <li><p>Modelling is necessarily based on query/dictionary record pairs.
-That is, the record pair is the unit of analysis.</p></li>
+That is, the record pair is the unit of analysis for modelling.</p></li>
 <li><p>Performance assessment of model calibration will also be at the
 record pair level.</p></li>
 <li><p>Performance assessment of overall model performance at identifying
@@ -1216,8 +1213,9 @@ data records.</li>
 <li>The query records should be a uniform random sample of the
 entity data records. Because to do otherwise is equivalent to
 assuming that the queries are a systematically biased subset of
-the universe of entities, which is another whole research topic
-which we will not be addressing in this project.</li>
+the universe of entities, which is entirely plausible but is
+another whole research topic which we will not be addressing in
+this project.</li>
 </ul></li>
 <li><p>The query/dictionary record pairs are generated as combinations of a
 set of queries with a fixed dictionary. The record pairs can’t be
@@ -1232,8 +1230,8 @@ pairs that are in-sample.</li>
 <li><p>We need some sort of training/testing partition to keep performance
 assessment honest.</p></li>
 <li><p>Remember that queries are run against a dictionary, so in principle,
-it would be possible to have separate test/train queries run against
-one fixed dictionary.</p>
+it would be possible to have separate train and test queries run
+against the same fixed dictionary.</p>
 <ul>
 <li><p>I am inclined to think that running training/testing queries
 against the same dictionary is probably OK because in a
@@ -1249,7 +1247,7 @@ actual names in the dictionary, but on properties of the names
 (like frequency and length), which are likely to be very similar
 for different dictionaries based on random samples of the
 universe of names.</p></li>
-<li><p>On balance, I think I will have different dictionaries for
+<li><p>On balance, I think I will use different dictionaries for
 train/test because it is probably harmless, probably
 conservative with respect to performance assessment, and
 probably easy to implement.</p></li>
@@ -1283,8 +1281,9 @@ training and testing data sets.</p>
 <ul>
 <li>Make the training and testing sets of equal size so that the
 dictionary statistics are similar.</li>
-<li>The construction of all subsamples of the training set will be
-paralleled in the construction of subsamples of the testing set.</li>
+<li>The construction of subsamples (queries, and dictionaries of
+different sizes) of the training set will be paralleled in the
+construction of subsamples of the testing set.</li>
 </ul></li>
 <li><p>We will want to repeat the entire analytic process multiple times on
 different samples in order to assess the variability of the results.</p>
@@ -1346,38 +1345,39 @@ infeasibly expensive to compute the models.</p></li>
 <p>The square nodes represent sets of entity data records.</p>
 <p>The triangular nodes represent random sampling processes.</p>
 <p>The text-only nodes represent replicates of random sampling nodes (just
-made less visually obtrusive, for clarity).</p>
+made less visually intrusive, for clarity).</p>
 <p>The top data node represents the complete data set of entity data
 records.</p>
 <p>The “train/test 50:50 splitter 1” node randomly partitions the total
 data into two data sets of (approximately) equal size: the “train
 universe” and the “test universe”.</p>
-<p>The “train/test 50:50 splitter” nodes represent the replication of the
-train/test split as many times as are needed.</p>
-<p>The “query sampler: n_q” node randomly samples <span class="math inline">\(n_q\)</span> records from the
-“train universe” to be used as the “train queries” to be run against all
-of the dictionaries sampled from the “train universe”.</p>
-<p>The “dictionary sampler: 90%” node randomly selects 90% of the “train
-universe” records to use as a dictionary.</p>
+<p>The other “train/test 50:50 splitter” nodes represent the replication of
+the train/test split as many times as are needed.</p>
+<p>The left-most “query sampler: n_q” node randomly samples <span class="math inline">\(n_q\)</span> records
+from the “train universe” to be used as the “train queries” to be run
+against all of the dictionaries sampled from the “train universe”.</p>
+<p>The left-most “dictionary sampler: 90%” node randomly selects 90% of the
+“train universe” records to use as a dictionary.</p>
 <p>The remaining “dictionary sampler” nodes create more dictionaries with
 different selection rates.</p>
 <p>The one query data set is applied to all the corresponding dictionary
 data sets.</p>
 <p>The construction of the query and dictionary data sets from the “test
 universe” exactly parallels the construction from the “train universe”.</p>
-<p>The construction of the data sets under each of the “train/test 50:50
-splitter” nodes exactly parallels the construction under the “train/test
-50:50 splitter 1” node.</p>
+<p>The construction of the data sets under each of the other “train/test
+50:50 splitter” nodes exactly parallels the construction under the
+“train/test 50:50 splitter 1” node.</p>
 </div>
-<div id="modelling" class="section level1" number="7">
-<h1><span class="header-section-number">7</span> Modelling</h1>
+<div id="modelling" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> Modelling</h1>
 <ul>
 <li><p>Try indicators for missingness. Missingness may be differentially
 informative across different predictor variables.</p></li>
 <li><p>Try indicators for similarity == 1. The compatibility of exact
 string equality is not necessarily continuous with the compatibility
 of similarity just below 1.</p></li>
-<li><p>Try name frequency as an interactive predictor variable.</p>
+<li><p>Try name frequency as an interactive predictor variable (interacting
+with similarity).</p>
 <ul>
 <li>Also consider frequency conditional on age and/or sex</li>
 </ul></li>
@@ -1412,64 +1412,39 @@ The fitted coefficients for the sampling fraction can be
 compared to what would be expected treating the same
 sampling probabilities as a prior for the logistic
 regression.</p></li>
-<li></li>
-</ul></li>
 <li><p>Consider whether this varies on a per query basis because of
-blocking. That is, is there effectively a separate dictionary
-per blocking value?</p></li>
-<li><p>Consider using the same variable for blocking and as a predictor
-to compare the effect on estimated probability of identity match
-as a function of dictionary fraction.</p>
-<ul>
-<li>It is feasible to use the “same” variables for blocking and
-as predictors. The blocks are based on the values of the
-dictionary records and selected by the value in the query
-record. The predictor variables are properties of record
-<em>pairs</em> - so there will still be within-block variance of
-the predictor even when there is no within-block variance of
-properties of the query record. That is, they’re not the
-“same” variable when they are used for blocking and as a
-predictor.</li>
+blocking. That is, is there effectively a separate
+dictionary per blocking value?</p></li>
 </ul></li>
+<li><p>It is feasible to use the “same” variables for blocking and as
+(components of) predictors. The blocks are based on the values
+of the dictionary records and selected by the value in the query
+record. The predictor variables are properties of record
+<em>pairs</em> - so there will still be within-block variance of the
+predictor even when there is no within-block variance of
+properties of the query record. That is, they’re not the “same”
+variable when they are used for blocking and as a predictor.</p></li>
 </ul></li>
 </ul>
 </div>
-<div id="performance-evaluation" class="section level1" number="8">
-<h1><span class="header-section-number">8</span> Performance evaluation</h1>
+<div id="performance-evaluation" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> Performance evaluation</h1>
 <ul>
 <li><p>Performance evaluation should always be performed on a disjoint set
-of records from those used in estimation of the model.</p>
-<ul>
-<li><p>The obvious (and probably best) way to partition the data is to
-randomly select records. This means that for more frequent
-names, the same name will appear in the fitting and testing
-sets. So, if the model is in some sense “learning” details of
-individual names, this knowledge will be carried over from the
-fitting to testing sets and the performance of the model will be
-overstated.</p></li>
-<li><p>An alternative approach would be to partition the name types (as
-opposed to tokens). This would ensure that the names in the
-fitting and testing sets were completely disjoint, completely
-excluding any possibility of name-specific information being
-carried from fitting to testing.</p>
-<ul>
-<li>This would be easy if there were only one name field, but
-there are three. Partitioning name types in the most obvious
-way and making a 50:50 partition on each name field would
-mean that only 1/8 of records would be in the fitting set
-and 1/8 in the test set. This may make the data sets
-uncomfortably small.</li>
-</ul></li>
-</ul></li>
-<li><p>Partition the entity data records into a dictionary and a set of
-queries (the <span class="math inline">\(Q_U\)</span> set).</p>
+of records from those used in estimation of the model.</p></li>
+<li><p>The query records are a random sample from the relevant universe of
+entity records.</p></li>
+<li><p>The dictionary records are an independent random sample from the
+same universe of entity records.</p></li>
+<li><p>Consequently some of the query records will be absent from
+dictionary (the <span class="math inline">\(Q_U\)</span> set of query records).</p>
 <ul>
 <li>By the (reasonable) assumption that there are no duplicate
 records, each of the <span class="math inline">\(Q_U\)</span> queries will be unmatched in the
 dictionary.</li>
 </ul></li>
-<li><p>Select a subset of the dictionary records to use as the <span class="math inline">\(Q_M\)</span> query
-set.</p>
+<li><p>The rest of the query records will be present in the dictionary (the
+<span class="math inline">\(Q_M\)</span> set of query records).</p>
 <ul>
 <li>By the (reasonable) assumption that there are no duplicate
 records, each of the <span class="math inline">\(Q_M\)</span> queries will have exactly one
@@ -1485,20 +1460,23 @@ records are discriminable.</li>
 </ul></li>
 <li><p>If we are interested in the performance with respect to
 transcription/typographical variation we may need to consider
-artificially corrupting some of the queries.</p></li>
-<li><p>Consider assigning some of the dictionary records to randomly chosen
-wrong blocks. (Is this equivalent to randomly selecting some
-out-of-block query records to run against each dictionary block?)</p></li>
+artificially corrupting some of the queries.</p>
+<ul>
+<li>Consider assigning some of the dictionary records to randomly
+chosen wrong blocks. (Is this equivalent to randomly selecting
+some out-of-block query records to run against each dictionary
+block?)</li>
+</ul></li>
 </ul>
 </div>
-<div id="writingtheory" class="section level1" number="9">
-<h1><span class="header-section-number">9</span> Writing/theory</h1>
+<div id="writingtheory" class="section level1" number="8">
+<h1><span class="header-section-number">8</span> Writing/theory</h1>
 <ul>
-<li>Note relationship to Fellegi &amp; Sunter / probabilistic record linkage
-(in proposal?).</li>
+<li>Note the relationship to Fellegi &amp; Sunter / probabilistic record
+linkage (in proposal?).</li>
 </ul>
-<div id="quantity-to-be-modelled" class="section level2" number="9.1">
-<h2><span class="header-section-number">9.1</span> Quantity to be modelled</h2>
+<div id="quantity-to-be-modelled" class="section level2" number="8.1">
+<h2><span class="header-section-number">8.1</span> Quantity to be modelled</h2>
 <ul>
 <li><p>The unit of analysis is a dictionary/query record pair.</p></li>
 <li><p>The logistic regression model is modelling the probability that the
@@ -1509,7 +1487,7 @@ probability that does not depend on how that predicted
 probability will be used (e.g. compared to a threshold).</p></li>
 <li><p>However, the logic behind the name frequency induced by
 similarity <em>does</em> appear to incorporate a dependence on usage.
-The frequency is calculated as the sum of the frequncies of the
+The frequency is calculated as the sum of the frequencies of the
 names (in the same block) that have similarity to the query name
 greater than or equal to the query similarity to the dictionary
 name being considered. This is based on an implicit <em>ceteris
@@ -1533,8 +1511,8 @@ probability.</li>
 </ul></li>
 </ul>
 </div>
-<div id="blocking-1" class="section level2" number="9.2">
-<h2><span class="header-section-number">9.2</span> Blocking</h2>
+<div id="blocking-1" class="section level2" number="8.2">
+<h2><span class="header-section-number">8.2</span> Blocking</h2>
 <ul>
 <li><p>It might be possible to develop (or at least explain) most of the
 maths in terms of blocking.</p></li>
@@ -1542,14 +1520,14 @@ maths in terms of blocking.</p></li>
 uniformly at random from that universe and the dictionary being
 identical to the universe.</p></li>
 <li><p>In the absence of any other information, the probability of each
-dictionary element being an identity match with the query is $ 1 /
-|E| $.</p></li>
+dictionary element being an identity match with the query is
+<span class="math inline">\(1 / |E|\)</span>.</p></li>
 <li><p>If the dictionary <span class="math inline">\(D\)</span> is a proper subset of <span class="math inline">\(E\)</span> it can be thought of
 as a (not very informative) block. That is, a block can be thought
 of as the dictionary induced by the query record.</p></li>
 <li><p>If <span class="math inline">\(D\)</span> is a random subset of <span class="math inline">\(E\)</span>, and in the absence of any other
 information, the probability of each dictionary element being an
-identity match with the query is <span class="math inline">\((|D| / |E|) / |D| = 1 / |E|\)</span>.</p></li>
+identity match with the query is <span class="math inline">\((|D| / |E|) / |D| = 1 / |E|\)</span></p></li>
 <li><p><span class="math inline">\(|D|\)</span> is the block size of the dictionary construed as a block. In
 the absence of any information to discriminate between records in
 the block, the larger the block, the lower the probability the any
@@ -1583,7 +1561,7 @@ predictors of the probabilities. If the blocks are defined in terms
 of equality of names then the name frequencies determine the block
 cardinalities.</p></li>
 <li><p>If there were multiple independent blockings, the probability of
-correct match of each record in the intersection of the blocks id
+correct match of each record in the intersection of the blocks is
 the product of the probabilities associated with each block. This is
 equivalent to naive Bayes and shows the equivalence between
 construing the problem as a multivariate regression and construing
@@ -1624,16 +1602,16 @@ other attached packages:
 [1] DiagrammeR_1.0.6.1 here_1.0.1         workflowr_1.6.2   
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.6         rstudioapi_0.13    whisker_0.4        knitr_1.31        
- [5] magrittr_2.0.1     R6_2.5.0           rlang_0.4.10       stringr_1.4.0     
- [9] visNetwork_2.0.9   tools_4.0.3        xfun_0.21          git2r_0.28.0      
-[13] htmltools_0.5.1.1  ellipsis_0.3.1     yaml_2.2.1         digest_0.6.27     
-[17] rprojroot_2.0.2    tibble_3.0.6       lifecycle_1.0.0    bookdown_0.21     
-[21] crayon_1.4.1       RColorBrewer_1.1-2 later_1.1.0.1      htmlwidgets_1.5.3 
-[25] vctrs_0.3.6        promises_1.2.0.1   fs_1.5.0           glue_1.4.2        
-[29] evaluate_0.14      rmarkdown_2.6      stringi_1.5.3      compiler_4.0.3    
-[33] pillar_1.4.7       jsonlite_1.7.2     httpuv_1.5.5       renv_0.12.5       
-[37] pkgconfig_2.0.3   </code></pre>
+ [1] Rcpp_1.0.6         pillar_1.5.0       compiler_4.0.3     later_1.1.0.1     
+ [5] RColorBrewer_1.1-2 git2r_0.28.0       tools_4.0.3        digest_0.6.27     
+ [9] jsonlite_1.7.2     evaluate_0.14      lifecycle_1.0.0    tibble_3.1.0      
+[13] pkgconfig_2.0.3    rlang_0.4.10       rstudioapi_0.13    yaml_2.2.1        
+[17] xfun_0.21          stringr_1.4.0      knitr_1.31         fs_1.5.0          
+[21] vctrs_0.3.6        htmlwidgets_1.5.3  rprojroot_2.0.2    glue_1.4.2        
+[25] R6_2.5.0           fansi_0.4.2        rmarkdown_2.7      bookdown_0.21     
+[29] magrittr_2.0.1     whisker_0.4        promises_1.2.0.1   ellipsis_0.3.1    
+[33] htmltools_0.5.1.1  renv_0.13.0        httpuv_1.5.5       utf8_1.1.4        
+[37] stringi_1.5.3      visNetwork_2.0.9   crayon_1.4.1      </code></pre>
 </div>
 </div>
 </div>
@@ -1681,7 +1659,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
+    $(this).parent().toggleClass('nav-tabs-open');
   });
 });
 </script>
