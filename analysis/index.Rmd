@@ -6,7 +6,7 @@ site: workflowr::wflow_site
 #     toc: false
 output:
   bookdown::html_document2:
-    toc: false
+    toc: true
 editor_options:
   chunk_output_type: console
   markdown: 
@@ -23,7 +23,7 @@ If you are using `workflowr` to publish the research website it will
 also be rendered online to GitHub Pages.
 
 This page acts as a table of contents for the website. There are links
-to the webpages generated from the analysis notebooks and to the
+to the web pages generated from the analysis notebooks and to the
 rendered versions of manuscripts/documents/presentations.
 
 ------------------------------------------------------------------------
@@ -37,6 +37,22 @@ This notebook explains the central ideas behind the project.
 This notebook is for keeping notes of any points that may be useful for
 later project or manuscript development and which are not covered in the
 analysis notebooks or at risk of getting lost in the notebooks.
+
+## [Workflow](workflow.html) {.unnumbered}
+
+This project uses the [`targets`](https://wlandau.github.io/targets/)
+and [`workflowr`](https://github.com/jdblischak/workflowr) packages for
+managing the workflow of the project (making sure that the dependencies
+between computational steps are satisfied). When this work was started
+there were no easily found examples of using `targets` and `workflowr`
+together. This notebook contains notes on the proposed workflow for
+using `targets` and `workflowr`.
+
+------------------------------------------------------------------------
+
+# Manuscripts {.unnumbered}
+
+Links to rendered manuscripts and presentations will go here.
 
 ------------------------------------------------------------------------
 
@@ -81,7 +97,8 @@ Examine the distributions of potential blocking variables.
 
 ### [02-1 Characterise blocking variables](02-1_char_block_vars.html) {.unnumbered}
 
-Characterise the potential blocking variables and combinations of variables.
+Characterise the potential blocking variables and combinations of
+variables.
 
 ### [02-2 Make blocking variables](02-2_mk_block_vars.html) {.unnumbered}
 
@@ -114,7 +131,3 @@ frequency.
 ## 06 Compatibility models {.unnumbered}
 
 Estimate multivariate compatibility models.
-
-------------------------------------------------------------------------
-
-# Manuscripts {.unnumbered}

@@ -1,0 +1,116 @@
+---
+title: "Workflow"
+author: "Ross Gayler"
+# date: "2021-02-26"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, echo = FALSE}
+# Don't echo the chunk code in these notes
+knitr::opts_chunk$set(echo = FALSE)
+
+library(DiagrammeR)
+```
+
+This project uses the [`targets`](https://wlandau.github.io/targets/)
+and [`workflowr`](https://github.com/jdblischak/workflowr) packages for
+managing the workflow of the project (making sure that the dependencies
+between computational steps are satisfied). When this work was started
+there were no easily found examples of using `targets` and `workflowr`
+together. This notebook contains notes on the proposed workflow for
+using `targets` and `workflowr`.
+
+# Proposed workflow
+
+-   The proposed workflow needs to support my preferences for how to
+    organise a project. In particular, a computational research project
+    necessarily involves many design choices for the computational
+    details. It is my strong preference that the *reasoning* behind
+    these design choices (which may be supported by empirical work) is
+    documented as part of the project.
+
+-   The total workflow of the project has multiple components:
+
+    -   **core** - This is the workflow that generates the primary
+        computational outputs (data sets, tables, plots, etc.) of the
+        project. None of the outputs of this workflow include manual
+        interpretation. The transformations are purely mechanical and
+        can be repeated automatically.
+    -   **publications** - These are documents (manuscripts,
+        presentations, etc.) that interpret the results of the core for
+        some audience. These should be construed as the prinicpal
+        outputs of the core but they are treated separately because they
+        necessarily involve interpretation which cannot be automated.
+        The computation which generates the publications can be
+        automated, but it can't automatically update the interpretations
+        in the publications.
+    -   **meta** - These are computations and interpretations that are
+        *about* the core, but not required by the core.
+
+====
+
+The entire sampling process is summarised in the following diagram.
+
+```{r sampling_diagram}
+DiagrammeR::grViz("
+digraph sampling_diagram {
+
+node [shape = square, fixedsize = true, fontsize = 6]
+
+total  [label = 'total data set', style = filled, fillcolor = gray]
+
+tt_1  [label = 'train/test\n50:50 splitter 1', shape = triangle]
+tt_2  [label = 'train/test\n50:50 splitter 2', shape = plaintext]
+tt_k  [label = 'train/test\n50:50 splitter k', shape = plaintext]
+
+total -> {tt_1 tt_2 tt_k}
+
+train [label = 'train\nuniverse', style = filled, fillcolor = gray]
+test  [label = 'test\nuniverse', style = filled, fillcolor = gray]
+
+tt_1 -> {train test}
+
+trn_qry_samp [label = 'query\nsampler: n_q', shape = triangle]
+trn_ds_90    [label = 'dictionary\nsampler: 90%', shape = triangle]
+trn_ds_70    [label = 'dictionary\nsampler: 70%', shape = plaintext]
+trn_ds_50    [label = 'dictionary\nsampler: 50%', shape = plaintext]
+trn_ds_30    [label = 'dictionary\nsampler: 30%', shape = plaintext]
+trn_ds_10    [label = 'dictionary\nsampler: 10%', shape = plaintext]
+
+train -> {trn_qry_samp trn_ds_90 trn_ds_70 trn_ds_50 trn_ds_30 trn_ds_10}
+
+trn_qry   [label = 'train\nqueries', style = filled, fillcolor = gray]
+
+trn_qry_samp -> trn_qry
+
+trn_dict [label = 'train\ndictionary:\n90%', style = filled, fillcolor = gray]
+
+trn_ds_90 -> trn_dict
+
+tst_qry_samp [label = 'query\nsampler: n_q', shape = triangle]
+tst_ds_90    [label = 'dictionary\nsampler: 90%', shape = triangle]
+
+test -> {tst_qry_samp tst_ds_90}
+
+tst_qry  [label = 'test\nqueries', style = filled, fillcolor = gray]
+tst_dict [label = 'test\ndictionary:\n90%', style = filled, fillcolor = gray]
+
+tst_qry_samp -> tst_qry
+tst_ds_90    -> tst_dict
+}
+")
+```
+
+# Resources
+
+-   Consider using the [targets](https://wlandau.github.io/targets/)
+    package to control the computational workflow.
+
+    -   GitHub issue about using {targets} and {workflowr} together:
+        <https://github.com/jdblischak/workflowr/issues/238>
+    -   GitHub repo using {targets} and {rticles} together:
+        <https://github.com/b-rodrigues/covid_pred>
