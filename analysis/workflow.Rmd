@@ -24,14 +24,46 @@ there were no easily found examples of using `targets` and `workflowr`
 together. This notebook contains notes on the proposed workflow for
 using `targets` and `workflowr`.
 
+# Assumptions
+
+These points reflect my (possibly faulty) understanding of `targets` and
+`workflowr`. If I am wrong here I hope that somebody will see this and
+let me know, rather than me having to find out the hard way.
+
+-   `targets` and `workflowr` both work by tracking some set of entities
+    and the computational dependencies between them. When any of the
+    tracked entities changes the packages calculate the minimal set of
+    downstream dependencies that need to be recomputed to bring all the
+    entities into a consistent state of being up to date.
+
+-   `targets`
+
+    -   Tracks data objects (including files) and functions.
+
+    -   The focus is on the data transformation by the computational
+        pipeline (rather than human generated text in reports).
+
+        -   Although reports can be rendered, they appear to be treated
+            as optional final steps like generating a plot, rather than
+            as a core concern.
+
+    -   Knows about high-performance computing and can run computations
+        in parallel.
+        
+* `workflowr`
+  * Only tracks Rmd notebook files and the corresponding rendered output files (https://github.com/ropensci/tarchetypes/issues/23#issuecomment-749118599)
+    * `workflowr::wflow_build()` tracks modification dates of Rmd files and the corresponding rendered output files
+    * `workflowr::wflow_publish()` tracks git status of Rmd files and the corresponding rendered output files
+    *
+
 # Proposed workflow
 
 -   The proposed workflow needs to support my preferences for how to
     organise a project. In particular, a computational research project
     necessarily involves many design choices for the computational
     details. It is my strong preference that the *reasoning* behind
-    these design choices (which may be supported by empirical work) is
-    documented as part of the project.
+    these design choices (which *may* involve additional empirical work
+    to support the reasoning) is documented as part of the project.
 
 -   The total workflow of the project has multiple components:
 
@@ -42,7 +74,7 @@ using `targets` and `workflowr`.
         can be repeated automatically.
     -   **publications** - These are documents (manuscripts,
         presentations, etc.) that interpret the results of the core for
-        some audience. These should be construed as the prinicpal
+        some audience. These should be construed as the principal
         outputs of the core but they are treated separately because they
         necessarily involve interpretation which cannot be automated.
         The computation which generates the publications can be
@@ -104,6 +136,82 @@ tst_ds_90    -> tst_dict
 }
 ")
 ```
+
+# Open questions
+
+These are not immediately relevant to how I think the current project
+will pan out, but I could easily imagine them being relevant in other
+projects.
+
+These questions arise because of my earlier assumption that `targets`
+and `workflowr` are focused on creating a current status of the project
+that is computationally consistent (up to date). Consequently, I have
+assumed that the current status of the project is directly accessible,
+but prior consistent states of the project are not directly (and
+therefore not easily) accessible from within the project. The questions
+below relate to use-cases where we would want current and prior states
+of the project to be simultaneously and directly available.
+
+These questions are based on the assumption that it's advantageous to
+have the *entire* computational process managed by `targets` or
+`workflowr` to ensure that everything is in a consistent state. That is,
+I am trying to avoid having any computational processes that are not
+managed by `targets` or `workflowr`.
+
+I suspect that [`tarchetypes`](https://github.com/ropensci/tarchetypes)
+and branching may be relevant to these questions.
+
+## Accumulating historical/indexed states
+
+Imagine a computational pipeline that ingests some data and reports on
+it. The current output reports reflect the current input data.
+
+Now imagine that the input data is regularly updated. Whenever the input
+data is updated the output reports would also be updated so that the
+previous output no longer exists in the pipeline environment. However,
+in that use-case it is generally required that all the generated reports
+continue to be available.
+
+The results could be accumulated outside the computational pipeline but
+that would appear to mean that part of the computational process is not
+visible to and managed by `targets` or `workflowr`.
+
+-   So, is there a reasonable way in `targets` or `workflowr` to
+    accumulate an arbitrary number of analyses/results from the same
+    pipeline?
+
+-   As a related question, would that support regenerating *all* the
+    reports if the pipeline functions were updated (e.g. a bug was
+    fixed)?
+
+-   Related to the previous question: Would it be possible to accumulate
+    reports corresponding to different definitions of the pipeline
+    functions (e.g. applying different modelling techniques to the
+    data)?
+
+The last question makes clear that referring to "historical" is somewhat
+misleading. It would more generally be thought of as (potentially
+multidimensional) indexing across data sets and pipeline definitions.
+
+This might be easier to do if it was conceptualised as a point in time
+computation with the indexing variable(s) used as a grouping variable(s)
+in one input data set. However, that point in time view would require
+recomputing all the outputs when the input is updated, even though
+recomputing the previous outputs is unnecessary.
+
+## Comparing historical/indexed states
+
+The previous questions dealt with the case where the outputs are just
+accumulated. Now consider the case where outputs for different index
+values are combined computationally inside the pipeline managed by
+`targets` or `workflowr`. This might be used to look at how output
+values change over time or over changes in the pipeline definition.
+
+-   Is there a reasonable way in `targets` or `workflowr` to accumulate
+    an arbitrary number of analyses/results, indexed by data sets and/or
+    pipeline definitions, from the same pipeline such that indexed
+    results can be computational combined in later steps of the same
+    pipeline?
 
 # Resources
 
