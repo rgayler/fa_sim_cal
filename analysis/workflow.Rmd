@@ -104,6 +104,36 @@ let me know, rather than me having to find out the hard way.
             so I will use `workflowr` to handle the building and
             publication of a project website.
 
+-   Design states and design reasoning
+
+    -   The design state of the computational pipeline (loosely defined)
+        reflects the *current* best beliefs. That is, any previous
+        states were believed to be flawed in some way and the current
+        design state is believed to be better.
+
+    -   While the system is being modified from the prior design state
+        to the current design state it is transiently broken and there
+        is no need for that broken state to be preserved and easily
+        accessible later.
+
+    -   Prior design states are not interesting (because they are
+        believed to be worse than the current design state) so there is
+        no need for prior design states to be preserved and easily
+        accessible later.
+
+    -   The reasoning behind the current design state is important and
+        must be preserved and immediately accessible.
+
+    -   The reasoning behind the current design state *may* involve
+        reference to prior design states and prior design reasoning.
+        Where these references are needed they are inclluded directly in
+        the design reasoning for the current design state and are
+        preserved and immediately accessible.
+
+        -   Thes design reasoning consists of manually constructed text,
+            possibly supported by specific analyses of data derived from
+            the computational pipeline.
+
 # Proposed workflow
 
 -   The proposed workflow needs to support my preferences for how to
@@ -129,43 +159,35 @@ let me know, rather than me having to find out the hard way.
         automated, but it can't automatically update the interpretations
         in the publications.
     -   **meta** - These are computations and interpretations that are
-        *about* the core, but not required by the core.
+        *about* the core, but not required by the core. This where the
+        design reasoning lives.
+
+-   The core is implemented as a standard `targets` computational
+    pipeline.
+
+-   The publications are implemented as extensions to the core pipeline.
+
+    -   There may be computational steps to generate data objects needed
+        specifically for publications (e.g. plots and tables).
+    -   It is recommended that computation in Rmd documents is
+        minimised.
+    -   The publications are plain Rmd documents (not `workflowr`
+        notebooks).
+    -   The publication-specific data objects and the rendering of the
+        Rmd documents are managed by `targets`.
+        
+- The meta components are implemented as short chains hanging off the core pipeline.   
+    -   There may be computational steps to generate data objects needed
+        specifically for meta documents.
+    -   However, there is less pressure to minimise computation in the Rmd documents.
+    -   The meta publications are `workflowr` Rmd notebooks.
+    -   The meta-specific data objects and the rendering of the
+        Rmd documents are managed by `targets`.
+    - The meta documents are rendered to a `workflowr` website.
+    - The `workflowr` website also has links to the rendered publications.
+
 
 ====
-
-Having thought some more about it overnight, I think mentioning
-"history" in my earlier comments is misleading. I don't need a copy of
-everything I have ever done (it's not like a financial transaction audit
-trail). Rather, I need a record of the reasoning behind the current
-design of the computational core pipeline, where:
-
--   The design of the computational core pipeline and the reasoning
-    supporting that design are potentially revised over the lifetime of
-    the project.
-
--   The current design and it's supporting reasoning are assumed to be
-    my best current beliefs and improvements over any previous design
-    and supporting reasoning.
-
--   Consequently, I don't need easy and immediate access to the prior
-    designs and the prior supporting reasoning. git archaeology is fine
-    if I ever need access to those earlier versions of the pipeline and
-    design reasoning.
-
--   Some aspects of the current design may have been decided much
-    earlier in the lifetime of the project.
-
--   Decisions about the design and supporting reasoning for the design
-    are based (at least partly) on analyses of data available in the
-    computational core pipeline.
-
--   I want the ability to run any of those design support analyses
-    currently even if they relate to decisions that were taken long ago
-    in the lifetime of the project.
-
-I think I can support all that with {targets} primarily being used to
-manage the computational core pipeline, and {workflowr} Rmd notebooks
-hanging off the pipeline as side-branches.
 
 The entire sampling process is summarised in the following diagram.
 
