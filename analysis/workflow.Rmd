@@ -38,6 +38,8 @@ let me know, rather than me having to find out the hard way.
 
 -   `targets`
 
+    -   Supports a computational-pipeline-centric style of analysis
+
     -   Tracks data objects (including files) and functions.
 
     -   The focus is on the data transformation by the computational
@@ -49,12 +51,58 @@ let me know, rather than me having to find out the hard way.
 
     -   Knows about high-performance computing and can run computations
         in parallel.
-        
-* `workflowr`
-  * Only tracks Rmd notebook files and the corresponding rendered output files (https://github.com/ropensci/tarchetypes/issues/23#issuecomment-749118599)
-    * `workflowr::wflow_build()` tracks modification dates of Rmd files and the corresponding rendered output files
-    * `workflowr::wflow_publish()` tracks git status of Rmd files and the corresponding rendered output files
-    *
+
+-   `workflowr`
+
+    -   Supports a notebook-centric style of analysis
+
+    -   Only tracks Rmd notebook files and the corresponding rendered
+        output files
+        (<https://github.com/ropensci/tarchetypes/issues/23#issuecomment-749118599>)
+
+        -   `workflowr::wflow_build()` tracks modification dates of Rmd
+            files and the corresponding rendered output files
+        -   `workflowr::wflow_publish()` tracks git status of Rmd files
+            and the corresponding rendered output files
+        -   The computational consistency aspect are really only about
+            the consistency between the notebook Rmd files and their
+            rendered counterparts
+
+    -   The computational reproducibility aspect is restricted to
+        ensuring that random number seeds are set appropriately, that
+        each notebook is executed in a clean environment, and that the
+        package versions are recorded
+
+    -   Automatic building of a website for the rendered notebooks
+
+    -   Publication of website integrated with git
+
+    -   Automatic publication of website served by GitHub Pages
+
+-   Comparison
+
+    -   `targets` provides more general and fine-grained control of
+        computational pipeline
+
+        -   Rendering of Rmd documents can be treated as just another
+            step in a `targets` computational pipeline
+        -   I would prefer to have computational dependency tracking
+            handled by one package rather than splitting responsibility
+            across multiple packages
+        -   If I am going to use only one package to handle
+            computational dependency tracking then I think it has to be
+            `targets`
+
+    -   If I use `targets` to manage computational dependency tracking,
+        what extra capabilities does `workflowr` provide?
+
+        -   Automatic generation of a website mof rendered notebooks
+        -   Automatic publication of the website via GitHub pages
+            (provided you use GitHub as the git remote repository).
+        -   I want this project to be publicly accessible and I don't
+            want the trouble of having to manually generate a website,
+            so I will use `workflowr` to handle the building and
+            publication of a project website.
 
 # Proposed workflow
 
@@ -84,6 +132,40 @@ let me know, rather than me having to find out the hard way.
         *about* the core, but not required by the core.
 
 ====
+
+Having thought some more about it overnight, I think mentioning
+"history" in my earlier comments is misleading. I don't need a copy of
+everything I have ever done (it's not like a financial transaction audit
+trail). Rather, I need a record of the reasoning behind the current
+design of the computational core pipeline, where:
+
+-   The design of the computational core pipeline and the reasoning
+    supporting that design are potentially revised over the lifetime of
+    the project.
+
+-   The current design and it's supporting reasoning are assumed to be
+    my best current beliefs and improvements over any previous design
+    and supporting reasoning.
+
+-   Consequently, I don't need easy and immediate access to the prior
+    designs and the prior supporting reasoning. git archaeology is fine
+    if I ever need access to those earlier versions of the pipeline and
+    design reasoning.
+
+-   Some aspects of the current design may have been decided much
+    earlier in the lifetime of the project.
+
+-   Decisions about the design and supporting reasoning for the design
+    are based (at least partly) on analyses of data available in the
+    computational core pipeline.
+
+-   I want the ability to run any of those design support analyses
+    currently even if they relate to decisions that were taken long ago
+    in the lifetime of the project.
+
+I think I can support all that with {targets} primarily being used to
+manage the computational core pipeline, and {workflowr} Rmd notebooks
+hanging off the pipeline as side-branches.
 
 The entire sampling process is summarised in the following diagram.
 
