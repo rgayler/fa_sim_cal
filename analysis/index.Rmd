@@ -38,7 +38,7 @@ This notebook is for keeping notes of any points that may be useful for
 later project or manuscript development and which are not covered in the
 analysis notebooks or at risk of getting lost in the notebooks.
 
-## [Workflow](workflow.html) {.unnumbered}
+## [Workflow management](workflow.html) {.unnumbered}
 
 This project uses the [`targets`](https://wlandau.github.io/targets/)
 and [`workflowr`](https://github.com/jdblischak/workflowr) packages for

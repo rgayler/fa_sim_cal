@@ -1,5 +1,5 @@
 ---
-title: "Workflow"
+title: "Workflow management"
 author: "Ross Gayler"
 # date: "2021-02-26"
 output: workflowr::wflow_html
@@ -175,71 +175,182 @@ let me know, rather than me having to find out the hard way.
         notebooks).
     -   The publication-specific data objects and the rendering of the
         Rmd documents are managed by `targets`.
-        
-- The meta components are implemented as short chains hanging off the core pipeline.   
+
+-   The meta components are implemented as short chains hanging off the
+    core pipeline.
+
     -   There may be computational steps to generate data objects needed
         specifically for meta documents.
-    -   However, there is less pressure to minimise computation in the Rmd documents.
+    -   However, there is less pressure to minimise computation in the
+        Rmd documents.
     -   The meta publications are `workflowr` Rmd notebooks.
-    -   The meta-specific data objects and the rendering of the
-        Rmd documents are managed by `targets`.
-    - The meta documents are rendered to a `workflowr` website.
-    - The `workflowr` website also has links to the rendered publications.
+    -   The meta-specific data objects and the rendering of the Rmd
+        documents are managed by `targets`.
+    -   The meta documents are rendered to a `workflowr` website.
+    -   The `workflowr` website also has links to the rendered
+        publications.
 
+An example is summarised in the following diagram.
 
-====
-
-The entire sampling process is summarised in the following diagram.
-
-```{r sampling_diagram}
+```{r workflow_diagram, fig.asp = 1.4}
 DiagrammeR::grViz("
-digraph sampling_diagram {
+digraph workflow_diagram {
 
-node [shape = square, fixedsize = true, fontsize = 6]
+node [fixedsize = true, fontsize = 6, style = filled]
 
-total  [label = 'total data set', style = filled, fillcolor = gray]
+### CORE
+subgraph cluster_core {
+  rank = same
 
-tt_1  [label = 'train/test\n50:50 splitter 1', shape = triangle]
-tt_2  [label = 'train/test\n50:50 splitter 2', shape = plaintext]
-tt_k  [label = 'train/test\n50:50 splitter k', shape = plaintext]
+  node [fillcolor = red]
 
-total -> {tt_1 tt_2 tt_k}
+  # data object nodes
+  node [shape = circle]
+  d_c1 [label = 'core\ndata 1']
+  d_c2 [label = 'core\ndata 2']
+  d_c3 [label = 'core\ndata 3']
 
-train [label = 'train\nuniverse', style = filled, fillcolor = gray]
-test  [label = 'test\nuniverse', style = filled, fillcolor = gray]
+  # function nodes
+  node [shape = triangle]
+  f_c1 [label = 'core\nfunction 1']
+  f_c2 [label = 'core\nfunction 2']
 
-tt_1 -> {train test}
+  d_c1 -> f_c1 -> d_c2 -> f_c2 -> d_c3
+}
 
-trn_qry_samp [label = 'query\nsampler: n_q', shape = triangle]
-trn_ds_90    [label = 'dictionary\nsampler: 90%', shape = triangle]
-trn_ds_70    [label = 'dictionary\nsampler: 70%', shape = plaintext]
-trn_ds_50    [label = 'dictionary\nsampler: 50%', shape = plaintext]
-trn_ds_30    [label = 'dictionary\nsampler: 30%', shape = plaintext]
-trn_ds_10    [label = 'dictionary\nsampler: 10%', shape = plaintext]
+### PUBLICATIONS
+subgraph cluster_pubs {
 
-train -> {trn_qry_samp trn_ds_90 trn_ds_70 trn_ds_50 trn_ds_30 trn_ds_10}
+  node [fillcolor = green]
 
-trn_qry   [label = 'train\nqueries', style = filled, fillcolor = gray]
+  # function nodes
+  node [shape = triangle]
+  f_p1_1 [label = 'publication 1\nfunction 1']
+  f_p2_1 [label = 'publication 2\nfunction 1']
+  
+  # data object nodes
+  node [shape = circle]
+  d_p1_1 [label = 'publication 1\ndata 1']
+  d_p2_1 [label = 'publication 2\ndata 1']
 
-trn_qry_samp -> trn_qry
+  # plain Rmarkdown files
+  node [shape = doublecircle]
+  rmd_p1 [label = 'publication 1\nplain Rmd']
+  rmd_p2 [label = 'publication 2\nplain Rmd']
 
-trn_dict [label = 'train\ndictionary:\n90%', style = filled, fillcolor = gray]
+  # rendered Rmarkdown files
+  node [shape = hexagon]
+  rend_p1 [label = 'rendered\npublication 1']
+  rend_p2 [label = 'rendered\npublication 2']
 
-trn_ds_90 -> trn_dict
+  d_c3 -> f_p1_1 -> d_p1_1; {d_p1_1 rmd_p1} -> rend_p1
+  d_c3 -> f_p2_1 -> d_p2_1; {d_p2_1 rmd_p2} -> rend_p2
+}
 
-tst_qry_samp [label = 'query\nsampler: n_q', shape = triangle]
-tst_ds_90    [label = 'dictionary\nsampler: 90%', shape = triangle]
+### META
+subgraph cluster_meta {
 
-test -> {tst_qry_samp tst_ds_90}
+  node [fillcolor = gold]
 
-tst_qry  [label = 'test\nqueries', style = filled, fillcolor = gray]
-tst_dict [label = 'test\ndictionary:\n90%', style = filled, fillcolor = gray]
+  # function nodes
+  node [shape = triangle]
+  f_m1_1 [label = 'meta 1\nfunction 1']
+  f_m2_1 [label = 'meta 2\nfunction 1']
+  
+  # data object nodes
+  node [shape = circle]
+  d_m1_1 [label = 'meta 1\ndata 1']
+  d_m2_1 [label = 'meta 2\ndata 1']
 
-tst_qry_samp -> tst_qry
-tst_ds_90    -> tst_dict
+  # workflowr Rmarkdown files
+  node [shape = doublecircle]
+  rmd_m1 [label = 'meta 1\nworkflowr Rmd']
+  rmd_m2 [label = 'meta 2\nworkflowr Rmd']
+
+  # rendered workflowr Rmarkdown files
+  node [shape = hexagon]
+  rend_m1 [label = 'rendered\nworkflowr meta 1']
+  rend_m2 [label = 'rendered\nworkflowr meta 2']
+
+  d_c1 -> f_m1_1 -> d_m1_1; {d_m1_1 rmd_m1} -> rend_m1
+  d_c2 -> f_m2_1 -> d_m2_1; {d_m2_1 rmd_m2} -> rend_m2
+
+
+  ### WEBSITE
+  subgraph cluster_web {
+
+    node [fillcolor = gold3]
+
+    # workflowr Rmarkdown files
+    node [shape = doublecircle]
+    rmd_index [label = 'workflowr\nindex Rmd']
+  
+    # rendered workflowr Rmarkdown files
+    node [shape = hexagon]
+    rend_index [label = 'rendered\nworkflowr index']
+
+    rmd_index -> rend_index
+}
+}
+
+{rend_m1 rend_m2 rend_p1 rend_p2} -> rend_index
+
 }
 ")
 ```
+
+The arrows represent data flows (dependencies). These dependencies allow
+`targets` to work out what is out of date and therefore requiring
+re-execution conditional on any of the tracked entities being modified.
+
+The circles represent data objects (R objects and files).
+
+The double circles represent Rmarkdown files. `targets` treats them like
+any other data object, but I have distinguished them in this diagram.
+
+The triangles represent functions that generate or transform data.
+
+The hexagons represent rendered Rmarkdown files.
+
+The red nodes represent the **core** pipeline. Data is ingested and
+repeatedly transformed by functions.
+
+The green nodes represent the **publication** workflow. There can be
+multiple publications derived from the core.
+
+A publication may apply functions to core data to generate summaries for
+inclusion in the publication (e.g. plots, tables).
+
+The text of the publication is in the plain Rmarkdown file.
+
+The publication Rmarkdown file and the data it depends on are knitted to
+generate the rendered publication.
+
+The gold nodes represent the **meta** publication workflow. The two dark
+gold nodes are a special case of the meta publication workflow.
+
+A meta publication typically applies functions to some core data to
+generate summaries which inform the design reasoning for the next set of
+functions in the core pipeline. (Other patterns are possible, taking
+data from multiple core data objects, or even no data at all.)
+
+The gold double circle nodes represent `workflowr` Rmarkdown files.
+These contain the text of the reasoning behind the design decisions.
+
+The `workflowr` Rmarkdown file and the data it depends on are knitted
+to generate the rendered meta publication recording the reasoning behind
+some design decisions.
+
+There can be many meta publications. They are the documentation of the
+design of the project.
+
+The two dark gold nodes represent the website part of the meta
+publication workflow.
+
+The `workflowr` index Rmarkdown normally contains links to all the
+rendered documents of interest (meta publications and external
+publications) and is rendered to become the home page of the project
+website.
 
 # Open questions
 
@@ -317,12 +428,9 @@ values change over time or over changes in the pipeline definition.
     results can be computational combined in later steps of the same
     pipeline?
 
-# Resources
+# Useful inks
 
--   Consider using the [targets](https://wlandau.github.io/targets/)
-    package to control the computational workflow.
-
-    -   GitHub issue about using {targets} and {workflowr} together:
-        <https://github.com/jdblischak/workflowr/issues/238>
-    -   GitHub repo using {targets} and {rticles} together:
-        <https://github.com/b-rodrigues/covid_pred>
+-   GitHub issue about using {targets} and {workflowr} together:
+    <https://github.com/jdblischak/workflowr/issues/238>
+-   GitHub repo using {targets} and {rticles} together:
+    <https://github.com/b-rodrigues/covid_pred>
