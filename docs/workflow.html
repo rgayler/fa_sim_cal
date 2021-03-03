@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Ross Gayler" />
+
+
+<title>Workflow management</title>
+
+<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<script src="site_libs/viz-1.8.2/viz.js"></script>
+<link href="site_libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+<script src="site_libs/grViz-binding-1.0.6.1/grViz.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-sm-12 col-md-4 col-lg-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-sm-12 col-md-8 col-lg-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Frequency-Aware Similarity Calibration</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/rgayler/fa_sim_cal">
+    <span class="fas fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Workflow management</h1>
+<h4 class="author">Ross Gayler</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks">
+Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-03-03
+</p>
+<p>
+<strong>Checks:</strong>
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+7
+<span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+0
+</p>
+<p>
+<strong>Knit directory:</strong>
+<code>fa_sim_cal/</code>
+<span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version
+1.6.2). The <em>Checks</em> tab describes the
+reproducibility checks that were applied when the results were created.
+The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you
+know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Environment:</strong> empty
+</a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global
+environment can affect the analysis in your R Markdown file in unknown ways.
+For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20201104code">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Seed:</strong> <code>set.seed(20201104)</code>
+</a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20201104code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20201104)</code> was run prior to running the code in the R Markdown file.
+Setting a seed ensures that any results that rely on randomness, e.g.
+subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Session information:</strong> recorded
+</a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is
+critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Cache:</strong> none
+</a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident
+that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>File paths:</strong> relative
+</a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project
+makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree5b5369f642f098433016bab5fbbaeae609f5b82ctargetblank5b5369fa">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/5b5369f642f098433016bab5fbbaeae609f5b82c" target="_blank">5b5369f</a>
+</a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree5b5369f642f098433016bab5fbbaeae609f5b82ctargetblank5b5369fa" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and
+connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/5b5369f642f098433016bab5fbbaeae609f5b82c" target="_blank">5b5369f</a>.
+See the <em>Past versions</em> tab to see a history of the changes made to the
+R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the
+analysis have been committed to Git prior to generating the results (you can
+use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only
+checks the R Markdown file, but you know if there are other scripts or data
+files that it depends on. Below is the status of the Git repository when the
+results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    .tresorit/
+    Ignored:    data/VR_20051125.txt.xz
+    Ignored:    output/blk_char.fst
+    Ignored:    output/ent_blk.fst
+    Ignored:    output/ent_cln.fst
+    Ignored:    output/ent_raw.fst
+    Ignored:    renv/library/
+    Ignored:    renv/staging/
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in
+this status report because it is ok for generated content to have uncommitted
+changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made
+to the R Markdown (<code>analysis/workflow.Rmd</code>) and HTML (<code>docs/workflow.html</code>)
+files. If you’ve configured a remote Git repository (see
+<code>?wflow_git_remote</code>), click on the hyperlinks in the table below to
+view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/5b5369f642f098433016bab5fbbaeae609f5b82c/analysis/workflow.Rmd" target="_blank">5b5369f</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-03
+</td>
+<td>
+Add workflow management notes
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/d2d559ead675abb0722a1254134372f9f4093ae3/analysis/workflow.Rmd" target="_blank">d2d559e</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-02
+</td>
+<td>
+end of day
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/199d85e76a46010b449193f42088bae64dd8875b/analysis/workflow.Rmd" target="_blank">199d85e</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-02
+</td>
+<td>
+end of day
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/9ba0dc4fc8a4a34b2c9be88b5b7fa2aabb6bb8f4/analysis/workflow.Rmd" target="_blank">9ba0dc4</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-01
+</td>
+<td>
+end of day
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/55ee0b142b4c5120f80838a691bcf6526a27a41d/analysis/workflow.Rmd" target="_blank">55ee0b1</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-02-27
+</td>
+<td>
+end of day
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<p>This project uses the <a href="https://wlandau.github.io/targets/"><code>targets</code></a>
+and <a href="https://github.com/jdblischak/workflowr"><code>workflowr</code></a> packages for
+managing the workflow of the project (making sure that the dependencies
+between computational steps are satisfied). When this work was started
+there were no easily found examples of using <code>targets</code> and <code>workflowr</code>
+together. This notebook contains notes on the proposed workflow for
+using <code>targets</code> and <code>workflowr</code>.</p>
+<div id="assumptions" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Assumptions</h1>
+<p>These points reflect my (possibly faulty) understanding of <code>targets</code> and
+<code>workflowr</code>. If I am wrong here I hope that somebody will see this and
+let me know, rather than me having to find out the hard way.</p>
+<ul>
+<li><p><code>targets</code> and <code>workflowr</code> both work by tracking some set of entities
+and the computational dependencies between them. When any of the
+tracked entities changes the packages calculate the minimal set of
+downstream dependencies that need to be recomputed to bring all the
+entities into a consistent state of being up to date.</p></li>
+<li><p><code>targets</code></p>
+<ul>
+<li><p>Supports a computational-pipeline-centric style of analysis</p></li>
+<li><p>Tracks data objects (including files) and functions.</p></li>
+<li><p>The focus is on the data transformation by the computational
+pipeline (rather than human generated text in reports).</p>
+<ul>
+<li>Although reports can be rendered, they appear to be treated
+as optional final steps like generating a plot, rather than
+as a core concern.</li>
+</ul></li>
+<li><p>Knows about high-performance computing and can run computations
+in parallel.</p></li>
+</ul></li>
+<li><p><code>workflowr</code></p>
+<ul>
+<li><p>Supports a notebook-centric style of analysis</p></li>
+<li><p>Only tracks Rmd notebook files and the corresponding rendered
+output files
+(<a href="https://github.com/ropensci/tarchetypes/issues/23#issuecomment-749118599" class="uri">https://github.com/ropensci/tarchetypes/issues/23#issuecomment-749118599</a>)</p>
+<ul>
+<li><code>workflowr::wflow_build()</code> tracks modification dates of Rmd
+files and the corresponding rendered output files</li>
+<li><code>workflowr::wflow_publish()</code> tracks git status of Rmd files
+and the corresponding rendered output files</li>
+<li>The computational consistency aspect are really only about
+the consistency between the notebook Rmd files and their
+rendered counterparts</li>
+</ul></li>
+<li><p>The computational reproducibility aspect is restricted to
+ensuring that random number seeds are set appropriately, that
+each notebook is executed in a clean environment, and that the
+package versions are recorded</p></li>
+<li><p>Automatic building of a website for the rendered notebooks</p></li>
+<li><p>Publication of website integrated with git</p></li>
+<li><p>Automatic publication of website served by GitHub Pages</p></li>
+</ul></li>
+<li><p>Comparison</p>
+<ul>
+<li><p><code>targets</code> provides more general and fine-grained control of
+computational pipeline</p>
+<ul>
+<li>Rendering of Rmd documents can be treated as just another
+step in a <code>targets</code> computational pipeline</li>
+<li>I would prefer to have computational dependency tracking
+handled by one package rather than splitting responsibility
+across multiple packages</li>
+<li>If I am going to use only one package to handle
+computational dependency tracking then I think it has to be
+<code>targets</code></li>
+</ul></li>
+<li><p>If I use <code>targets</code> to manage computational dependency tracking,
+what extra capabilities does <code>workflowr</code> provide?</p>
+<ul>
+<li>Automatic generation of a website mof rendered notebooks</li>
+<li>Automatic publication of the website via GitHub pages
+(provided you use GitHub as the git remote repository).</li>
+<li>I want this project to be publicly accessible and I don’t
+want the trouble of having to manually generate a website,
+so I will use <code>workflowr</code> to handle the building and
+publication of a project website.</li>
+</ul></li>
+</ul></li>
+<li><p>Design states and design reasoning</p>
+<ul>
+<li><p>The design state of the computational pipeline (loosely defined)
+reflects the <em>current</em> best beliefs. That is, any previous
+states were believed to be flawed in some way and the current
+design state is believed to be better.</p></li>
+<li><p>While the system is being modified from the prior design state
+to the current design state it is transiently broken and there
+is no need for that broken state to be preserved and easily
+accessible later.</p></li>
+<li><p>Prior design states are not interesting (because they are
+believed to be worse than the current design state) so there is
+no need for prior design states to be preserved and easily
+accessible later.</p></li>
+<li><p>The reasoning behind the current design state is important and
+must be preserved and immediately accessible.</p></li>
+<li><p>The reasoning behind the current design state <em>may</em> involve
+reference to prior design states and prior design reasoning.
+Where these references are needed they are inclluded directly in
+the design reasoning for the current design state and are
+preserved and immediately accessible.</p>
+<ul>
+<li>Thes design reasoning consists of manually constructed text,
+possibly supported by specific analyses of data derived from
+the computational pipeline.</li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<div id="proposed-workflow" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Proposed workflow</h1>
+<ul>
+<li><p>The proposed workflow needs to support my preferences for how to
+organise a project. In particular, a computational research project
+necessarily involves many design choices for the computational
+details. It is my strong preference that the <em>reasoning</em> behind
+these design choices (which <em>may</em> involve additional empirical work
+to support the reasoning) is documented as part of the project.</p></li>
+<li><p>The total workflow of the project has multiple components:</p>
+<ul>
+<li><strong>core</strong> - This is the workflow that generates the primary
+computational outputs (data sets, tables, plots, etc.) of the
+project. None of the outputs of this workflow include manual
+interpretation. The transformations are purely mechanical and
+can be repeated automatically.</li>
+<li><strong>publications</strong> - These are documents (manuscripts,
+presentations, etc.) that interpret the results of the core for
+some audience. These should be construed as the principal
+outputs of the core but they are treated separately because they
+necessarily involve interpretation which cannot be automated.
+The computation which generates the publications can be
+automated, but it can’t automatically update the interpretations
+in the publications.</li>
+<li><strong>meta</strong> - These are computations and interpretations that are
+<em>about</em> the core, but not required by the core. This where the
+design reasoning lives.</li>
+</ul></li>
+<li><p>The core is implemented as a standard <code>targets</code> computational
+pipeline.</p></li>
+<li><p>The publications are implemented as extensions to the core pipeline.</p>
+<ul>
+<li>There may be computational steps to generate data objects needed
+specifically for publications (e.g. plots and tables).</li>
+<li>It is recommended that computation in Rmd documents is
+minimised.</li>
+<li>The publications are plain Rmd documents (not <code>workflowr</code>
+notebooks).</li>
+<li>The publication-specific data objects and the rendering of the
+Rmd documents are managed by <code>targets</code>.</li>
+</ul></li>
+<li><p>The meta components are implemented as short chains hanging off the
+core pipeline.</p>
+<ul>
+<li>There may be computational steps to generate data objects needed
+specifically for meta documents.</li>
+<li>However, there is less pressure to minimise computation in the
+Rmd documents.</li>
+<li>The meta publications are <code>workflowr</code> Rmd notebooks.</li>
+<li>The meta-specific data objects and the rendering of the Rmd
+documents are managed by <code>targets</code>.</li>
+<li>The meta documents are rendered to a <code>workflowr</code> website.</li>
+<li>The <code>workflowr</code> website also has links to the rendered
+publications.</li>
+</ul></li>
+</ul>
+<p>An example is summarised in the following diagram.</p>
+<div id="htmlwidget-a38284e755db9bcdfd2d" style="width:672px;height:940.8px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a38284e755db9bcdfd2d">{"x":{"diagram":"\ndigraph workflow_diagram {\n\nnode [fixedsize = true, fontsize = 6, style = filled]\n\n### CORE\nsubgraph cluster_core {\n  rank = same\n\n  node [fillcolor = red]\n\n  # data object nodes\n  node [shape = circle]\n  d_c1 [label = \"core\ndata 1\"]\n  d_c2 [label = \"core\ndata 2\"]\n  d_c3 [label = \"core\ndata 3\"]\n\n  # function nodes\n  node [shape = triangle]\n  f_c1 [label = \"core\nfunction 1\"]\n  f_c2 [label = \"core\nfunction 2\"]\n\n  d_c1 -> f_c1 -> d_c2 -> f_c2 -> d_c3\n}\n\n### PUBLICATIONS\nsubgraph cluster_pubs {\n\n  node [fillcolor = green]\n\n  # function nodes\n  node [shape = triangle]\n  f_p1_1 [label = \"publication 1\nfunction 1\"]\n  f_p2_1 [label = \"publication 2\nfunction 1\"]\n  \n  # data object nodes\n  node [shape = circle]\n  d_p1_1 [label = \"publication 1\ndata 1\"]\n  d_p2_1 [label = \"publication 2\ndata 1\"]\n\n  # plain Rmarkdown files\n  node [shape = doublecircle]\n  rmd_p1 [label = \"publication 1\nplain Rmd\"]\n  rmd_p2 [label = \"publication 2\nplain Rmd\"]\n\n  # rendered Rmarkdown files\n  node [shape = hexagon]\n  rend_p1 [label = \"rendered\npublication 1\"]\n  rend_p2 [label = \"rendered\npublication 2\"]\n\n  d_c3 -> f_p1_1 -> d_p1_1; {d_p1_1 rmd_p1} -> rend_p1\n  d_c3 -> f_p2_1 -> d_p2_1; {d_p2_1 rmd_p2} -> rend_p2\n}\n\n### META\nsubgraph cluster_meta {\n\n  node [fillcolor = gold]\n\n  # function nodes\n  node [shape = triangle]\n  f_m1_1 [label = \"meta 1\nfunction 1\"]\n  f_m2_1 [label = \"meta 2\nfunction 1\"]\n  \n  # data object nodes\n  node [shape = circle]\n  d_m1_1 [label = \"meta 1\ndata 1\"]\n  d_m2_1 [label = \"meta 2\ndata 1\"]\n\n  # workflowr Rmarkdown files\n  node [shape = doublecircle]\n  rmd_m1 [label = \"meta 1\nworkflowr Rmd\"]\n  rmd_m2 [label = \"meta 2\nworkflowr Rmd\"]\n\n  # rendered workflowr Rmarkdown files\n  node [shape = hexagon]\n  rend_m1 [label = \"rendered\nworkflowr meta 1\"]\n  rend_m2 [label = \"rendered\nworkflowr meta 2\"]\n\n  d_c1 -> f_m1_1 -> d_m1_1; {d_m1_1 rmd_m1} -> rend_m1\n  d_c2 -> f_m2_1 -> d_m2_1; {d_m2_1 rmd_m2} -> rend_m2\n\n\n  ### WEBSITE\n  subgraph cluster_web {\n\n    node [fillcolor = gold3]\n\n    # workflowr Rmarkdown files\n    node [shape = doublecircle]\n    rmd_index [label = \"workflowr\nindex Rmd\"]\n  \n    # rendered workflowr Rmarkdown files\n    node [shape = hexagon]\n    rend_index [label = \"rendered\nworkflowr index\"]\n\n    rmd_index -> rend_index\n}\n}\n\n{rend_m1 rend_m2 rend_p1 rend_p2} -> rend_index\n\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<p>The arrows represent data flows (dependencies). These dependencies allow
+<code>targets</code> to work out what is out of date and therefore requiring
+re-execution conditional on any of the tracked entities being modified.</p>
+<p>The circles represent data objects (R objects and files).</p>
+<p>The double circles represent Rmarkdown files. <code>targets</code> treats them like
+any other data object, but I have distinguished them in this diagram.</p>
+<p>The triangles represent functions that generate or transform data.</p>
+<p>The hexagons represent rendered Rmarkdown files.</p>
+<p>The red nodes represent the <strong>core</strong> pipeline. Data is ingested and
+repeatedly transformed by functions.</p>
+<p>The green nodes represent the <strong>publication</strong> workflow. There can be
+multiple publications derived from the core.</p>
+<p>A publication may apply functions to core data to generate summaries for
+inclusion in the publication (e.g. plots, tables).</p>
+<p>The text of the publication is in the plain Rmarkdown file.</p>
+<p>The publication Rmarkdown file and the data it depends on are knitted to
+generate the rendered publication.</p>
+<p>The gold nodes represent the <strong>meta</strong> publication workflow. The two dark
+gold nodes are a special case of the meta publication workflow.</p>
+<p>A meta publication typically applies functions to some core data to
+generate summaries which inform the design reasoning for the next set of
+functions in the core pipeline. (Other patterns are possible, taking
+data from multiple core data objects, or even no data at all.)</p>
+<p>The gold double circle nodes represent <code>workflowr</code> Rmarkdown files.
+These contain the text of the reasoning behind the design decisions.</p>
+<p>The <code>workflowr</code> Rmarkdown file and the data it depends on are knitted
+to generate the rendered meta publication recording the reasoning behind
+some design decisions.</p>
+<p>There can be many meta publications. They are the documentation of the
+design of the project.</p>
+<p>The two dark gold nodes represent the website part of the meta
+publication workflow.</p>
+<p>The <code>workflowr</code> index Rmarkdown normally contains links to all the
+rendered documents of interest (meta publications and external
+publications) and is rendered to become the home page of the project
+website.</p>
+</div>
+<div id="open-questions" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Open questions</h1>
+<p>These are not immediately relevant to how I think the current project
+will pan out, but I could easily imagine them being relevant in other
+projects.</p>
+<p>These questions arise because of my earlier assumption that <code>targets</code>
+and <code>workflowr</code> are focused on creating a current status of the project
+that is computationally consistent (up to date). Consequently, I have
+assumed that the current status of the project is directly accessible,
+but prior consistent states of the project are not directly (and
+therefore not easily) accessible from within the project. The questions
+below relate to use-cases where we would want current and prior states
+of the project to be simultaneously and directly available.</p>
+<p>These questions are based on the assumption that it’s advantageous to
+have the <em>entire</em> computational process managed by <code>targets</code> or
+<code>workflowr</code> to ensure that everything is in a consistent state. That is,
+I am trying to avoid having any computational processes that are not
+managed by <code>targets</code> or <code>workflowr</code>.</p>
+<p>I suspect that <a href="https://github.com/ropensci/tarchetypes"><code>tarchetypes</code></a>
+and branching may be relevant to these questions.</p>
+<div id="accumulating-historicalindexed-states" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Accumulating historical/indexed states</h2>
+<p>Imagine a computational pipeline that ingests some data and reports on
+it. The current output reports reflect the current input data.</p>
+<p>Now imagine that the input data is regularly updated. Whenever the input
+data is updated the output reports would also be updated so that the
+previous output no longer exists in the pipeline environment. However,
+in that use-case it is generally required that all the generated reports
+continue to be available.</p>
+<p>The results could be accumulated outside the computational pipeline but
+that would appear to mean that part of the computational process is not
+visible to and managed by <code>targets</code> or <code>workflowr</code>.</p>
+<ul>
+<li><p>So, is there a reasonable way in <code>targets</code> or <code>workflowr</code> to
+accumulate an arbitrary number of analyses/results from the same
+pipeline?</p></li>
+<li><p>As a related question, would that support regenerating <em>all</em> the
+reports if the pipeline functions were updated (e.g. a bug was
+fixed)?</p></li>
+<li><p>Related to the previous question: Would it be possible to accumulate
+reports corresponding to different definitions of the pipeline
+functions (e.g. applying different modelling techniques to the
+data)?</p></li>
+</ul>
+<p>The last question makes clear that referring to “historical” is somewhat
+misleading. It would more generally be thought of as (potentially
+multidimensional) indexing across data sets and pipeline definitions.</p>
+<p>This might be easier to do if it was conceptualised as a point in time
+computation with the indexing variable(s) used as a grouping variable(s)
+in one input data set. However, that point in time view would require
+recomputing all the outputs when the input is updated, even though
+recomputing the previous outputs is unnecessary.</p>
+</div>
+<div id="comparing-historicalindexed-states" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Comparing historical/indexed states</h2>
+<p>The previous questions dealt with the case where the outputs are just
+accumulated. Now consider the case where outputs for different index
+values are combined computationally inside the pipeline managed by
+<code>targets</code> or <code>workflowr</code>. This might be used to look at how output
+values change over time or over changes in the pipeline definition.</p>
+<ul>
+<li>Is there a reasonable way in <code>targets</code> or <code>workflowr</code> to accumulate
+an arbitrary number of analyses/results, indexed by data sets and/or
+pipeline definitions, from the same pipeline such that indexed
+results can be computational combined in later steps of the same
+pipeline?</li>
+</ul>
+</div>
+</div>
+<div id="useful-inks" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Useful inks</h1>
+<ul>
+<li>GitHub issue about using {targets} and {workflowr} together:
+<a href="https://github.com/jdblischak/workflowr/issues/238" class="uri">https://github.com/jdblischak/workflowr/issues/238</a></li>
+<li>GitHub repo using {targets} and {rticles} together:
+<a href="https://github.com/b-rodrigues/covid_pred" class="uri">https://github.com/b-rodrigues/covid_pred</a></li>
+</ul>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre><code>R version 4.0.3 (2020-10-10)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 20.10
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.9.0
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.9.0
+
+locale:
+ [1] LC_CTYPE=en_AU.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_AU.UTF-8        LC_COLLATE=en_AU.UTF-8    
+ [5] LC_MONETARY=en_AU.UTF-8    LC_MESSAGES=en_AU.UTF-8   
+ [7] LC_PAPER=en_AU.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_AU.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] DiagrammeR_1.0.6.1 here_1.0.1         workflowr_1.6.2   
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.6         pillar_1.5.0       compiler_4.0.3     later_1.1.0.1     
+ [5] RColorBrewer_1.1-2 git2r_0.28.0       tools_4.0.3        digest_0.6.27     
+ [9] jsonlite_1.7.2     evaluate_0.14      lifecycle_1.0.0    tibble_3.1.0      
+[13] pkgconfig_2.0.3    rlang_0.4.10       rstudioapi_0.13    yaml_2.2.1        
+[17] xfun_0.21          stringr_1.4.0      knitr_1.31         fs_1.5.0          
+[21] vctrs_0.3.6        htmlwidgets_1.5.3  rprojroot_2.0.2    glue_1.4.2        
+[25] R6_2.5.0           fansi_0.4.2        rmarkdown_2.7      bookdown_0.21     
+[29] magrittr_2.0.1     whisker_0.4        promises_1.2.0.1   ellipsis_0.3.1    
+[33] htmltools_0.5.1.1  renv_0.13.0        httpuv_1.5.5       utf8_1.1.4        
+[37] stringi_1.5.3      visNetwork_2.0.9   crayon_1.4.1      </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4,h5",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "site_libs/mathjax-local/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
