@@ -337,8 +337,8 @@ data from multiple core data objects, or even no data at all.)
 The gold double circle nodes represent `workflowr` Rmarkdown files.
 These contain the text of the reasoning behind the design decisions.
 
-The `workflowr` Rmarkdown file and the data it depends on are knitted
-to generate the rendered meta publication recording the reasoning behind
+The `workflowr` Rmarkdown file and the data it depends on are knitted to
+generate the rendered meta publication recording the reasoning behind
 some design decisions.
 
 There can be many meta publications. They are the documentation of the
@@ -434,3 +434,9 @@ values change over time or over changes in the pipeline definition.
     <https://github.com/jdblischak/workflowr/issues/238>
 -   GitHub repo using {targets} and {rticles} together:
     <https://github.com/b-rodrigues/covid_pred>
+-   GitHub {targets} issue on tracking outdated prose in Rmarkdown
+    documents and allowing sketching out a pipeline by having dummy
+    target definitions:
+    <https://github.com/ropensci/targets/discussions/336>
+-   A YouTube video on using Rmarkdown with {targets}:
+    <https://www.youtube.com/watch?v=jAkNwaGRku0&feature=youtu.be>
