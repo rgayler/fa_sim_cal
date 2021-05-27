@@ -1,5 +1,7 @@
 # Output
 
-Save processed data files here.
+Processed data objects may be saved here.
 
-This includes result objects that will be referenced by the manuscripts.
+However, since we are using the `targets` package to manage the computational pipelines
+it is much more likely that computed objects will be saved to the targets cache:
+`./_targets/objects`

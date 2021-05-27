@@ -1,0 +1,3822 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Ross Gayler" />
+
+<meta name="date" content="2021-05-15" />
+
+<title>[meta] Check administrative variables</title>
+
+<script src="site_libs/header-attrs-2.8/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Frequency-Aware Similarity Calibration</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/rgayler/fa_sim_cal">
+    <span class="fas fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">[meta] Check administrative variables</h1>
+<h3 class="subtitle">m_01_5_check_admin</h3>
+<h4 class="author">Ross Gayler</h4>
+<h4 class="date">2021-05-15</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks">
+Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-05-27
+</p>
+<p>
+<strong>Checks:</strong>
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+7
+<span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+0
+</p>
+<p>
+<strong>Knit directory:</strong>
+<code>fa_sim_cal/</code>
+<span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version
+1.6.2). The <em>Checks</em> tab describes the
+reproducibility checks that were applied when the results were created.
+The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you
+know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Environment:</strong> empty
+</a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global
+environment can affect the analysis in your R Markdown file in unknown ways.
+For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20201104code">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Seed:</strong> <code>set.seed(20201104)</code>
+</a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20201104code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20201104)</code> was run prior to running the code in the R Markdown file.
+Setting a seed ensures that any results that rely on randomness, e.g.
+subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Session information:</strong> recorded
+</a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is
+critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Cache:</strong> none
+</a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident
+that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>File paths:</strong> relative
+</a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project
+makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreea6fb2e3554dac977062b37d69d0adb1d328baeb9targetblanka6fb2e3a">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/a6fb2e3554dac977062b37d69d0adb1d328baeb9" target="_blank">a6fb2e3</a>
+</a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreea6fb2e3554dac977062b37d69d0adb1d328baeb9targetblanka6fb2e3a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and
+connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/a6fb2e3554dac977062b37d69d0adb1d328baeb9" target="_blank">a6fb2e3</a>.
+See the <em>Past versions</em> tab to see a history of the changes made to the
+R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the
+analysis have been committed to Git prior to generating the results (you can
+use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only
+checks the R Markdown file, but you know if there are other scripts or data
+files that it depends on. Below is the status of the Git repository when the
+results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    .tresorit/
+    Ignored:    _targets/
+    Ignored:    data/VR_20051125.txt.xz
+    Ignored:    data/VR_Snapshot_20081104.txt.xz
+    Ignored:    renv/library/
+    Ignored:    renv/local/
+    Ignored:    renv/staging/
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in
+this status report because it is ok for generated content to have uncommitted
+changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made
+to the R Markdown (<code>analysis/m_01_5_check_admin.Rmd</code>) and HTML (<code>docs/m_01_5_check_admin.html</code>)
+files. If you’ve configured a remote Git repository (see
+<code>?wflow_git_remote</code>), click on the hyperlinks in the table below to
+view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/ab90fe6e4a497237dc300c11d3441a2b5855e0bb/docs/m_01_5_check_admin.html" target="_blank">ab90fe6</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-18
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/14992353465ac463f557c9c067deaad7e641dec6/analysis/m_01_5_check_admin.Rmd" target="_blank">1499235</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-16
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/24d95c0566a32dd720743eacdc11a3606f275f12/analysis/m_01_5_check_admin.Rmd" target="_blank">24d95c0</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-15
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/24d95c0566a32dd720743eacdc11a3606f275f12/docs/m_01_5_check_admin.html" target="_blank">24d95c0</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-15
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/d7b5c395ca46f651d57d33d0a39b41a15e5d1570/analysis/m_01_5_check_admin.Rmd" target="_blank">d7b5c39</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-15
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/411de1eac1cc9d3abf616f2e8c7cba1a6400b60e/analysis/m_01_5_check_admin.Rmd" target="_blank">411de1e</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-04-04
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/411de1eac1cc9d3abf616f2e8c7cba1a6400b60e/docs/m_01_5_check_admin.html" target="_blank">411de1e</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-04-04
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/0bd4a5fefb2ce7ac7a8aa9ddb21e56d3a78fc0c8/analysis/m_01_5_check_admin.Rmd" target="_blank">0bd4a5f</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-04-03
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/ec5d58800738d23e0d6b4ecc31c7867a76965f15/analysis/m_01_5_check_admin.Rmd" target="_blank">ec5d588</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-30
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/ec5d58800738d23e0d6b4ecc31c7867a76965f15/docs/m_01_5_check_admin.html" target="_blank">ec5d588</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-30
+</td>
+<td>
+WIP
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code># NOTE this notebook can be run manually or automatically by {targets}
+# So load the packages required by this notebook here
+# rather than relying on _targets.R to load them.
+
+# Set up the project environment, because {workflowr} knits each Rmd file 
+# in a new R session, and doesn&#39;t execute the project .Rprofile
+
+library(targets) # access data from the targets cache
+
+library(tictoc) # capture execution time
+library(here) # construct file paths relative to project root</code></pre>
+<pre><code>here() starts at /home/ross/RG/projects/academic/entity_resolution/fa_sim_cal_TOP/fa_sim_cal</code></pre>
+<pre class="r"><code>library(fs) # file system operations
+library(dplyr) # data wrangling</code></pre>
+<pre><code>
+Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:stats&#39;:
+
+    filter, lag</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(gt) # table formatting
+library(stringr) # string matching
+library(vroom) # fast reading of delimited text files
+library(lubridate) # date parsing</code></pre>
+<pre><code>
+Attaching package: &#39;lubridate&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    date, intersect, setdiff, union</code></pre>
+<pre class="r"><code>library(forcats) # manipulation of factors
+library(ggplot2) # graphics
+
+# start the execution time clock
+tictoc::tic(&quot;Computation time (excl. render)&quot;)
+
+# Get the path to the raw entity data file
+# This is a target managed by {targets}
+f_entity_raw_tsv &lt;- tar_read(c_raw_entity_data_file)</code></pre>
+<div id="introduction" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<p>These meta notebooks document the development of functions that will be
+applied in the core pipeline.</p>
+<p>The aim of the m_01 set of meta notebooks is to work out how to read the
+raw entity data, drop excluded cases, discard irrelevant variables,
+apply any cleaning, and construct standardised names. This does not
+include construction of any modelling features. To be clear, the target
+(<code>c_raw_entity_data</code>) corresponding to the objective of this set of
+notebooks is the cleaned and standardised raw data, before constructing
+any modelling features.</p>
+<p>This notebook documents the checking the “administrative” variables for
+any issues that need fixing.</p>
+<p>The subsequent notebooks in this set will develop the other functions
+needed to generate the cleaned and standardised data.</p>
+<p>Regardless of whether there are any issues that need to be fixed, the
+analyses here may inform our use of these variables in later analyses.</p>
+<p>We don’t know any of the details on how the NCVR data is collected and
+processed, so our interpretations are only educated guesses. We have no
+intention of using the administrative variables as predictors for entity
+resolution. However, it’s possible that they may shed some light on data
+quality which might influence our choice of the records to be used for
+modelling.</p>
+<p>Define the “administrative” variables:</p>
+<ul>
+<li><code>county_id</code> - County identification number</li>
+<li><code>county_desc</code> - County description</li>
+<li><code>voter_reg_num</code> - Voter registration number (unique by county)</li>
+<li><code>registr_dt</code> - Voter registration date</li>
+<li><code>cancellation_dt</code> - Cancellation date</li>
+</ul>
+<pre class="r"><code>vars_admin &lt;- c(&quot;county_id&quot;, &quot;county_desc&quot;, &quot;voter_reg_num&quot;, &quot;registr_dt&quot;, &quot;cancellation_dt&quot;)  </code></pre>
+</div>
+<div id="read-entity-data" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Read entity data</h1>
+<p>Read the raw entity data file using the previously defined core pipeline
+functions <code>raw_entity_data_read()</code>, <code>raw_entity_data_excl_status()</code>,
+<code>raw_entity_data_excl_test()</code>, <code>raw_entity_data_drop_novar()</code>, and
+<code>raw_entity_data_parse_dates()</code>.</p>
+<pre class="r"><code># Show the data file name
+fs::path_file(f_entity_raw_tsv)</code></pre>
+<pre><code>[1] &quot;VR_20051125.txt.xz&quot;</code></pre>
+<pre class="r"><code>d &lt;- raw_entity_data_read(f_entity_raw_tsv) %&gt;% 
+  raw_entity_data_excl_status() %&gt;% 
+  raw_entity_data_excl_test() %&gt;% 
+  raw_entity_data_drop_novar() %&gt;% 
+  raw_entity_data_parse_dates()
+
+dim(d)</code></pre>
+<pre><code>[1] 4099699      25</code></pre>
+</div>
+<div id="county_id-county_desc" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> county_id &amp; county_desc</h1>
+<p><code>county_id</code> - County identification number<br />
+<code>county_desc</code> - County description</p>
+<p>Look at a sample of values.</p>
+<pre class="r"><code>d %&gt;% 
+  dplyr::select(starts_with(&quot;county_&quot;)) %&gt;% 
+  dplyr::slice_sample(n = 10) %&gt;% 
+  gt::gt() %&gt;% 
+  gt::opt_row_striping() %&gt;% 
+  gt::tab_style(style = gt::cell_text(weight = &quot;bold&quot;), locations = gt::cells_column_labels()) %&gt;% 
+  gt::fmt_missing(columns = everything(), missing_text = &quot;&lt;NA&gt;&quot;)</code></pre>
+<div id="pqrjdvzypb" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#pqrjdvzypb .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#pqrjdvzypb .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#pqrjdvzypb .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#pqrjdvzypb .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#pqrjdvzypb .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#pqrjdvzypb .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#pqrjdvzypb .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#pqrjdvzypb .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#pqrjdvzypb .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#pqrjdvzypb .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#pqrjdvzypb .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#pqrjdvzypb .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#pqrjdvzypb .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#pqrjdvzypb .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#pqrjdvzypb .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#pqrjdvzypb .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#pqrjdvzypb .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#pqrjdvzypb .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pqrjdvzypb .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#pqrjdvzypb .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pqrjdvzypb .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#pqrjdvzypb .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#pqrjdvzypb .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#pqrjdvzypb .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#pqrjdvzypb .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#pqrjdvzypb .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#pqrjdvzypb .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#pqrjdvzypb .gt_left {
+  text-align: left;
+}
+
+#pqrjdvzypb .gt_center {
+  text-align: center;
+}
+
+#pqrjdvzypb .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#pqrjdvzypb .gt_font_normal {
+  font-weight: normal;
+}
+
+#pqrjdvzypb .gt_font_bold {
+  font-weight: bold;
+}
+
+#pqrjdvzypb .gt_font_italic {
+  font-style: italic;
+}
+
+#pqrjdvzypb .gt_super {
+  font-size: 65%;
+}
+
+#pqrjdvzypb .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 65%;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">county_id</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">county_desc</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left">82</td>
+<td class="gt_row gt_left">SAMPSON</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">35</td>
+<td class="gt_row gt_left gt_striped">FRANKLIN</td></tr>
+    <tr><td class="gt_row gt_left">26</td>
+<td class="gt_row gt_left">CUMBERLAND</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">65</td>
+<td class="gt_row gt_left gt_striped">NEW HANOVER</td></tr>
+    <tr><td class="gt_row gt_left">26</td>
+<td class="gt_row gt_left">CUMBERLAND</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">19</td>
+<td class="gt_row gt_left gt_striped">CHATHAM</td></tr>
+    <tr><td class="gt_row gt_left">33</td>
+<td class="gt_row gt_left">EDGECOMBE</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">60</td>
+<td class="gt_row gt_left gt_striped">MECKLENBURG</td></tr>
+    <tr><td class="gt_row gt_left">57</td>
+<td class="gt_row gt_left">MADISON</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">78</td>
+<td class="gt_row gt_left gt_striped">ROBESON</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+<p>Look at <code>county_id</code>, a numeric code indicating a geographical area.</p>
+<pre class="r"><code># number of unique values
+d$county_id %&gt;% unique() %&gt;% length()</code></pre>
+<pre><code>[1] 100</code></pre>
+<pre class="r"><code># summary of distribution of county ID interpreted as a number
+d$county_id %&gt;% as.integer() %&gt;% summary()</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   1.00   32.00   53.00   52.26   76.00  100.00 </code></pre>
+<pre class="r"><code># number of records per county
+d %&gt;% 
+  dplyr::count(county_id) %&gt;% 
+  dplyr::arrange(desc(n)) %&gt;% 
+  gt::gt() %&gt;% 
+  gt::opt_row_striping() %&gt;% 
+  gt::tab_style(style = cell_text(weight = &quot;bold&quot;), locations = cells_column_labels()) %&gt;% 
+  gt::fmt_missing(columns = everything(), missing_text = &quot;&lt;NA&gt;&quot;) %&gt;% 
+  gt::fmt_number(columns = n, decimals = 0)</code></pre>
+<div id="hccdqonznr" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#hccdqonznr .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#hccdqonznr .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#hccdqonznr .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#hccdqonznr .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#hccdqonznr .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#hccdqonznr .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#hccdqonznr .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#hccdqonznr .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#hccdqonznr .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#hccdqonznr .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#hccdqonznr .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#hccdqonznr .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#hccdqonznr .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#hccdqonznr .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#hccdqonznr .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#hccdqonznr .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#hccdqonznr .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#hccdqonznr .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#hccdqonznr .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#hccdqonznr .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#hccdqonznr .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#hccdqonznr .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#hccdqonznr .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#hccdqonznr .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#hccdqonznr .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#hccdqonznr .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#hccdqonznr .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#hccdqonznr .gt_left {
+  text-align: left;
+}
+
+#hccdqonznr .gt_center {
+  text-align: center;
+}
+
+#hccdqonznr .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#hccdqonznr .gt_font_normal {
+  font-weight: normal;
+}
+
+#hccdqonznr .gt_font_bold {
+  font-weight: bold;
+}
+
+#hccdqonznr .gt_font_italic {
+  font-style: italic;
+}
+
+#hccdqonznr .gt_super {
+  font-size: 65%;
+}
+
+#hccdqonznr .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 65%;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">county_id</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-weight: bold;">n</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left">60</td>
+<td class="gt_row gt_right">410,483</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">92</td>
+<td class="gt_row gt_right gt_striped">367,146</td></tr>
+    <tr><td class="gt_row gt_left">41</td>
+<td class="gt_row gt_right">216,993</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">34</td>
+<td class="gt_row gt_right gt_striped">175,097</td></tr>
+    <tr><td class="gt_row gt_left">32</td>
+<td class="gt_row gt_right">138,594</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">26</td>
+<td class="gt_row gt_right gt_striped">125,885</td></tr>
+    <tr><td class="gt_row gt_left">11</td>
+<td class="gt_row gt_right">104,267</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">18</td>
+<td class="gt_row gt_right gt_striped">79,576</td></tr>
+    <tr><td class="gt_row gt_left">65</td>
+<td class="gt_row gt_right">79,484</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">1</td>
+<td class="gt_row gt_right gt_striped">73,306</td></tr>
+    <tr><td class="gt_row gt_left">90</td>
+<td class="gt_row gt_right">72,265</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">49</td>
+<td class="gt_row gt_right gt_striped">71,218</td></tr>
+    <tr><td class="gt_row gt_left">74</td>
+<td class="gt_row gt_right">71,178</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">13</td>
+<td class="gt_row gt_right gt_striped">70,738</td></tr>
+    <tr><td class="gt_row gt_left">76</td>
+<td class="gt_row gt_right">68,828</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">36</td>
+<td class="gt_row gt_right gt_striped">65,685</td></tr>
+    <tr><td class="gt_row gt_left">68</td>
+<td class="gt_row gt_right">59,435</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">29</td>
+<td class="gt_row gt_right gt_striped">57,337</td></tr>
+    <tr><td class="gt_row gt_left">51</td>
+<td class="gt_row gt_right">56,868</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">96</td>
+<td class="gt_row gt_right gt_striped">55,699</td></tr>
+    <tr><td class="gt_row gt_left">45</td>
+<td class="gt_row gt_right">53,679</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">10</td>
+<td class="gt_row gt_right gt_striped">53,463</td></tr>
+    <tr><td class="gt_row gt_left">80</td>
+<td class="gt_row gt_right">53,187</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">23</td>
+<td class="gt_row gt_right gt_striped">52,398</td></tr>
+    <tr><td class="gt_row gt_left">79</td>
+<td class="gt_row gt_right">51,491</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">78</td>
+<td class="gt_row gt_right gt_striped">46,871</td></tr>
+    <tr><td class="gt_row gt_left">64</td>
+<td class="gt_row gt_right">45,537</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">67</td>
+<td class="gt_row gt_right gt_striped">45,043</td></tr>
+    <tr><td class="gt_row gt_left">14</td>
+<td class="gt_row gt_right">44,381</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">43</td>
+<td class="gt_row gt_right gt_striped">43,012</td></tr>
+    <tr><td class="gt_row gt_left">63</td>
+<td class="gt_row gt_right">41,542</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">25</td>
+<td class="gt_row gt_right gt_striped">38,552</td></tr>
+    <tr><td class="gt_row gt_left">86</td>
+<td class="gt_row gt_right">38,069</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">12</td>
+<td class="gt_row gt_right gt_striped">35,567</td></tr>
+    <tr><td class="gt_row gt_left">97</td>
+<td class="gt_row gt_right">34,655</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">84</td>
+<td class="gt_row gt_right gt_striped">33,407</td></tr>
+    <tr><td class="gt_row gt_left">55</td>
+<td class="gt_row gt_right">33,012</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">19</td>
+<td class="gt_row gt_right gt_striped">32,989</td></tr>
+    <tr><td class="gt_row gt_left">81</td>
+<td class="gt_row gt_right">32,070</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">95</td>
+<td class="gt_row gt_right gt_striped">31,233</td></tr>
+    <tr><td class="gt_row gt_left">98</td>
+<td class="gt_row gt_right">30,033</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">16</td>
+<td class="gt_row gt_right gt_striped">29,122</td></tr>
+    <tr><td class="gt_row gt_left">35</td>
+<td class="gt_row gt_right">28,263</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">44</td>
+<td class="gt_row gt_right gt_striped">26,534</td></tr>
+    <tr><td class="gt_row gt_left">33</td>
+<td class="gt_row gt_right">26,494</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">71</td>
+<td class="gt_row gt_right gt_striped">24,078</td></tr>
+    <tr><td class="gt_row gt_left">31</td>
+<td class="gt_row gt_right">23,944</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">82</td>
+<td class="gt_row gt_right gt_striped">22,487</td></tr>
+    <tr><td class="gt_row gt_left">53</td>
+<td class="gt_row gt_right">22,278</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">2</td>
+<td class="gt_row gt_right gt_striped">21,143</td></tr>
+    <tr><td class="gt_row gt_left">28</td>
+<td class="gt_row gt_right">21,121</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">24</td>
+<td class="gt_row gt_right gt_striped">20,663</td></tr>
+    <tr><td class="gt_row gt_left">56</td>
+<td class="gt_row gt_right">20,497</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">70</td>
+<td class="gt_row gt_right gt_striped">20,400</td></tr>
+    <tr><td class="gt_row gt_left">50</td>
+<td class="gt_row gt_right">20,151</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">54</td>
+<td class="gt_row gt_right gt_striped">20,083</td></tr>
+    <tr><td class="gt_row gt_left">85</td>
+<td class="gt_row gt_right">20,027</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">59</td>
+<td class="gt_row gt_right gt_striped">19,581</td></tr>
+    <tr><td class="gt_row gt_left">39</td>
+<td class="gt_row gt_right">18,650</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">77</td>
+<td class="gt_row gt_right gt_striped">18,084</td></tr>
+    <tr><td class="gt_row gt_left">7</td>
+<td class="gt_row gt_right">17,568</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">42</td>
+<td class="gt_row gt_right gt_striped">17,029</td></tr>
+    <tr><td class="gt_row gt_left">83</td>
+<td class="gt_row gt_right">15,589</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">30</td>
+<td class="gt_row gt_right gt_striped">15,489</td></tr>
+    <tr><td class="gt_row gt_left">58</td>
+<td class="gt_row gt_right">15,348</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">88</td>
+<td class="gt_row gt_right gt_striped">14,342</td></tr>
+    <tr><td class="gt_row gt_left">47</td>
+<td class="gt_row gt_right">14,111</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">73</td>
+<td class="gt_row gt_right gt_striped">13,915</td></tr>
+    <tr><td class="gt_row gt_left">9</td>
+<td class="gt_row gt_right">13,784</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">62</td>
+<td class="gt_row gt_right gt_striped">13,653</td></tr>
+    <tr><td class="gt_row gt_left">57</td>
+<td class="gt_row gt_right">13,246</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">4</td>
+<td class="gt_row gt_right gt_striped">13,168</td></tr>
+    <tr><td class="gt_row gt_left">66</td>
+<td class="gt_row gt_right">12,539</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">20</td>
+<td class="gt_row gt_right gt_striped">12,510</td></tr>
+    <tr><td class="gt_row gt_left">100</td>
+<td class="gt_row gt_right">12,380</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">91</td>
+<td class="gt_row gt_right gt_striped">12,357</td></tr>
+    <tr><td class="gt_row gt_left">99</td>
+<td class="gt_row gt_right">11,410</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">87</td>
+<td class="gt_row gt_right gt_striped">11,069</td></tr>
+    <tr><td class="gt_row gt_left">8</td>
+<td class="gt_row gt_right">10,210</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">46</td>
+<td class="gt_row gt_right gt_striped">9,751</td></tr>
+    <tr><td class="gt_row gt_left">17</td>
+<td class="gt_row gt_right">9,133</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">27</td>
+<td class="gt_row gt_right gt_striped">8,088</td></tr>
+    <tr><td class="gt_row gt_left">94</td>
+<td class="gt_row gt_right">7,758</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">21</td>
+<td class="gt_row gt_right gt_striped">7,680</td></tr>
+    <tr><td class="gt_row gt_left">5</td>
+<td class="gt_row gt_right">7,173</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">6</td>
+<td class="gt_row gt_right gt_striped">6,961</td></tr>
+    <tr><td class="gt_row gt_left">93</td>
+<td class="gt_row gt_right">6,907</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">37</td>
+<td class="gt_row gt_right gt_striped">6,698</td></tr>
+    <tr><td class="gt_row gt_left">69</td>
+<td class="gt_row gt_right">6,660</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">22</td>
+<td class="gt_row gt_right gt_striped">6,536</td></tr>
+    <tr><td class="gt_row gt_left">52</td>
+<td class="gt_row gt_right">6,220</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">61</td>
+<td class="gt_row gt_right gt_striped">6,219</td></tr>
+    <tr><td class="gt_row gt_left">40</td>
+<td class="gt_row gt_right">6,004</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">38</td>
+<td class="gt_row gt_right gt_striped">5,563</td></tr>
+    <tr><td class="gt_row gt_left">3</td>
+<td class="gt_row gt_right">4,918</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">72</td>
+<td class="gt_row gt_right gt_striped">4,603</td></tr>
+    <tr><td class="gt_row gt_left">15</td>
+<td class="gt_row gt_right">3,705</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">75</td>
+<td class="gt_row gt_right gt_striped">2,774</td></tr>
+    <tr><td class="gt_row gt_left">48</td>
+<td class="gt_row gt_right">1,731</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">89</td>
+<td class="gt_row gt_right gt_striped">1,027</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+<pre class="r"><code># plot the number of records per county
+ggplot(d) +
+  geom_bar(aes(x = forcats::fct_infreq(county_id))) +
+  theme(panel.grid.major = element_blank(), 
+        axis.text.x = element_text(angle = 90, hjust=1, vjust = 0.5)
+  )</code></pre>
+<p><img src="figure/m_01_5_check_admin.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/24d95c0566a32dd720743eacdc11a3606f275f12/docs/figure/m_01_5_check_admin.Rmd/unnamed-chunk-5-1.png" target="_blank">24d95c0</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li>Never missing</li>
+<li>Integer 1 .. 100 (as strings)</li>
+<li>A small number of populous counties with a long tail of small
+counties</li>
+</ul>
+<p><code>county_desc</code> appears to be a text label corresponding to <code>county_desc</code>.
+Check that the county descriptions are in a 1:1 relationship with the
+county IDs.</p>
+<pre class="r"><code># number of unique values
+d$county_desc %&gt;% unique() %&gt;% length()</code></pre>
+<pre><code>[1] 100</code></pre>
+<pre class="r"><code># number of unique values of code:label combinations
+paste(d$county_id, d$county_desc) %&gt;% unique() %&gt;% length()</code></pre>
+<pre><code>[1] 100</code></pre>
+<pre class="r"><code># Is code:label a 1:1 relationship?
+# Is the number of unique labels equal to the number of unique code:label combinations
+(d$county_desc %&gt;% unique() %&gt;% length()) ==
+  (paste(d$county_id, d$county_desc) %&gt;% unique() %&gt;% length())</code></pre>
+<pre><code>[1] TRUE</code></pre>
+<ul>
+<li>100 unique values</li>
+<li><code>county_desc</code> in 1:1 relationship with <code>county_id</code></li>
+</ul>
+<p>They look reasonable, to the extent that I can tell without knowing
+anything about the counties.</p>
+<p>Because the variables are in a 1:1 relationship we don’t need both of
+them. I will drop the numeric <code>county_id</code> because knowing the county
+name may be helpful when manually checking records against online
+sources.</p>
+</div>
+<div id="voter_reg_num" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> voter_reg_num</h1>
+<p><code>voter_reg_num</code> - Voter registration number (unique by county)</p>
+<pre class="r"><code># Show some examples from the beginning of the file
+d %&gt;% 
+  dplyr::select(voter_reg_num) %&gt;% 
+  dplyr::slice_head(n = 10) %&gt;% 
+  gt::gt() %&gt;% 
+  gt::opt_row_striping() %&gt;% 
+  gt::tab_style(style = gt::cell_text(weight = &quot;bold&quot;), locations = gt::cells_column_labels()) %&gt;% 
+  gt::fmt_missing(columns = everything(), missing_text = &quot;&lt;NA&gt;&quot;)</code></pre>
+<div id="klkwtjahdk" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#klkwtjahdk .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#klkwtjahdk .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#klkwtjahdk .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#klkwtjahdk .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#klkwtjahdk .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#klkwtjahdk .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#klkwtjahdk .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#klkwtjahdk .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#klkwtjahdk .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#klkwtjahdk .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#klkwtjahdk .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#klkwtjahdk .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#klkwtjahdk .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#klkwtjahdk .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#klkwtjahdk .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#klkwtjahdk .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#klkwtjahdk .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#klkwtjahdk .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#klkwtjahdk .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#klkwtjahdk .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#klkwtjahdk .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#klkwtjahdk .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#klkwtjahdk .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#klkwtjahdk .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#klkwtjahdk .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#klkwtjahdk .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#klkwtjahdk .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#klkwtjahdk .gt_left {
+  text-align: left;
+}
+
+#klkwtjahdk .gt_center {
+  text-align: center;
+}
+
+#klkwtjahdk .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#klkwtjahdk .gt_font_normal {
+  font-weight: normal;
+}
+
+#klkwtjahdk .gt_font_bold {
+  font-weight: bold;
+}
+
+#klkwtjahdk .gt_font_italic {
+  font-style: italic;
+}
+
+#klkwtjahdk .gt_super {
+  font-size: 65%;
+}
+
+#klkwtjahdk .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 65%;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">voter_reg_num</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left">000000000001</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">000000000001</td></tr>
+    <tr><td class="gt_row gt_left">000000000001</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">000000000001</td></tr>
+    <tr><td class="gt_row gt_left">000000000001</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">000000000001</td></tr>
+    <tr><td class="gt_row gt_left">000000000001</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">000000000001</td></tr>
+    <tr><td class="gt_row gt_left">000000000001</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">000000000001</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+<pre class="r"><code># Show some examples from the end of the file
+d %&gt;% 
+  dplyr::select(voter_reg_num) %&gt;% 
+  dplyr::slice_tail(n = 10) %&gt;% 
+  gt::gt() %&gt;% 
+  gt::opt_row_striping() %&gt;% 
+  gt::tab_style(style = gt::cell_text(weight = &quot;bold&quot;), locations = gt::cells_column_labels()) %&gt;% 
+  gt::fmt_missing(columns = everything(), missing_text = &quot;&lt;NA&gt;&quot;)</code></pre>
+<div id="faukjyngiy" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#faukjyngiy .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#faukjyngiy .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#faukjyngiy .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#faukjyngiy .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#faukjyngiy .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#faukjyngiy .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#faukjyngiy .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#faukjyngiy .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#faukjyngiy .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#faukjyngiy .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#faukjyngiy .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#faukjyngiy .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#faukjyngiy .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#faukjyngiy .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#faukjyngiy .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#faukjyngiy .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#faukjyngiy .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#faukjyngiy .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#faukjyngiy .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#faukjyngiy .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#faukjyngiy .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#faukjyngiy .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#faukjyngiy .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#faukjyngiy .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#faukjyngiy .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#faukjyngiy .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#faukjyngiy .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#faukjyngiy .gt_left {
+  text-align: left;
+}
+
+#faukjyngiy .gt_center {
+  text-align: center;
+}
+
+#faukjyngiy .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#faukjyngiy .gt_font_normal {
+  font-weight: normal;
+}
+
+#faukjyngiy .gt_font_bold {
+  font-weight: bold;
+}
+
+#faukjyngiy .gt_font_italic {
+  font-style: italic;
+}
+
+#faukjyngiy .gt_super {
+  font-size: 65%;
+}
+
+#faukjyngiy .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 65%;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">voter_reg_num</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left">000099848833</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">000099848834</td></tr>
+    <tr><td class="gt_row gt_left">000099848835</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">000099848836</td></tr>
+    <tr><td class="gt_row gt_left">000099848837</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">000099848838</td></tr>
+    <tr><td class="gt_row gt_left">000099848840</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">000099848841</td></tr>
+    <tr><td class="gt_row gt_left">000099870963</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">000401437666</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+<pre class="r"><code># number of unique values
+d$voter_reg_num %&gt;% unique() %&gt;% length()</code></pre>
+<pre><code>[1] 1786064</code></pre>
+<pre class="r"><code># summary of distribution of voter registration number interpreted as a number
+d$voter_reg_num %&gt;% as.integer() %&gt;% summary()</code></pre>
+<pre><code>     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+        1     44722    223167   6670211   7629018 401437666 </code></pre>
+<ul>
+<li><p>~1.8M unique values</p>
+<ul>
+<li>Much less than the number of rows, so the numbers are reused</li>
+</ul></li>
+<li><p>Never missing</p></li>
+<li><p>Integer 1 .. ~401M (as strings)</p></li>
+<li><p>12-digit integers with leading zeroes</p></li>
+</ul>
+<p>Check whether <code>county_id</code> <span class="math inline">\(\times\)</span> <code>voter_reg_num</code> is unique, as
+claimed.</p>
+<pre class="r"><code># number of records
+nrow(d)</code></pre>
+<pre><code>[1] 4099699</code></pre>
+<pre class="r"><code># number of unique county_id x voter_reg_num combinations
+paste(d$county_id, d$voter_reg_num) %&gt;% unique() %&gt;% length()</code></pre>
+<pre><code>[1] 4099699</code></pre>
+<pre class="r"><code># Are the county_id x voter_reg_num combinations unique?
+# Number of unique county_id x voter_reg_num combinations equals the number of rows?
+nrow(d) ==
+  (paste(d$county_id, d$voter_reg_num) %&gt;% unique() %&gt;% length())</code></pre>
+<pre><code>[1] TRUE</code></pre>
+<ul>
+<li><code>county_id</code> <span class="math inline">\(\times\)</span> <code>voter_reg_num</code> is unique, as claimed</li>
+</ul>
+</div>
+<div id="registr_dt" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> registr_dt</h1>
+<p><code>registr_dt</code> - Voter registration date</p>
+<pre class="r"><code># summary of distribution of registration date interpreted as a date
+d$registr_dt %&gt;% summary()</code></pre>
+<pre><code>        Min.      1st Qu.       Median         Mean      3rd Qu.         Max. 
+&quot;1899-09-14&quot; &quot;1988-01-01&quot; &quot;1997-01-09&quot; &quot;1993-01-18&quot; &quot;2002-11-05&quot; &quot;9999-10-21&quot; </code></pre>
+<pre class="r"><code># Get records apparently registered after the snapshot was taken (2005-11-25)
+# The snapshot date is taken from earlier analyses before it was dropped
+x &lt;- d %&gt;% 
+  dplyr::filter(registr_dt &gt; lubridate::ymd(&quot;2005-11-25&quot;)) # after snapshot date
+
+# Number of records apparently registered after the snapshot was taken
+nrow(x)</code></pre>
+<pre><code>[1] 18</code></pre>
+<pre class="r"><code># Show records apparently registered after the snapshot was taken
+x %&gt;% 
+  dplyr::select(
+    registr_dt, county_desc, voter_reg_num, last_name, first_name, 
+    street_name, street_type_cd, res_city_desc, age
+  ) %&gt;% 
+  dplyr::arrange(county_desc, voter_reg_num) %&gt;% 
+  gt::gt() %&gt;% 
+  gt::opt_row_striping() %&gt;% 
+  gt::tab_style(style = cell_text(weight = &quot;bold&quot;), locations = cells_column_labels()) %&gt;% 
+  gt::fmt_missing(columns = everything(), missing_text = &quot;&lt;NA&gt;&quot;)</code></pre>
+<div id="bhlvcqfjfq" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#bhlvcqfjfq .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#bhlvcqfjfq .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#bhlvcqfjfq .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#bhlvcqfjfq .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#bhlvcqfjfq .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bhlvcqfjfq .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#bhlvcqfjfq .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#bhlvcqfjfq .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#bhlvcqfjfq .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#bhlvcqfjfq .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#bhlvcqfjfq .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#bhlvcqfjfq .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#bhlvcqfjfq .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#bhlvcqfjfq .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#bhlvcqfjfq .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#bhlvcqfjfq .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#bhlvcqfjfq .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#bhlvcqfjfq .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bhlvcqfjfq .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#bhlvcqfjfq .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bhlvcqfjfq .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#bhlvcqfjfq .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#bhlvcqfjfq .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bhlvcqfjfq .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#bhlvcqfjfq .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#bhlvcqfjfq .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#bhlvcqfjfq .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#bhlvcqfjfq .gt_left {
+  text-align: left;
+}
+
+#bhlvcqfjfq .gt_center {
+  text-align: center;
+}
+
+#bhlvcqfjfq .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#bhlvcqfjfq .gt_font_normal {
+  font-weight: normal;
+}
+
+#bhlvcqfjfq .gt_font_bold {
+  font-weight: bold;
+}
+
+#bhlvcqfjfq .gt_font_italic {
+  font-style: italic;
+}
+
+#bhlvcqfjfq .gt_super {
+  font-size: 65%;
+}
+
+#bhlvcqfjfq .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 65%;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">registr_dt</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">county_desc</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">voter_reg_num</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">last_name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">first_name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">street_name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">street_type_cd</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">res_city_desc</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">age</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left">9999-10-21</td>
+<td class="gt_row gt_left">ALAMANCE</td>
+<td class="gt_row gt_left">000009066908</td>
+<td class="gt_row gt_left">WOOTEN</td>
+<td class="gt_row gt_left">HEATHER</td>
+<td class="gt_row gt_left">CAROLINA</td>
+<td class="gt_row gt_left">CIR</td>
+<td class="gt_row gt_left">GRAHAM</td>
+<td class="gt_row gt_left">24</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">8480-10-09</td>
+<td class="gt_row gt_left gt_striped">CALDWELL</td>
+<td class="gt_row gt_left gt_striped">000014470774</td>
+<td class="gt_row gt_left gt_striped">PHILLIPS</td>
+<td class="gt_row gt_left gt_striped">STEVEN</td>
+<td class="gt_row gt_left gt_striped">BENFIELD</td>
+<td class="gt_row gt_left gt_striped">DR</td>
+<td class="gt_row gt_left gt_striped">HUDSON</td>
+<td class="gt_row gt_left gt_striped">52</td></tr>
+    <tr><td class="gt_row gt_left">2201-11-28</td>
+<td class="gt_row gt_left">CASWELL</td>
+<td class="gt_row gt_left">000000021711</td>
+<td class="gt_row gt_left">WHARTON</td>
+<td class="gt_row gt_left">REGINA</td>
+<td class="gt_row gt_left">7TH</td>
+<td class="gt_row gt_left">ST</td>
+<td class="gt_row gt_left">YANCEYVILLE</td>
+<td class="gt_row gt_left">25</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">2022-09-04</td>
+<td class="gt_row gt_left gt_striped">CHOWAN</td>
+<td class="gt_row gt_left gt_striped">000000014190</td>
+<td class="gt_row gt_left gt_striped">MEADS</td>
+<td class="gt_row gt_left gt_striped">LEONARD</td>
+<td class="gt_row gt_left gt_striped">MACEDONIA</td>
+<td class="gt_row gt_left gt_striped">RD</td>
+<td class="gt_row gt_left gt_striped">EDENTON</td>
+<td class="gt_row gt_left gt_striped">34</td></tr>
+    <tr><td class="gt_row gt_left">2008-10-05</td>
+<td class="gt_row gt_left">GASTON</td>
+<td class="gt_row gt_left">000007600410</td>
+<td class="gt_row gt_left">HAMRICK</td>
+<td class="gt_row gt_left">JIMMY</td>
+<td class="gt_row gt_left">RALPHS</td>
+<td class="gt_row gt_left">BLVD</td>
+<td class="gt_row gt_left">GASTONIA</td>
+<td class="gt_row gt_left">35</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">2008-10-11</td>
+<td class="gt_row gt_left gt_striped">GASTON</td>
+<td class="gt_row gt_left gt_striped">000007600617</td>
+<td class="gt_row gt_left gt_striped">HUNSUCKER</td>
+<td class="gt_row gt_left gt_striped">JESSICA</td>
+<td class="gt_row gt_left gt_striped">ROLLINGWOOD</td>
+<td class="gt_row gt_left gt_striped">DR</td>
+<td class="gt_row gt_left gt_striped">STANLEY</td>
+<td class="gt_row gt_left gt_striped">23</td></tr>
+    <tr><td class="gt_row gt_left">2008-10-05</td>
+<td class="gt_row gt_left">GASTON</td>
+<td class="gt_row gt_left">000007600823</td>
+<td class="gt_row gt_left">MARTIN</td>
+<td class="gt_row gt_left">JASON</td>
+<td class="gt_row gt_left">PAMELA</td>
+<td class="gt_row gt_left">ST</td>
+<td class="gt_row gt_left">GASTONIA</td>
+<td class="gt_row gt_left">30</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">2007-10-12</td>
+<td class="gt_row gt_left gt_striped">GASTON</td>
+<td class="gt_row gt_left gt_striped">000007601045</td>
+<td class="gt_row gt_left gt_striped">MOORE</td>
+<td class="gt_row gt_left gt_striped">GEORGE</td>
+<td class="gt_row gt_left gt_striped">UPPER SPENCER MOUNTAIN</td>
+<td class="gt_row gt_left gt_striped">RD</td>
+<td class="gt_row gt_left gt_striped">STANLEY</td>
+<td class="gt_row gt_left gt_striped">56</td></tr>
+    <tr><td class="gt_row gt_left">2201-06-12</td>
+<td class="gt_row gt_left">MACON</td>
+<td class="gt_row gt_left">000000034702</td>
+<td class="gt_row gt_left">MCGEE</td>
+<td class="gt_row gt_left">MACK</td>
+<td class="gt_row gt_left">MASHBURN BRANCH</td>
+<td class="gt_row gt_left">RD</td>
+<td class="gt_row gt_left">FRANKLIN</td>
+<td class="gt_row gt_left">72</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">5113-08-07</td>
+<td class="gt_row gt_left gt_striped">NASH</td>
+<td class="gt_row gt_left gt_striped">000000068243</td>
+<td class="gt_row gt_left gt_striped">SCHULTE</td>
+<td class="gt_row gt_left gt_striped">MATTHEW</td>
+<td class="gt_row gt_left gt_striped">SUNSET</td>
+<td class="gt_row gt_left gt_striped">AVE</td>
+<td class="gt_row gt_left gt_striped">ROCKY MOUNT</td>
+<td class="gt_row gt_left gt_striped">22</td></tr>
+    <tr><td class="gt_row gt_left">2801-11-01</td>
+<td class="gt_row gt_left">ORANGE</td>
+<td class="gt_row gt_left">000000196807</td>
+<td class="gt_row gt_left">GAUDIO</td>
+<td class="gt_row gt_left">LAUREN</td>
+<td class="gt_row gt_left">HILLSBOROUGH</td>
+<td class="gt_row gt_left">ST</td>
+<td class="gt_row gt_left">CHAPEL HILL</td>
+<td class="gt_row gt_left">24</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">7614-03-05</td>
+<td class="gt_row gt_left gt_striped">PAMLICO</td>
+<td class="gt_row gt_left gt_striped">000006450688</td>
+<td class="gt_row gt_left gt_striped">MILLER</td>
+<td class="gt_row gt_left gt_striped">ANITA</td>
+<td class="gt_row gt_left gt_striped">FLORENCE</td>
+<td class="gt_row gt_left gt_striped">ST</td>
+<td class="gt_row gt_left gt_striped">NEW BERN</td>
+<td class="gt_row gt_left gt_striped">22</td></tr>
+    <tr><td class="gt_row gt_left">2201-09-18</td>
+<td class="gt_row gt_left">ROCKINGHAM</td>
+<td class="gt_row gt_left">000000102698</td>
+<td class="gt_row gt_left">HAIZLIP</td>
+<td class="gt_row gt_left">JAMES</td>
+<td class="gt_row gt_left">NC 87</td>
+<td class="gt_row gt_left">&lt;NA&gt;</td>
+<td class="gt_row gt_left">EDEN</td>
+<td class="gt_row gt_left">39</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">2007-08-15</td>
+<td class="gt_row gt_left gt_striped">SURRY</td>
+<td class="gt_row gt_left gt_striped">000030004622</td>
+<td class="gt_row gt_left gt_striped">ALLEN</td>
+<td class="gt_row gt_left gt_striped">SEAN</td>
+<td class="gt_row gt_left gt_striped">KENSINGTON</td>
+<td class="gt_row gt_left gt_striped">DR</td>
+<td class="gt_row gt_left gt_striped">MOUNT AIRY</td>
+<td class="gt_row gt_left gt_striped">23</td></tr>
+    <tr><td class="gt_row gt_left">9482-03-11</td>
+<td class="gt_row gt_left">SWAIN</td>
+<td class="gt_row gt_left">000000001209</td>
+<td class="gt_row gt_left">DEHART</td>
+<td class="gt_row gt_left">DEBORAH</td>
+<td class="gt_row gt_left">SHEPHERDS CREEK</td>
+<td class="gt_row gt_left">RD</td>
+<td class="gt_row gt_left">BRYSON CITY</td>
+<td class="gt_row gt_left">42</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">2011-06-11</td>
+<td class="gt_row gt_left gt_striped">WILSON</td>
+<td class="gt_row gt_left gt_striped">000057476091</td>
+<td class="gt_row gt_left gt_striped">SMITH</td>
+<td class="gt_row gt_left gt_striped">FLOYD</td>
+<td class="gt_row gt_left gt_striped">FARMWOOD</td>
+<td class="gt_row gt_left gt_striped">LOOP</td>
+<td class="gt_row gt_left gt_striped">WILSON</td>
+<td class="gt_row gt_left gt_striped">80</td></tr>
+    <tr><td class="gt_row gt_left">3663-06-25</td>
+<td class="gt_row gt_left">WILSON</td>
+<td class="gt_row gt_left">000057476124</td>
+<td class="gt_row gt_left">RENFROW</td>
+<td class="gt_row gt_left">TERRI</td>
+<td class="gt_row gt_left">OLD RALEIGH</td>
+<td class="gt_row gt_left">RD</td>
+<td class="gt_row gt_left">WILSON</td>
+<td class="gt_row gt_left">24</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">3001-09-25</td>
+<td class="gt_row gt_left gt_striped">WILSON</td>
+<td class="gt_row gt_left gt_striped">000057476878</td>
+<td class="gt_row gt_left gt_striped">MCGLAUGHON</td>
+<td class="gt_row gt_left gt_striped">REBECCA</td>
+<td class="gt_row gt_left gt_striped">BLOOMERY</td>
+<td class="gt_row gt_left gt_striped">RD</td>
+<td class="gt_row gt_left gt_striped">WILSON</td>
+<td class="gt_row gt_left gt_striped">26</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+<ul>
+<li><p>Never missing</p></li>
+<li><p>18 records have registration date after the snapshot date</p>
+<ul>
+<li>Range from a couple of years to millennia in the future</li>
+<li>Presumably these are typos</li>
+</ul></li>
+<li><p>Some records have very early registration dates</p></li>
+<li><p>There is nothing obviously odd about the cases with registration
+date after the snapshot date. The problem is proibabably just in the
+registration date.</p></li>
+</ul>
+<p>Investigate the early registration dates.</p>
+<p>First form a view on how early is too early by finding the maximum age
+and assuming registration at 21 years of age.</p>
+<pre class="r"><code># summary of distribution of age interpreted as an integer
+d$age %&gt;% as.integer() %&gt;% summary()</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.00   33.00   45.00   46.93   58.00  221.00 </code></pre>
+<pre class="r"><code># get some extreme quantiles of the age distribution
+d$age %&gt;% as.integer() %&gt;% quantile(probs = c(0.003, 0.004, 0.995, 0.996, 0.997, 0.998, 0.999))</code></pre>
+<pre><code> 0.3%  0.4% 99.5% 99.6% 99.7% 99.8% 99.9% 
+    0    18    98   105   105   105   204 </code></pre>
+<pre class="r"><code># plot the distribution of age &lt;= 21
+d %&gt;% 
+  dplyr::mutate(age = as.integer(age)) %&gt;% 
+  dplyr::filter(age &lt;= 21) %&gt;% 
+  ggplot() +
+  geom_vline(xintercept = 18, colour = &quot;red&quot;) +
+  geom_histogram(aes(x = age), binwidth = 1) +
+  scale_y_log10()</code></pre>
+<pre><code>Warning: Transformation introduced infinite values in continuous y-axis</code></pre>
+<pre><code>Warning: Removed 8 rows containing missing values (geom_bar).</code></pre>
+<p><img src="figure/m_01_5_check_admin.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/24d95c0566a32dd720743eacdc11a3606f275f12/docs/figure/m_01_5_check_admin.Rmd/unnamed-chunk-10-1.png" target="_blank">24d95c0</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/ec5d58800738d23e0d6b4ecc31c7867a76965f15/docs/figure/m_01_5_check_admin.Rmd/unnamed-chunk-10-1.png" target="_blank">ec5d588</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code># plot the distribution of age &gt;= 80
+d %&gt;% 
+  dplyr::mutate(age = as.integer(age)) %&gt;% 
+  dplyr::filter(age &gt;= 80) %&gt;% 
+  ggplot() +
+  geom_vline(xintercept = c(105, 125, 204), colour = &quot;red&quot;) +
+  geom_histogram(aes(x = age), binwidth = 1) +
+  scale_y_log10()</code></pre>
+<pre><code>Warning: Transformation introduced infinite values in continuous y-axis</code></pre>
+<pre><code>Warning: Removed 79 rows containing missing values (geom_bar).</code></pre>
+<p><img src="figure/m_01_5_check_admin.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-2">
+Past versions of unnamed-chunk-10-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/24d95c0566a32dd720743eacdc11a3606f275f12/docs/figure/m_01_5_check_admin.Rmd/unnamed-chunk-10-2.png" target="_blank">24d95c0</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li><p>Age 18 seems to be the generally youngest age, but some are
+registered at 17, which seems plausible.</p></li>
+<li><p>The only younger people have an age of 0 or 8 years. These are
+obviously wrong.</p></li>
+<li><p>The distribution of ages 80+ opened a can of worms. There are
+obviously some issues with <code>age</code>. I will deal with that in detail in
+a later notebook.</p></li>
+</ul>
+<p>Without considering <code>age</code> in detail, it appears that the maximum
+accurate age is not more than 120 years.</p>
+<p>Assume that the maximum possible voter age is 116 years. The minimum
+registration age in North Carolina is 16 years (although I have no idea
+what it was 100 years ago). Therefore, assume that the oldest possible
+voter could have registered 100 years prior to the snapshot date. That
+is, regard any registration earlier than 1905-11-25 as very unlikely to
+be correct.</p>
+<p>Now look at the distribution of registration dates that are no later
+than the snapshot date.</p>
+<pre class="r"><code>d %&gt;% 
+  dplyr::filter(registr_dt &lt;= lubridate::ymd(&quot;2005-11-25&quot;)) %&gt;% 
+  ggplot() +
+  geom_vline(xintercept = c(lubridate::ymd(&quot;1905-11-25&quot;), lubridate::ymd(&quot;1935-11-25&quot;)),
+             colour = &quot;red&quot;) +
+  geom_histogram(aes(x = registr_dt), binwidth = 365.25) + # 1yr bins
+  scale_y_sqrt()</code></pre>
+<p><img src="figure/m_01_5_check_admin.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/24d95c0566a32dd720743eacdc11a3606f275f12/docs/figure/m_01_5_check_admin.Rmd/unnamed-chunk-11-1.png" target="_blank">24d95c0</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/ec5d58800738d23e0d6b4ecc31c7867a76965f15/docs/figure/m_01_5_check_admin.Rmd/unnamed-chunk-11-1.png" target="_blank">ec5d588</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li><p>There is a large spike of registrations in 1900. These are bound to
+be errors. (1900 is a common default value for year.)</p></li>
+<li><p>Registration dates before ~1935 are suspect (because the
+distribution of probably accurate dates appears to run out around</p>
+<ol start="1935" style="list-style-type: decimal">
+<li></li>
+</ol></li>
+</ul>
+<p>Look at the relationship between age and registration date. The vast
+majority of these records will be OK, so spreading the observations over
+two dimensions may make it easier to spot anomalous regions.</p>
+<p>First look at all the records (excluding those with registration date
+after the snapshot date).</p>
+<pre class="r"><code>d %&gt;% 
+  dplyr::mutate(age = as.integer(age)) %&gt;% 
+  dplyr::filter(registr_dt &lt;= lubridate::ymd(&quot;2005-11-25&quot;)) %&gt;%
+  ggplot() +
+  geom_hex(aes(x = age, y = registr_dt, fill = stat(log10(count))), binwidth = c(1, 365.25)) # 1yr bins x&amp;y</code></pre>
+<p><img src="figure/m_01_5_check_admin.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
+Past versions of unnamed-chunk-12-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/24d95c0566a32dd720743eacdc11a3606f275f12/docs/figure/m_01_5_check_admin.Rmd/unnamed-chunk-12-1.png" target="_blank">24d95c0</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/ec5d58800738d23e0d6b4ecc31c7867a76965f15/docs/figure/m_01_5_check_admin.Rmd/unnamed-chunk-12-1.png" target="_blank">ec5d588</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The heavily populated triangular region contains most of the cases and
+shows the (mostly) plausible combinations of registration date and age
+at snapshot date.</p>
+<p>Now exclude the manifestly unlikely ages (&lt; 17 or &gt; 104 years).</p>
+<pre class="r"><code>d %&gt;% 
+  dplyr::mutate(age = as.integer(age)) %&gt;% 
+  dplyr::filter(
+    dplyr::between(registr_dt, lubridate::ymd(&quot;1901-01-01&quot;), lubridate::ymd(&quot;2005-11-25&quot;)),
+    dplyr::between(age, 17, 104)
+  ) %&gt;%
+  ggplot() +
+  geom_hex(aes(x = age, y = registr_dt, fill = stat(log10(count))), binwidth = c(1, 365.25)) # 1yr bins x&amp;y</code></pre>
+<p><img src="figure/m_01_5_check_admin.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-1">
+Past versions of unnamed-chunk-13-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/24d95c0566a32dd720743eacdc11a3606f275f12/docs/figure/m_01_5_check_admin.Rmd/unnamed-chunk-13-1.png" target="_blank">24d95c0</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/ec5d58800738d23e0d6b4ecc31c7867a76965f15/docs/figure/m_01_5_check_admin.Rmd/unnamed-chunk-13-1.png" target="_blank">ec5d588</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li><p>The blue’ish upper triangle corresponds to people who were at least
+18 years old at registration.</p></li>
+<li><p>The black fringe below the blue-ish upper triangle corresponds to
+people who were less that 18 years old at registration.</p></li>
+<li><p>The negative diagonal line corresponds to people who would have been
+zero years old at registration.</p></li>
+<li><p>The points below the negative diagonal line correspond to people who
+appear to have been registered before they were born.</p></li>
+<li><p>Most registration dates are consistent with age</p></li>
+<li><p>A significant fraction of registration dates are <em>inconsistent</em> with
+age.</p></li>
+</ul>
+<p>There appear to be a nontrivial number of age and registration date
+combinations that are implausible. These are most likely due to typos in
+those variables.</p>
+<ul>
+<li>The implausible combinations are only a small fraction of the total
+records.</li>
+<li>We are not intending to use age or registration date in the models,
+so the oddities are probably not an issue. However, it does indicate
+that we don’t want to treat this data as though it is perfectly
+accurate.</li>
+<li>Drop <code>registr_dt</code> because it won’t be used in modelling and it can
+not be checked against any external data source.</li>
+</ul>
+</div>
+<div id="cancellation_dt" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> cancellation_dt</h1>
+<p><code>cancellation_dt</code> - Cancellation date</p>
+<pre class="r"><code># summary of distribution of cancellation date interpreted as a date
+d$cancellation_dt %&gt;% summary()</code></pre>
+<pre><code>        Min.      1st Qu.       Median         Mean      3rd Qu.         Max. 
+&quot;1994-10-18&quot; &quot;1996-12-30&quot; &quot;1997-01-16&quot; &quot;1996-12-22&quot; &quot;1997-01-27&quot; &quot;2004-10-05&quot; 
+        NA&#39;s 
+   &quot;4095558&quot; </code></pre>
+<pre class="r"><code># look at the fraction of missing values
+table(missing = is.na(d$cancellation_dt))</code></pre>
+<pre><code>missing
+  FALSE    TRUE 
+   4141 4095558 </code></pre>
+<pre class="r"><code>table(missing = is.na(d$cancellation_dt)) %&gt;% prop.table() %&gt;% round(3)</code></pre>
+<pre><code>missing
+FALSE  TRUE 
+0.001 0.999 </code></pre>
+<pre class="r"><code># plot the distribution of nonmissing cancellation date
+d %&gt;% 
+  dplyr::filter(!is.na(cancellation_dt)) %&gt;% # not missing
+  ggplot() +
+  geom_histogram(aes(x = cancellation_dt), binwidth = 7) + # 1wk bins
+  scale_y_sqrt()</code></pre>
+<p><img src="figure/m_01_5_check_admin.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
+Past versions of unnamed-chunk-14-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-14-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/24d95c0566a32dd720743eacdc11a3606f275f12/docs/figure/m_01_5_check_admin.Rmd/unnamed-chunk-14-1.png" target="_blank">24d95c0</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li><p>Cancellation date is almost always missing</p>
+<ul>
+<li>18 (0%) nonmissing</li>
+</ul></li>
+<li><p>Concentrated in 1996 and early 1997 (presumably some sort of
+administrative purge)</p></li>
+</ul>
+<p>It is not clear what having a cancellation date means for records that
+are flagged as ACTIVE &amp; VERIFIED. Perhaps they had been removed from the
+electoral roll in the past and subsequently reinstated.</p>
+<ul>
+<li>Drop the cancellation date because of the high proportion of missing values, we won’t use it in modelling, and it can’t be checked against any external data source.</li>
+</ul>
+</div>
+<div id="drop-unneeded-variables" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> Drop unneeded variables</h1>
+<p>Drop <code>county_id</code>, <code>registr_dt</code>, and <code>cancellation_dt</code>.</p>
+<pre class="r"><code># Function to drop unneeded admin variables
+raw_entity_data_drop_admin &lt;- function(
+  d # data frame - raw entity data
+) {
+  d %&gt;%
+    dplyr::select(-c(county_id, registr_dt, cancellation_dt))
+}</code></pre>
+<p>Apply the filter and track the number of rows before and after the
+filter.</p>
+<pre class="r"><code># number of columns before dropping
+d %&gt;% 
+  names() %&gt;% length</code></pre>
+<pre><code>[1] 25</code></pre>
+<pre class="r"><code>d %&gt;% 
+  raw_entity_data_drop_admin() %&gt;% 
+  # number of columns after dropping
+  names() %&gt;% length</code></pre>
+<pre><code>[1] 22</code></pre>
+</div>
+<div id="timing" class="section level1 unnumbered">
+<h1>Timing</h1>
+<pre><code>Computation time (excl. render): 248.836 sec elapsed</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.1.0 (2021-05-18)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 20.10
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.9.0
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.9.0
+
+locale:
+ [1] LC_CTYPE=en_AU.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_AU.UTF-8        LC_COLLATE=en_AU.UTF-8    
+ [5] LC_MONETARY=en_AU.UTF-8    LC_MESSAGES=en_AU.UTF-8   
+ [7] LC_PAPER=en_AU.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_AU.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] ggplot2_3.3.3    forcats_0.5.1    lubridate_1.7.10 vroom_1.4.0     
+ [5] stringr_1.4.0    gt_0.3.0         dplyr_1.0.6      fs_1.5.0        
+ [9] here_1.0.1       tictoc_1.0.1     targets_0.4.2   
+
+loaded via a namespace (and not attached):
+ [1] tidyselect_1.1.1  xfun_0.23         bslib_0.2.5       purrr_0.3.4      
+ [5] lattice_0.20-44   colorspace_2.0-1  vctrs_0.3.8       generics_0.1.0   
+ [9] htmltools_0.5.1.1 yaml_2.2.1        utf8_1.2.1        rlang_0.4.11     
+[13] hexbin_1.28.2     jquerylib_0.1.4   later_1.2.0       pillar_1.6.1     
+[17] glue_1.4.2        withr_2.4.2       bit64_4.0.5       lifecycle_1.0.0  
+[21] munsell_0.5.0     gtable_0.3.0      workflowr_1.6.2   codetools_0.2-18 
+[25] evaluate_0.14     labeling_0.4.2    knitr_1.33        callr_3.7.0      
+[29] httpuv_1.6.1      ps_1.6.0          parallel_4.1.0    fansi_0.4.2      
+[33] highr_0.9         Rcpp_1.0.6        backports_1.2.1   checkmate_2.0.0  
+[37] renv_0.13.2       promises_1.2.0.1  scales_1.1.1      jsonlite_1.7.2   
+[41] farver_2.1.0      bit_4.0.4         digest_0.6.27     stringi_1.6.2    
+[45] bookdown_0.22     processx_3.5.2    rprojroot_2.0.2   grid_4.1.0       
+[49] cli_2.5.0         tools_4.1.0       magrittr_2.0.1    sass_0.4.0       
+[53] tibble_3.1.2      crayon_1.4.1      whisker_0.4       pkgconfig_2.0.3  
+[57] ellipsis_0.3.2    data.table_1.14.0 rmarkdown_2.8     R6_2.5.0         
+[61] igraph_1.2.6      git2r_0.28.0      compiler_4.1.0   </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4,h5",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

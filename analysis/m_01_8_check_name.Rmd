@@ -1,0 +1,1375 @@
+---
+title: "[meta] Check name variables"
+subtitle: "m_01_8_check_name"
+author: "Ross Gayler"
+date: "2021-05-16"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+  markdown: 
+    wrap: 72
+---
+
+```{r setup}
+# NOTE this notebook can be run manually or automatically by {targets}
+# So load the packages required by this notebook here
+# rather than relying on _targets.R to load them.
+
+# Set up the project environment, because {workflowr} knits each Rmd file 
+# in a new R session, and doesn't execute the project .Rprofile
+
+library(targets) # access data from the targets cache
+
+library(tictoc) # capture execution time
+library(here) # construct file paths relative to project root
+library(fs) # file system operations
+library(dplyr) # data wrangling
+library(gt) # table formatting
+library(stringr) # string matching
+library(vroom) # fast reading of delimited text files
+library(lubridate) # date parsing
+library(forcats) # manipulation of factors
+library(ggplot2) # graphics
+library(skimr) # compact summary of each variable
+library(tidyr) # data tidying
+library(glue) # string interpolation
+
+# start the execution time clock
+tictoc::tic("Computation time (excl. render)")
+
+# Get the path to the raw entity data file
+# This is a target managed by {targets}
+f_entity_raw_tsv <- tar_read(c_raw_entity_data_file)
+```
+
+```{r, include = FALSE, cache = FALSE}
+# Get all the functions used by {targets} 
+# so we can display and use them in this notebook
+# with a guarantee that they will be identical
+# here and when used by {targets}.
+
+# This is  work-around because tarchetypes::tar_knitr_deps()
+# fails if a call to here::here() is embedded in 
+# a call to knitr::read_chunk()
+knitr::read_chunk("R/functions.R")
+```
+
+# Introduction
+
+The aim of this set of meta notebooks is to work out how to read the raw
+entity data. and get it sufficiently neatened so that we can construct
+standardised names and modelling features without needing any further
+neatening. To be clear, the target (`c_raw_entity_data`) corresponding
+to the objective of this set of notebooks is the neatened raw data,
+before constructing any modelling features.
+
+This notebook documents the checking of the person name variables for
+any issues that need fixing.
+
+These variables will be used to construct the main predictors in the
+compatibility models.
+
+Regardless of whether there are any issues that need to be fixed, the
+analyses here may inform our use of these variables in later analyses.
+
+Define the name variables.
+
+-   `last_name` - Voter last name
+-   `first_name` - Voter first name
+-   `midl_name` - Voter middle name
+-   `name_sufx_cd` - Voter name suffix
+
+```{r}
+vars_name <- c(
+  "last_name", "first_name", "midl_name", "name_sufx_cd" 
+)
+```
+
+# Read entity data
+
+Read the raw entity data file using the previously defined functions
+`raw_entity_data_read()`, `raw_entity_data_excl_status()`,
+`raw_entity_data_excl_test()`, `raw_entity_data_drop_novar()`,
+`raw_entity_data_parse_dates()`, `raw_entity_data_drop_admin()`,
+and `raw_entity_data_drop_demog()`.
+
+```{r, raw_entity_data_read, echo = FALSE}
+```
+
+```{r, raw_entity_data_excl_status, echo = FALSE}
+```
+
+```{r, raw_entity_data_excl_test, echo = FALSE}
+```
+
+```{r, raw_entity_data_drop_novar, echo = FALSE}
+```
+
+```{r, raw_entity_data_parse_dates, echo = FALSE}
+```
+
+```{r, raw_entity_data_drop_admin, echo = FALSE}
+```
+
+```{r, raw_entity_data_drop_demog, echo = FALSE}
+```
+
+```{r}
+# Show the data file name
+fs::path_file(f_entity_raw_tsv)
+
+d <- raw_entity_data_read(f_entity_raw_tsv) %>% 
+  raw_entity_data_excl_status() %>% 
+  raw_entity_data_excl_test() %>% 
+  raw_entity_data_drop_novar() %>% 
+  raw_entity_data_parse_dates() %>% 
+  raw_entity_data_drop_admin() %>% 
+  raw_entity_data_drop_demog()
+
+dim(d)
+```
+
+Take a quick look at the distributions.
+
+```{r}
+d %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  skimr::skim()
+```
+
+-   `last_name` 100% filled
+-   `first_name` \~100% filled (23 missing)
+-   `midl_name` 94% filled
+-   `name_sufx_cd` 6% filled
+
+# Name length
+
+Look at the distributions of name lengths first, before moving on to
+analyses more focused on standardisation.
+
+Calculate the lengths of the name variables.
+
+```{r}
+d <- d %>% 
+  dplyr::mutate(
+    len_last = stringr::str_length(last_name),
+    len_first = stringr::str_length(first_name),
+    len_midl = stringr::str_length(midl_name)
+  )
+```
+
+## last_name
+
+-   `last_name` - Voter last name
+
+Look at the distributions of name lengths.
+
+```{r}
+summary(d$len_last)
+
+d %>% 
+  dplyr::count(len_last) %>% 
+  dplyr::arrange(len_last) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>") %>% 
+  gt::fmt_number(columns = n, decimals = 0)
+
+d %>% 
+  ggplot() +
+  geom_histogram(aes(x = len_last), binwidth = 1) +
+  scale_y_sqrt()
+```
+
+Look at examples of short names.
+
+```{r}
+# length == 1
+d %>% 
+  dplyr::filter(len_last == 1) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  dplyr::arrange(last_name, first_name) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   1-letter last names are very rare
+-   Most 1-letter last names are probably errors
+
+```{r}
+# length == 2
+d %>% 
+  dplyr::filter(len_last == 2) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  dplyr::distinct(last_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>%
+  dplyr::arrange(last_name, first_name) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   Most 2-letter last names are probably valid.
+
+Look at examples of long names.
+
+```{r}
+# length == 21
+d %>% 
+  dplyr::filter(len_last == 21) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  dplyr::arrange(last_name, first_name) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   21-letter last names are hyphenated
+
+```{r}
+# length == 20
+d %>% 
+  dplyr::filter(len_last == 20) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  dplyr::distinct(last_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>%
+  dplyr::arrange(last_name, first_name) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   20+-letter last names appear to be multi-word and/or hyphenated
+
+## first_name
+
+-   `first_name` - Voter first name
+
+Look at the distributions of name lengths.
+
+```{r}
+summary(d$len_first)
+
+d %>% 
+  dplyr::count(len_first) %>% 
+  dplyr::arrange(len_first) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>") %>% 
+  gt::fmt_number(columns = n, decimals = 0)
+
+d %>% 
+  ggplot() +
+  geom_histogram(aes(x = len_first), binwidth = 1) +
+  scale_y_sqrt()
+```
+
+-   Possibly more 1-letter first names than I would expect
+
+Look at the missing names.
+
+```{r}
+d %>% 
+  dplyr::filter(is.na(first_name)) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  dplyr::arrange(last_name, first_name) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   Some missing first names look like the middle name is actually the
+    first name, e.g. ? JASON ALEXANDER
+-   Some missing first names appear to have only a last name, e.g. ? ?
+    AMEN, ? ? GRAYWOLF, ? ? SILVERMOON
+-   Some missing first names appear to have the entire name in the last
+    name variable, e.g. ? ? FRYE WILLIAM C
+
+Look at examples of short names.
+
+```{r}
+# length == 1
+d %>% 
+  dplyr::filter(len_first == 1) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  dplyr::slice_sample(n = 20) %>%
+  dplyr::arrange(last_name, first_name) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   The 1-letter first names appear to be using an initial as the first
+    name
+
+```{r}
+# length == 2
+d %>% 
+  dplyr::filter(len_first == 2) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  dplyr::distinct(first_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 50) %>%
+  dplyr::arrange(first_name, last_name) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+2-letter first names appear to be:
+
+-   Valid, e.g. JO ANNE COREY, ED ? HODGE
+-   An initial with punctuation, e.g. A. L LITTLE, D. A. WHITNER
+-   Multiple initials run together, e.g. GW ? BIVINS, JP ? DENTON
+-   Part of a multi word name that has bee split across the first and
+    middle name variables, e.g. LA SONDA FOWLER
+
+Look at the long names.
+
+```{r}
+# length >= 16
+d %>% 
+  dplyr::filter(len_first >= 16) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  dplyr::distinct(first_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 50) %>%
+  dplyr::arrange(first_name, last_name) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+Long first names appear to be:
+
+-   Long non-anglo names, e.g. LAKSHMINARAYANAN
+-   Multi-word and/or hyphenated, e.g. ELIZABETH-LINDSAY
+
+## midl_name
+
+-   `midl_name` - Voter middle name
+
+These names will often be missing or initials only.
+
+Look at the distributions of name lengths.
+
+```{r}
+summary(d$len_midl)
+
+d %>% 
+  dplyr::count(len_midl) %>% 
+  dplyr::arrange(len_midl) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>") %>% 
+  gt::fmt_number(columns = n, decimals = 0)
+
+d %>% 
+  ggplot() +
+  geom_histogram(aes(x = len_midl), binwidth = 1) +
+  scale_y_sqrt()
+```
+
+-   *Many* records are missing middle name
+-   Spike of 1-letter names will be initials
+
+Look at the long names.
+
+```{r}
+# length >= 16
+d %>% 
+  dplyr::filter(len_midl >= 16) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  dplyr::distinct(first_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 50) %>%
+  dplyr::arrange(midl_name, last_name) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   Long middle names appear to be multiple names and/or hyphenated
+-   Some long middle names are parenthesised expansions of first and
+    middle names that were given as initials, e.g. A "E (ALONZO EDWARD)"
+    LITTLE
+
+# Name suffix code
+
+-   `name_sufx_cd` - Voter name suffix
+
+This is intended for generation markers, e.g. Junior, Senior.
+
+I am not going to use name suffix in entity resolution because age
+should be sufficient and is much better quality. I will look at what
+values turn up in the name suffix because the same values sometimes
+wrongly occur in the main name variables. Knowing what values occur may
+help us to remove those values from the main name variables.
+
+```{r}
+d %>% dplyr::select(name_sufx_cd) %>% skimr::skim()
+
+table(d$name_sufx_cd, useNA = "ifany") %>% sort() %>% rev()
+
+d %>% 
+  dplyr::count(name_sufx_cd) %>% 
+  dplyr::arrange(desc(n)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>") %>% 
+  gt::fmt_number(columns = n, decimals = 0)
+
+
+# get a better look at the cleaned suffixes
+d %>% 
+  dplyr::mutate(
+    sufx = name_sufx_cd %>% 
+      stringr::str_to_upper() %>% 
+      stringr::str_remove_all(pattern = "[^A-Z0-9]") %>% # remove non-alphanumeric
+      dplyr::na_if("") 
+  ) %>% 
+  dplyr::count(sufx) %>% 
+  dplyr::filter(n > 1) %>% 
+  dplyr::arrange(desc(n), sufx) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   Only \~6% of records have a name suffix code
+-   There are generation suffixes: JR, SR, I, II (11), III (111), IV, V,
+    VI, VII
+-   There are honorific titles: MRS, MR, MS, DR, REV
+-   The field lentgh appears to be hard-limited to three characters,
+    e.g. (JR, (II
+
+# Standardisation
+
+Look at issues that might be addressed by standardisation.
+
+For each type of standardisation issue look at first middle and last
+names separately, because the issue may manifest differently in each of
+the name variables.
+
+## Lower-case letters
+
+The alphabetic values are almost entirely upper case. Check for lower
+case letters.
+
+```{r}
+d %>% dplyr::select(last_name) %>%
+  dplyr::filter(stringr::str_detect(last_name, "[a-z]"))
+
+d %>% dplyr::select(first_name) %>%
+  dplyr::filter(stringr::str_detect(first_name, "[a-z]"))
+
+d %>% dplyr::select(midl_name) %>%
+  dplyr::filter(stringr::str_detect(midl_name, "[a-z]"))
+```
+
+-   Lower case letters occur in last, first, and middle names
+-   Associated with particles where there would optionally be a space,
+    e.g. JoANN, McBride
+
+## Non-alphanumeric
+
+Check for non-alphanumeric characters in names.
+
+### Hyphen
+
+Check for hyphens.
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(last_name, "-"))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(last_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   \~21k last names with hyphens
+-   Look like valid hyphenated last names
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(first_name, "-"))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(first_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(first_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   \~3k first names with hyphens
+-   Look like valid hyphenated first names
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, "-"))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(midl_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(midl_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   \~4k middle names with hyphens
+-   Look like valid hyphenated middle names
+
+### Single quote
+
+Check for single quotes.
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(last_name, "'"))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(last_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   \~5k last names with single quotes
+-   Most look like legitimately quoted last names
+-   Some look like typos, e.g. LEA'KES, PERRY'KNIGHT
+-   Some look like they were intended to be diacritics, e.g. GORRE'
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(first_name, "'"))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(first_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(first_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   \~1k first names with single quotes
+-   Most like legitimately quoted first names
+-   Some look like they were intended to be diacritics, e.g. ANDRE',
+    RENE'
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, "'"))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(midl_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(midl_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   \~3k middle names with single quotes
+-   Look like legitimately quoted middle names
+-   Some look like they were intended to be diacritics, e.g. RENEE'
+
+### Double quote
+
+Check for double quotes.
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(last_name, '"'))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(last_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   1 last name with double quotes
+
+    -   This looks like a typo for a single quote
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(first_name, '"'))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(first_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(first_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   3 first names with double quotes
+-   2 are introducing nicknames
+-   1 looks like a typo, e.g. HENRYL"
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, '"'))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(midl_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(midl_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   1 middle name with double quotes
+
+    -   This this looks like the middle name is the "official" first
+        name and the listed first name is a nickname
+
+### Period
+
+Check for periods.
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(last_name, "\\."))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(last_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   11 last names with periods
+-   Most are the standard contraction of SAINT
+-   3 have added the name suffix code JR. to the last name
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(first_name, "\\."))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(first_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(first_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   120 first names with periods
+-   These look like punctuated initials
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, "\\."))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(midl_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(midl_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   \~2k middle names with periods
+-   These look like punctuated initials
+
+### Comma
+
+Check for commas.
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(last_name, ","))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(last_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   2 last names with commas
+-   Punctuation for suffix field values added to last name
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(first_name, ","))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(first_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(first_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   4 first names with commas
+-   Arbitrary added punctuation
+-   Punctuation for suffix field value added to first name
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, ","))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(midl_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(midl_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   12 middle names with periods
+-   List separator
+-   Punctuation to squeeze in extra field
+
+### Space
+
+Check for whitespace characters.
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(last_name, "\\s"))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(last_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   ~7k last names with whitespace characters
+-   Most look like substitutions for hyphen or quote
+-   Some are word separators
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(first_name, "\\s"))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(first_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(first_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   ~12k first names with whitespace characters
+-   Most look like word separators
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, "\\s"))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(midl_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(midl_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   \~47k middle names with whitespace characters
+-   Most look like word separators
+
+### Other non-alphanumeric
+
+Check for other non-alphanumeric characters.
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(last_name, "[^ a-zA-Z0-9\\.,'\"-]"))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(last_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   30 last names with other non-alphanumeric characters
+-   Most look like substitutions for hyphen or quote
+-   Some look like random cruft
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(first_name, "[^ a-zA-Z0-9\\.,'\"-]"))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(first_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(first_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   100 first names with other non-alphanumeric characters
+-   Some look like substitutions for hyphen or quote
+-   Some are parenthetical notes
+-   Some look like random cruft
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, "[^ a-zA-Z0-9\\.,'\"-]"))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(midl_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(midl_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   \~1k middle names with other non-alphanumeric characters
+-   Some look like substitutions for hyphen
+-   Many are parenthetical notes (NMN = no middle name)
+
+## Digits
+
+Check for digits.
+
+### Zero
+
+Check for zero
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(last_name, "0"))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(last_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   29 last names with zero
+-   Substitution for letter O
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(first_name, "0"))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(first_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(first_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   33 first names with zero
+-   Substitution for letter O
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, "0"))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(midl_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(midl_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   77 middle names with zero
+-   Substitution for letter O
+-   Some are in superfluous numbers
+
+### One
+
+Check for one.
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(last_name, "1"))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(last_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   1 last name with one
+-   Substitution for I in generation suffix (111 = III)
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(first_name, "1"))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(first_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(first_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   0 first names with one
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, "1"))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(midl_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(midl_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   39 middle names with one
+-   Some are substitution for I in generation suffix
+-   Some are in superfluous numbers
+
+### Other digits
+
+Check for other digits.
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(last_name, "[2-9]"))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(last_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(last_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   1 last name with digits 2-9
+-   Random insertion
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(first_name, "[2-9]"))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(first_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(first_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   2 first names with digits 2-9
+-   Look like random insertions
+
+```{r}
+x <- d %>% 
+  dplyr::filter(stringr::str_detect(midl_name, "[2-9]"))
+
+nrow(x)
+
+x %>%   
+  dplyr::distinct(midl_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(midl_name) %>% 
+  dplyr::select(all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   24 middle names with digits 2-9
+-   One random insertion
+-   Most appear to be superfluous numbers (from the address?)
+
+## Special words
+
+Look for special words that shouldn't be in names.
+
+Define word patterns to search for.
+
+```{r}
+# honorifics
+w_hons <- c(
+  "MR", "MISTER", "MASTER", "MRS", "MS", "MISS", 
+  "REV", "REVEREND", "SR", "SISTER", "BR", "BROTHER",
+  "FATHER", "MOTHER", "PASTOR", "ELDER", "BISHOP",
+  "DR", "DOCTOR", "MD", "PROF", "PROFESSOR"
+)
+
+# generation suffixes
+w_gen <- c(
+  "JR", "JNR", "JUNIOR", "SR", "SNR", "SENIOR",
+  "1ST", "2ND", "3RD", "4TH", "5TH", "6TH", "7TH", "8TH",
+  "FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH", "EIGHTH", "EIGHTTH",
+  "1", "2", "3", "4", "5", "6", "7", "8",
+  "I", "II", "III", "IIII", "IV", "V", "VI"
+)
+
+# special values
+w_spec <- c(
+  "NN", "NMN", "NAME",
+  "UNK", "UNKNOWN", "AKA", "KNOWN AS", "ALSO KNOWN AS", "ALIAS",
+  "BLIND"
+)
+
+# test
+w_test <- c(
+  "TEST", "TST", "DUMMY", "VOTER",  "([A-Z])\\1{2,}"
+)
+```
+
+### Last name
+
+```{r}
+# regular expression to match words
+w_regexp <- 
+  c(w_hons, w_gen, w_spec, w_test) %>% # all special words
+  unique() %>% # make it a set
+  dplyr::setdiff( # remove words that appear to mostly be validly used
+    c(
+      "BISHOP",
+      "BLIND",
+      "BROTHER",
+      "DOCTOR",
+      "ELDER",
+      "FIRST",
+      "JUNIOR",
+      "MASTER",
+      "MISS",
+      "MISTER",
+      "NAME",
+      "PASTOR",
+      "SENIOR",
+      "TEST",
+      "THIRD",
+      "VOTER"
+    )
+  ) %>% 
+  glue::glue(x = . , "\\b{x}\\b") %>%  # must be words
+  glue::glue_collapse(sep = "|") # search for any
+
+x <- d %>% 
+  dplyr::mutate(
+    match = 
+      last_name %>% 
+      stringr::str_to_upper() %>% 
+      stringr::str_replace_all(pattern = "[^ A-Z]", replacement = " ") %>% 
+      stringr::str_squish() %>% 
+      stringr::str_extract(pattern = w_regexp)
+  ) %>% 
+  dplyr::filter(!is.na(match))
+
+nrow(x)
+
+x %>% 
+  dplyr::arrange(match, sex, last_name, first_name) %>% 
+  dplyr::select(match, sex, age, all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+I eyeballed the results and removed words (using `setdiff` in the code above) which appeared to be mostly
+validly used.
+
+Invalid words:
+
+-   Most appear to be a suffix code added into the last name
+
+### First name
+
+```{r}
+# regular expression to match words
+w_regexp <- 
+  c(w_hons, w_gen, w_spec, w_test) %>% # all special words
+  unique() %>% # make it a set
+  dplyr::setdiff( # remove words that appear to mostly be validly used
+    c(
+      "BISHOP",
+      "BROTHER",
+      "DOCTOR",
+      "ELDER",
+      "JUNIOR",
+      "MASTER",
+      "MISTER",
+      "PASTOR",
+      "PROFESSOR"
+    )
+  ) %>% 
+  glue::glue(x = . , "\\b{x}\\b") %>%  # must be words
+  glue::glue_collapse(sep = "|") # search for any
+
+x <- d %>% 
+  dplyr::mutate(
+    match = 
+      first_name %>% 
+      stringr::str_to_upper() %>% 
+      stringr::str_replace_all(pattern = "[^ A-Z]", replacement = " ") %>% 
+      stringr::str_squish() %>% 
+      stringr::str_extract(pattern = w_regexp)
+  ) %>% 
+  dplyr::filter(!is.na(match))
+
+nrow(x)
+
+x %>% 
+  dplyr::arrange(match, sex, last_name, first_name) %>% 
+  dplyr::select(match, sex, age, all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+I eyeballed the results and removed words which appeared to be mostly
+validly used.
+
+Invalid words:
+
+-   As whole field: FATHER, III, IV, JR, MD, MR, MRS, SISTER, SR
+-   As first word: DR, MISS, MRS, REV, SISTER
+-   As last word: III, JR, MRS, NMN, SR
+-   As internal word: MRS
+
+### Middle name
+
+```{r}
+# regular expression to match words
+w_regexp <- 
+  c(w_hons, w_gen, w_spec, w_test) %>% # all special words
+  unique() %>% # make it a set
+  dplyr::setdiff( # remove words that appear to mostly be validly used
+    c(
+      "BISHOP",
+      "BLIND",
+      "BR",
+      "BROTHER",
+      "DOCTOR",
+      "ELDER",
+      "FIRST",
+      "JR", # invalid & too many to display 
+      "JUNIOR",
+      "MASTER",
+      "MISTER",
+      "MRS", # invalid & too many to display
+      "NMN", # invalid & too many to display
+      "PASTOR",
+      "SENIOR",
+      "SISTER",
+      "I",
+      "V",
+      "VI",
+      "VOTER"
+    )
+  ) %>% 
+  glue::glue(x = . , "\\b{x}\\b") %>%  # must be words
+  glue::glue_collapse(sep = "|") # search for any
+
+x <- d %>% 
+  dplyr::mutate(
+    match = 
+      midl_name %>% 
+      stringr::str_to_upper() %>% 
+      stringr::str_replace_all(pattern = "[^ A-Z]", replacement = " ") %>% 
+      stringr::str_squish() %>% 
+      stringr::str_extract(pattern = w_regexp)
+  ) %>% 
+  dplyr::filter(!is.na(match))
+
+nrow(x)
+
+x %>% 
+  dplyr::arrange(match, sex, last_name, first_name) %>% 
+  dplyr::select(match, sex, age, all_of(vars_name)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+I eyeballed the results and removed words which appeared to be mostly
+validly used.
+
+Invalid words:
+
+-   As whole field: AKA, DR, II, III, IV, JR, MD, MISS, MRS, MS, NMN,
+    REV, SR
+-   As first word: JR, MRS
+-   As last word: DR, II, III, IV, JR, MD, MISS, MR, MRS, NMN, NN, SR
+-   As internal word: JR
+
+# Timing {.unnumbered}
+
+```{r echo=FALSE}
+tictoc::toc()
+```

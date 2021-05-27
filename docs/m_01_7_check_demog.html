@@ -1,0 +1,2038 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Ross Gayler" />
+
+<meta name="date" content="2021-05-16" />
+
+<title>[meta] Check demographic variables</title>
+
+<script src="site_libs/header-attrs-2.8/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Frequency-Aware Similarity Calibration</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/rgayler/fa_sim_cal">
+    <span class="fas fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">[meta] Check demographic variables</h1>
+<h3 class="subtitle">m_01_7_check_demog</h3>
+<h4 class="author">Ross Gayler</h4>
+<h4 class="date">2021-05-16</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks">
+Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-05-27
+</p>
+<p>
+<strong>Checks:</strong>
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+7
+<span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+0
+</p>
+<p>
+<strong>Knit directory:</strong>
+<code>fa_sim_cal/</code>
+<span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version
+1.6.2). The <em>Checks</em> tab describes the
+reproducibility checks that were applied when the results were created.
+The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you
+know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Environment:</strong> empty
+</a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global
+environment can affect the analysis in your R Markdown file in unknown ways.
+For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20201104code">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Seed:</strong> <code>set.seed(20201104)</code>
+</a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20201104code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20201104)</code> was run prior to running the code in the R Markdown file.
+Setting a seed ensures that any results that rely on randomness, e.g.
+subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Session information:</strong> recorded
+</a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is
+critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Cache:</strong> none
+</a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident
+that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>File paths:</strong> relative
+</a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project
+makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreea6fb2e3554dac977062b37d69d0adb1d328baeb9targetblanka6fb2e3a">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/a6fb2e3554dac977062b37d69d0adb1d328baeb9" target="_blank">a6fb2e3</a>
+</a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreea6fb2e3554dac977062b37d69d0adb1d328baeb9targetblanka6fb2e3a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and
+connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/a6fb2e3554dac977062b37d69d0adb1d328baeb9" target="_blank">a6fb2e3</a>.
+See the <em>Past versions</em> tab to see a history of the changes made to the
+R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the
+analysis have been committed to Git prior to generating the results (you can
+use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only
+checks the R Markdown file, but you know if there are other scripts or data
+files that it depends on. Below is the status of the Git repository when the
+results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    .tresorit/
+    Ignored:    _targets/
+    Ignored:    data/VR_20051125.txt.xz
+    Ignored:    data/VR_Snapshot_20081104.txt.xz
+    Ignored:    renv/library/
+    Ignored:    renv/local/
+    Ignored:    renv/staging/
+
+Unstaged changes:
+    Modified:   analysis/m_00_status.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in
+this status report because it is ok for generated content to have uncommitted
+changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made
+to the R Markdown (<code>analysis/m_01_7_check_demog.Rmd</code>) and HTML (<code>docs/m_01_7_check_demog.html</code>)
+files. If you’ve configured a remote Git repository (see
+<code>?wflow_git_remote</code>), click on the hyperlinks in the table below to
+view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/b41c57ced81e6fbc8b265b6a0a127ffcca73e8f3/analysis/m_01_7_check_demog.Rmd" target="_blank">b41c57c</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-19
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/b41c57ced81e6fbc8b265b6a0a127ffcca73e8f3/docs/m_01_7_check_demog.html" target="_blank">b41c57c</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-19
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/14992353465ac463f557c9c067deaad7e641dec6/analysis/m_01_7_check_demog.Rmd" target="_blank">1499235</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-16
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/411de1eac1cc9d3abf616f2e8c7cba1a6400b60e/analysis/m_01_7_check_demog.Rmd" target="_blank">411de1e</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-04-04
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/411de1eac1cc9d3abf616f2e8c7cba1a6400b60e/docs/m_01_7_check_demog.html" target="_blank">411de1e</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-04-04
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/0bd4a5fefb2ce7ac7a8aa9ddb21e56d3a78fc0c8/analysis/m_01_7_check_demog.Rmd" target="_blank">0bd4a5f</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-04-03
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/0bd4a5fefb2ce7ac7a8aa9ddb21e56d3a78fc0c8/docs/m_01_7_check_demog.html" target="_blank">0bd4a5f</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-04-03
+</td>
+<td>
+WIP
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code># NOTE this notebook can be run manually or automatically by {targets}
+# So load the packages required by this notebook here
+# rather than relying on _targets.R to load them.
+
+# Set up the project environment, because {workflowr} knits each Rmd file 
+# in a new R session, and doesn&#39;t execute the project .Rprofile
+
+library(targets) # access data from the targets cache
+
+library(tictoc) # capture execution time
+library(here) # construct file paths relative to project root</code></pre>
+<pre><code>here() starts at /home/ross/RG/projects/academic/entity_resolution/fa_sim_cal_TOP/fa_sim_cal</code></pre>
+<pre class="r"><code>library(fs) # file system operations
+library(dplyr) # data wrangling</code></pre>
+<pre><code>
+Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:stats&#39;:
+
+    filter, lag</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(gt) # table formatting
+library(stringr) # string matching
+library(vroom) # fast reading of delimited text files
+library(lubridate) # date parsing</code></pre>
+<pre><code>
+Attaching package: &#39;lubridate&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    date, intersect, setdiff, union</code></pre>
+<pre class="r"><code>library(forcats) # manipulation of factors
+library(ggplot2) # graphics
+library(skimr) # compact summary of each variable
+library(tidyr) # data tidying
+
+# start the execution time clock
+tictoc::tic(&quot;Computation time (excl. render)&quot;)
+
+# Get the path to the raw entity data file
+# This is a target managed by {targets}
+f_entity_raw_tsv &lt;- tar_read(c_raw_entity_data_file)</code></pre>
+<div id="introduction" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<p>These meta notebooks document the development of functions that will be
+applied in the core pipeline.</p>
+<p>The aim of the m_01 set of meta notebooks is to work out how to read the
+raw entity data, drop excluded cases, discard irrelevant variables,
+apply any cleaning, and construct standardised names. This does not
+include construction of any modelling features. To be clear, the target
+(<code>c_raw_entity_data</code>) corresponding to the objective of this set of
+notebooks is the cleaned and standardised raw data, before constructing
+any modelling features.</p>
+<p>This notebook documents the checking of the demographic variables for
+any issues that need fixing. These are the non-name variables that are
+reasonably interpretable as properties of the person.</p>
+<p>We will probably use some of these variables as predictors in a
+compatibility model and/or as blocking variables.</p>
+<p>Regardless of whether there are any issues that need to be fixed, the
+analyses here may inform our use of these variables in later analyses.</p>
+<p>Define the demographic variables.</p>
+<ul>
+<li><code>sex_code</code> - Gender code</li>
+<li><code>sex</code> - Gender description</li>
+<li><code>age</code> - Age at snapshot date (years)</li>
+<li><code>birth_place</code> - Birth place</li>
+</ul>
+<pre class="r"><code>vars_resid &lt;- c(
+  &quot;sex_code&quot;, &quot;sex&quot;, &quot;age&quot;, &quot;birth_place&quot; 
+)</code></pre>
+</div>
+<div id="read-entity-data" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Read entity data</h1>
+<p>Read the raw entity data file using the previously defined functions
+<code>raw_entity_data_read()</code>, <code>raw_entity_data_excl_status()</code>,
+<code>raw_entity_data_excl_test()</code>, <code>raw_entity_data_drop_novar()</code>,
+<code>raw_entity_data_parse_dates()</code>, and <code>raw_entity_data_drop_cancel_dt()</code>.</p>
+<pre class="r"><code># Show the data file name
+fs::path_file(f_entity_raw_tsv)</code></pre>
+<pre><code>[1] &quot;VR_20051125.txt.xz&quot;</code></pre>
+<pre class="r"><code>d &lt;- raw_entity_data_read(f_entity_raw_tsv) %&gt;% 
+  raw_entity_data_excl_status() %&gt;% 
+  raw_entity_data_excl_test() %&gt;% 
+  raw_entity_data_drop_novar() %&gt;% 
+  raw_entity_data_parse_dates() %&gt;% 
+  raw_entity_data_drop_admin()
+dim(d)</code></pre>
+<pre><code>[1] 4099699      22</code></pre>
+<p>Take a quick look at the distributions.</p>
+<pre class="r"><code>d %&gt;% 
+  dplyr::select(sex_code, sex, age, birth_place) %&gt;% 
+  skimr::skim()</code></pre>
+<table>
+<caption><span id="tab:unnamed-chunk-4">Table 2.1: </span>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">Piped data</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">4099699</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">4</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">4</td>
+</tr>
+<tr class="odd">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">sex_code</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">sex</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">3</td>
+<td align="right">6</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">age</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">0</td>
+<td align="right">135</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">birth_place</td>
+<td align="right">718647</td>
+<td align="right">0.82</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">56</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>sex_code</code> 100% filled</li>
+<li><code>sex</code> 100% filled</li>
+<li><code>age</code> 100% filled</li>
+<li><code>birth_place</code> 82% filled</li>
+</ul>
+</div>
+<div id="sex_code-sex" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> sex_code &amp; sex</h1>
+<ul>
+<li><code>sex_code</code> - Gender code<br />
+</li>
+<li><code>sex</code> Gender - description</li>
+</ul>
+<p>These are presumably a code and label in a 1:1 relationship.</p>
+<pre class="r"><code>d %&gt;% 
+  dplyr::count(sex_code, sex) %&gt;% 
+  gt::gt() %&gt;% 
+  gt::opt_row_striping() %&gt;% 
+  gt::tab_style(style = cell_text(weight = &quot;bold&quot;), locations = cells_column_labels()) %&gt;% 
+  gt::fmt_missing(columns = everything(), missing_text = &quot;&lt;NA&gt;&quot;) %&gt;% 
+  gt::fmt_number(columns = n, decimals = 0)</code></pre>
+<div id="dcehvnnqlr" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#dcehvnnqlr .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#dcehvnnqlr .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#dcehvnnqlr .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#dcehvnnqlr .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#dcehvnnqlr .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#dcehvnnqlr .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#dcehvnnqlr .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#dcehvnnqlr .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#dcehvnnqlr .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#dcehvnnqlr .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#dcehvnnqlr .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#dcehvnnqlr .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#dcehvnnqlr .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#dcehvnnqlr .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#dcehvnnqlr .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#dcehvnnqlr .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#dcehvnnqlr .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#dcehvnnqlr .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#dcehvnnqlr .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#dcehvnnqlr .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#dcehvnnqlr .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#dcehvnnqlr .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#dcehvnnqlr .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#dcehvnnqlr .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#dcehvnnqlr .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#dcehvnnqlr .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#dcehvnnqlr .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#dcehvnnqlr .gt_left {
+  text-align: left;
+}
+
+#dcehvnnqlr .gt_center {
+  text-align: center;
+}
+
+#dcehvnnqlr .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#dcehvnnqlr .gt_font_normal {
+  font-weight: normal;
+}
+
+#dcehvnnqlr .gt_font_bold {
+  font-weight: bold;
+}
+
+#dcehvnnqlr .gt_font_italic {
+  font-style: italic;
+}
+
+#dcehvnnqlr .gt_super {
+  font-size: 65%;
+}
+
+#dcehvnnqlr .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 65%;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">sex_code</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">sex</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-weight: bold;">n</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left">F</td>
+<td class="gt_row gt_left">FEMALE</td>
+<td class="gt_row gt_right">2,239,888</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">M</td>
+<td class="gt_row gt_left gt_striped">MALE</td>
+<td class="gt_row gt_right gt_striped">1,844,220</td></tr>
+    <tr><td class="gt_row gt_left">U</td>
+<td class="gt_row gt_left">UNK</td>
+<td class="gt_row gt_right">15,591</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+<ul>
+<li><p><code>sex_code</code> and <code>sex</code> in 1-1 relationship</p></li>
+<li><p>Drop <code>sex_code</code> as redundant</p></li>
+</ul>
+</div>
+<div id="birth_place" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> birth_place</h1>
+<p><code>birth_place</code> Birth place</p>
+<pre class="r"><code>d %&gt;% 
+  dplyr::count(birth_place) %&gt;% 
+  dplyr::arrange(desc(n)) %&gt;% 
+  gt::gt() %&gt;% 
+  gt::opt_row_striping() %&gt;% 
+  gt::tab_style(style = cell_text(weight = &quot;bold&quot;), locations = cells_column_labels()) %&gt;% 
+  gt::fmt_missing(columns = everything(), missing_text = &quot;&lt;NA&gt;&quot;) %&gt;% 
+  gt::fmt_number(columns = n, decimals = 0)</code></pre>
+<div id="dtbwrdjpqr" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#dtbwrdjpqr .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#dtbwrdjpqr .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#dtbwrdjpqr .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#dtbwrdjpqr .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#dtbwrdjpqr .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#dtbwrdjpqr .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#dtbwrdjpqr .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#dtbwrdjpqr .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#dtbwrdjpqr .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#dtbwrdjpqr .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#dtbwrdjpqr .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#dtbwrdjpqr .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#dtbwrdjpqr .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#dtbwrdjpqr .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#dtbwrdjpqr .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#dtbwrdjpqr .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#dtbwrdjpqr .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#dtbwrdjpqr .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#dtbwrdjpqr .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#dtbwrdjpqr .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#dtbwrdjpqr .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#dtbwrdjpqr .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#dtbwrdjpqr .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#dtbwrdjpqr .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#dtbwrdjpqr .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#dtbwrdjpqr .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#dtbwrdjpqr .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#dtbwrdjpqr .gt_left {
+  text-align: left;
+}
+
+#dtbwrdjpqr .gt_center {
+  text-align: center;
+}
+
+#dtbwrdjpqr .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#dtbwrdjpqr .gt_font_normal {
+  font-weight: normal;
+}
+
+#dtbwrdjpqr .gt_font_bold {
+  font-weight: bold;
+}
+
+#dtbwrdjpqr .gt_font_italic {
+  font-style: italic;
+}
+
+#dtbwrdjpqr .gt_super {
+  font-size: 65%;
+}
+
+#dtbwrdjpqr .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 65%;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">birth_place</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-weight: bold;">n</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left">NC</td>
+<td class="gt_row gt_right">1,875,088</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">&lt;NA&gt;</td>
+<td class="gt_row gt_right gt_striped">718,647</td></tr>
+    <tr><td class="gt_row gt_left">NY</td>
+<td class="gt_row gt_right">189,726</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">VA</td>
+<td class="gt_row gt_right gt_striped">131,356</td></tr>
+    <tr><td class="gt_row gt_left">SC</td>
+<td class="gt_row gt_right">97,827</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">PA</td>
+<td class="gt_row gt_right gt_striped">93,496</td></tr>
+    <tr><td class="gt_row gt_left">OC</td>
+<td class="gt_row gt_right">76,209</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">OH</td>
+<td class="gt_row gt_right gt_striped">75,765</td></tr>
+    <tr><td class="gt_row gt_left">FL</td>
+<td class="gt_row gt_right">69,032</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">NJ</td>
+<td class="gt_row gt_right gt_striped">67,588</td></tr>
+    <tr><td class="gt_row gt_left">GA</td>
+<td class="gt_row gt_right">56,176</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">CA</td>
+<td class="gt_row gt_right gt_striped">50,560</td></tr>
+    <tr><td class="gt_row gt_left">MI</td>
+<td class="gt_row gt_right">48,081</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">IL</td>
+<td class="gt_row gt_right gt_striped">47,613</td></tr>
+    <tr><td class="gt_row gt_left">WV</td>
+<td class="gt_row gt_right">42,143</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">TX</td>
+<td class="gt_row gt_right gt_striped">37,852</td></tr>
+    <tr><td class="gt_row gt_left">TN</td>
+<td class="gt_row gt_right">36,797</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">MD</td>
+<td class="gt_row gt_right gt_striped">36,369</td></tr>
+    <tr><td class="gt_row gt_left">MA</td>
+<td class="gt_row gt_right">33,519</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">IN</td>
+<td class="gt_row gt_right gt_striped">26,719</td></tr>
+    <tr><td class="gt_row gt_left">KY</td>
+<td class="gt_row gt_right">24,276</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">AL</td>
+<td class="gt_row gt_right gt_striped">23,877</td></tr>
+    <tr><td class="gt_row gt_left">DC</td>
+<td class="gt_row gt_right">22,563</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">CT</td>
+<td class="gt_row gt_right gt_striped">22,394</td></tr>
+    <tr><td class="gt_row gt_left">MO</td>
+<td class="gt_row gt_right">16,066</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">WI</td>
+<td class="gt_row gt_right gt_striped">15,663</td></tr>
+    <tr><td class="gt_row gt_left">LA</td>
+<td class="gt_row gt_right">15,362</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">CO</td>
+<td class="gt_row gt_right gt_striped">12,803</td></tr>
+    <tr><td class="gt_row gt_left">MS</td>
+<td class="gt_row gt_right">12,047</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">IA</td>
+<td class="gt_row gt_right gt_striped">10,891</td></tr>
+    <tr><td class="gt_row gt_left">MN</td>
+<td class="gt_row gt_right">10,388</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">OK</td>
+<td class="gt_row gt_right gt_striped">9,609</td></tr>
+    <tr><td class="gt_row gt_left">WA</td>
+<td class="gt_row gt_right">9,083</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">KS</td>
+<td class="gt_row gt_right gt_striped">8,656</td></tr>
+    <tr><td class="gt_row gt_left">AR</td>
+<td class="gt_row gt_right">6,614</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">ME</td>
+<td class="gt_row gt_right gt_striped">6,284</td></tr>
+    <tr><td class="gt_row gt_left">RI</td>
+<td class="gt_row gt_right">6,039</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">NE</td>
+<td class="gt_row gt_right gt_striped">5,592</td></tr>
+    <tr><td class="gt_row gt_left">DE</td>
+<td class="gt_row gt_right">5,373</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">AZ</td>
+<td class="gt_row gt_right gt_striped">5,043</td></tr>
+    <tr><td class="gt_row gt_left">NH</td>
+<td class="gt_row gt_right">4,880</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">HI</td>
+<td class="gt_row gt_right gt_striped">3,870</td></tr>
+    <tr><td class="gt_row gt_left">VT</td>
+<td class="gt_row gt_right">3,783</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">OR</td>
+<td class="gt_row gt_right gt_striped">3,764</td></tr>
+    <tr><td class="gt_row gt_left">NM</td>
+<td class="gt_row gt_right">3,435</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">AK</td>
+<td class="gt_row gt_right gt_striped">3,201</td></tr>
+    <tr><td class="gt_row gt_left">UT</td>
+<td class="gt_row gt_right">3,088</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">PR</td>
+<td class="gt_row gt_right gt_striped">2,591</td></tr>
+    <tr><td class="gt_row gt_left">ND</td>
+<td class="gt_row gt_right">2,399</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">SD</td>
+<td class="gt_row gt_right gt_striped">2,240</td></tr>
+    <tr><td class="gt_row gt_left">ID</td>
+<td class="gt_row gt_right">2,003</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">MT</td>
+<td class="gt_row gt_right gt_striped">1,901</td></tr>
+    <tr><td class="gt_row gt_left">NV</td>
+<td class="gt_row gt_right">1,542</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">WY</td>
+<td class="gt_row gt_right gt_striped">1,280</td></tr>
+    <tr><td class="gt_row gt_left">VI</td>
+<td class="gt_row gt_right">355</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">GU</td>
+<td class="gt_row gt_right gt_striped">149</td></tr>
+    <tr><td class="gt_row gt_left">AS</td>
+<td class="gt_row gt_right">32</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+<ul>
+<li><code>birth_place</code> values appear to be 2-character <a href="https://en.wikipedia.org/wiki/List_of_U.S._state_and_territory_abbreviations">US state
+abbreviations</a></li>
+<li>OC might mean “other country”</li>
+<li>VI, GU, AS are probably Virgin Islands, Guam, American Samoa</li>
+</ul>
+</div>
+<div id="age" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> age</h1>
+<p><code>age</code> Age (years)</p>
+<p>I presume that the source documents actually record date of birth rather
+than age, and that age is reported in these files as a gesture to
+privacy.</p>
+<p>Look at the distribution of age.</p>
+<pre class="r"><code>x &lt;- d %&gt;% 
+  dplyr::mutate(age = as.integer(age))
+                
+x$age %&gt;% summary()</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.00   33.00   45.00   46.93   58.00  221.00 </code></pre>
+<pre class="r"><code>x$age %&gt;% quantile(probs = c(0.003, 0.004, 0.995, 0.996, 0.997, 0.998, 0.999))</code></pre>
+<pre><code> 0.3%  0.4% 99.5% 99.6% 99.7% 99.8% 99.9% 
+    0    18    98   105   105   105   204 </code></pre>
+<pre class="r"><code>x %&gt;% 
+  # dplyr::filter(age &gt;= 80) %&gt;% 
+  ggplot() +
+  geom_vline(xintercept = c(17, 105, 125, 204), colour = &quot;orange&quot;) +
+  geom_histogram(aes(x = age), binwidth = 1) +
+  scale_y_log10()</code></pre>
+<pre><code>Warning: Transformation introduced infinite values in continuous y-axis</code></pre>
+<pre><code>Warning: Removed 87 rows containing missing values (geom_bar).</code></pre>
+<p><img src="figure/m_01_7_check_demog.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/411de1eac1cc9d3abf616f2e8c7cba1a6400b60e/docs/figure/m_01_7_check_demog.Rmd/unnamed-chunk-7-1.png" target="_blank">411de1e</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-04-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/0bd4a5fefb2ce7ac7a8aa9ddb21e56d3a78fc0c8/docs/figure/m_01_7_check_demog.Rmd/unnamed-chunk-7-1.png" target="_blank">0bd4a5f</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-04-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li>Voters may be pre-registered at 17 years</li>
+<li>The ages less than 17 years (especially zero) are effectively
+missing</li>
+<li>The spikes at 105, 125, and 204 years must be from some special
+process which generates those specific ages.</li>
+<li>Any age greater than or equal to 105 years, seems very implausible.</li>
+</ul>
+</div>
+<div id="drop-unneeded-variables" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> Drop unneeded variables</h1>
+<p>Drop <code>sex_code</code>.</p>
+<pre class="r"><code># Function to drop unneeded admin variables
+raw_entity_data_drop_demog &lt;- function(
+  d # data frame - raw entity data
+) {
+  d %&gt;%
+    dplyr::select(-sex_code)
+}</code></pre>
+<p>Apply the filter and track the number of rows before and after the
+filter.</p>
+<pre class="r"><code># number of columns before dropping
+d %&gt;% 
+  names() %&gt;% length</code></pre>
+<pre><code>[1] 22</code></pre>
+<pre class="r"><code>d %&gt;% 
+  raw_entity_data_drop_demog %&gt;% 
+  # number of columns after dropping
+  names() %&gt;% length</code></pre>
+<pre><code>[1] 21</code></pre>
+</div>
+<div id="timing" class="section level1 unnumbered">
+<h1>Timing</h1>
+<pre><code>Computation time (excl. render): 173.734 sec elapsed</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.1.0 (2021-05-18)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 20.10
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.9.0
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.9.0
+
+locale:
+ [1] LC_CTYPE=en_AU.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_AU.UTF-8        LC_COLLATE=en_AU.UTF-8    
+ [5] LC_MONETARY=en_AU.UTF-8    LC_MESSAGES=en_AU.UTF-8   
+ [7] LC_PAPER=en_AU.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_AU.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] tidyr_1.1.3      skimr_2.1.3      ggplot2_3.3.3    forcats_0.5.1   
+ [5] lubridate_1.7.10 vroom_1.4.0      stringr_1.4.0    gt_0.3.0        
+ [9] dplyr_1.0.6      fs_1.5.0         here_1.0.1       tictoc_1.0.1    
+[13] targets_0.4.2   
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.6        ps_1.6.0          rprojroot_2.0.2   digest_0.6.27    
+ [5] utf8_1.2.1        R6_2.5.0          repr_1.1.3        backports_1.2.1  
+ [9] evaluate_0.14     highr_0.9         pillar_1.6.1      rlang_0.4.11     
+[13] data.table_1.14.0 whisker_0.4       callr_3.7.0       jquerylib_0.1.4  
+[17] checkmate_2.0.0   rmarkdown_2.8     labeling_0.4.2    igraph_1.2.6     
+[21] bit_4.0.4         munsell_0.5.0     compiler_4.1.0    httpuv_1.6.1     
+[25] xfun_0.23         pkgconfig_2.0.3   base64enc_0.1-3   htmltools_0.5.1.1
+[29] tidyselect_1.1.1  tibble_3.1.2      bookdown_0.22     workflowr_1.6.2  
+[33] codetools_0.2-18  fansi_0.4.2       crayon_1.4.1      withr_2.4.2      
+[37] later_1.2.0       grid_4.1.0        jsonlite_1.7.2    gtable_0.3.0     
+[41] lifecycle_1.0.0   git2r_0.28.0      magrittr_2.0.1    scales_1.1.1     
+[45] cli_2.5.0         stringi_1.6.2     farver_2.1.0      renv_0.13.2      
+[49] promises_1.2.0.1  bslib_0.2.5       ellipsis_0.3.2    generics_0.1.0   
+[53] vctrs_0.3.8       tools_4.1.0       bit64_4.0.5       glue_1.4.2       
+[57] purrr_0.3.4       processx_3.5.2    parallel_4.1.0    yaml_2.2.1       
+[61] colorspace_2.0-1  knitr_1.33        sass_0.4.0       </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4,h5",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

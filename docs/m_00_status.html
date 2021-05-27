@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Ross Gayler" />
+
+
+<title>[meta] Project Workflow Status</title>
+
+<script src="site_libs/header-attrs-2.8/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<link href="site_libs/vis-4.20.1/vis.css" rel="stylesheet" />
+<script src="site_libs/vis-4.20.1/vis.min.js"></script>
+<script src="site_libs/visNetwork-binding-2.0.9/visNetwork.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Frequency-Aware Similarity Calibration</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/rgayler/fa_sim_cal">
+    <span class="fas fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">[meta] Project Workflow Status</h1>
+<h3 class="subtitle">m_00_status</h3>
+<h4 class="author">Ross Gayler</h4>
+<h4 class="date">Thu May 27 19:32:17 2021</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks">
+Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-05-27
+</p>
+<p>
+<strong>Checks:</strong>
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+7
+<span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+0
+</p>
+<p>
+<strong>Knit directory:</strong>
+<code>fa_sim_cal/</code>
+<span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version
+1.6.2). The <em>Checks</em> tab describes the
+reproducibility checks that were applied when the results were created.
+The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you
+know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Environment:</strong> empty
+</a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global
+environment can affect the analysis in your R Markdown file in unknown ways.
+For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20201104code">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Seed:</strong> <code>set.seed(20201104)</code>
+</a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20201104code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20201104)</code> was run prior to running the code in the R Markdown file.
+Setting a seed ensures that any results that rely on randomness, e.g.
+subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Session information:</strong> recorded
+</a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is
+critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Cache:</strong> none
+</a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident
+that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>File paths:</strong> relative
+</a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project
+makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreeb85e679df406f192d111b194522d54f343893e1ftargetblankb85e679a">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/b85e679df406f192d111b194522d54f343893e1f" target="_blank">b85e679</a>
+</a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreeb85e679df406f192d111b194522d54f343893e1ftargetblankb85e679a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and
+connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/b85e679df406f192d111b194522d54f343893e1f" target="_blank">b85e679</a>.
+See the <em>Past versions</em> tab to see a history of the changes made to the
+R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the
+analysis have been committed to Git prior to generating the results (you can
+use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only
+checks the R Markdown file, but you know if there are other scripts or data
+files that it depends on. Below is the status of the Git repository when the
+results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    .tresorit/
+    Ignored:    _targets/
+    Ignored:    data/VR_20051125.txt.xz
+    Ignored:    data/VR_Snapshot_20081104.txt.xz
+    Ignored:    renv/library/
+    Ignored:    renv/local/
+    Ignored:    renv/staging/
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in
+this status report because it is ok for generated content to have uncommitted
+changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made
+to the R Markdown (<code>analysis/m_00_status.Rmd</code>) and HTML (<code>docs/m_00_status.html</code>)
+files. If you’ve configured a remote Git repository (see
+<code>?wflow_git_remote</code>), click on the hyperlinks in the table below to
+view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/b85e679df406f192d111b194522d54f343893e1f/analysis/m_00_status.Rmd" target="_blank">b85e679</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-27
+</td>
+<td>
+wflow_publish(c(“analysis/proposal.Rmd”, “analysis/notes.Rmd”,
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/1f2abdfebe5de0c383a6875ea98c105bacb030fe/docs/m_00_status.html" target="_blank">1f2abdf</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/a6fb2e3554dac977062b37d69d0adb1d328baeb9/docs/m_00_status.html" target="_blank">a6fb2e3</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-27
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/5c06e88d4bd54cfc636a1561d0681668ccfcf524/docs/m_00_status.html" target="_blank">5c06e88</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-26
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/24d95c0566a32dd720743eacdc11a3606f275f12/analysis/m_00_status.Rmd" target="_blank">24d95c0</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-15
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/24d95c0566a32dd720743eacdc11a3606f275f12/docs/m_00_status.html" target="_blank">24d95c0</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-15
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/380063f56b7fedf99da0dd6c1ae8625db590c06a/analysis/m_00_status.Rmd" target="_blank">380063f</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-13
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/980a304cead083ec05eb4db4d0629b3aaf2bf732/docs/m_00_status.html" target="_blank">980a304</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-04-21
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/b565810172124e1ed920c96964ca9180009ced2a/docs/m_00_status.html" target="_blank">b565810</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-04-04
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/411de1eac1cc9d3abf616f2e8c7cba1a6400b60e/analysis/m_00_status.Rmd" target="_blank">411de1e</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-04-04
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/411de1eac1cc9d3abf616f2e8c7cba1a6400b60e/docs/m_00_status.html" target="_blank">411de1e</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-04-04
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/0bd4a5fefb2ce7ac7a8aa9ddb21e56d3a78fc0c8/docs/m_00_status.html" target="_blank">0bd4a5f</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-04-03
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/9b4272da236d41673830712f553bf9668fcc9295/docs/m_00_status.html" target="_blank">9b4272d</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-04-02
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/ec5d58800738d23e0d6b4ecc31c7867a76965f15/docs/m_00_status.html" target="_blank">ec5d588</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-30
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/3d4d205fc5dc453fa3673ac4c8edcd041c90666b/analysis/m_00_status.Rmd" target="_blank">3d4d205</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-28
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/3d4d205fc5dc453fa3673ac4c8edcd041c90666b/docs/m_00_status.html" target="_blank">3d4d205</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-28
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/ebd787ee67b6a30a4fbd82d7a71c01358b56fd7a/analysis/m_00_status.Rmd" target="_blank">ebd787e</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-28
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/ebd787ee67b6a30a4fbd82d7a71c01358b56fd7a/docs/m_00_status.html" target="_blank">ebd787e</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-28
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/ef1be3daba7777c927bca112df1c9ef7441023f6/docs/m_00_status.html" target="_blank">ef1be3d</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-27
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/a0b6a5614e5136ee73e90a83e000387eb4c1dcec/docs/m_00_status.html" target="_blank">a0b6a56</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-21
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/981bddccb1277b9660149e8b59fe3170369bd63e/analysis/m_00_status.Rmd" target="_blank">981bddc</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-21
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/6b6e3361c1454b1fbafe7dcdabced520f5a6e87d/docs/m_00_status.html" target="_blank">6b6e336</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-21
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/c2b865143ce6781d6952b6497bdd38f46319aa26/analysis/m_00_status.Rmd" target="_blank">c2b8651</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-21
+</td>
+<td>
+wflow_publish(c(“analysis/m_00_status.Rmd”, “analysis/index.Rmd”))
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/630b39923653d07db8fffd160bfe0dd182de45e9/docs/m_00_status.html" target="_blank">630b399</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-21
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/7793ab2c2b0c3ca7a5e247aa8ae00fa4b6049767/analysis/m_00_status.Rmd" target="_blank">7793ab2</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-09
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/44bbff02881bbd75b0cea51cf6b3f234fc74a1b9/analysis/m_00_status.Rmd" target="_blank">44bbff0</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-08
+</td>
+<td>
+Merge branch ‘retrofit-targets’ of <a href="https://github.com/rgayler/fa_sim_cal" class="uri">https://github.com/rgayler/fa_sim_cal</a> into retrofit-targets
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/810d4ff15ddfd1133169f95a8cac1c37147009f9/analysis/m_00_status.Rmd" target="_blank">810d4ff</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-06
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/eca4a72d99575455cc7e72cc21cdde2e8cd19cf1/analysis/m_00_status.Rmd" target="_blank">eca4a72</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-06
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/dcdc6a2813c722fddfbf2fc9e96b057f93e7d94d/analysis/m_00_status.Rmd" target="_blank">dcdc6a2</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-05
+</td>
+<td>
+WIP
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<p>This notebook displays the status of the project workflow, that is,
+whether everything is computationally up to date. It displays the status
+as at the time the notebook is executed, so if the status has changed
+since this notebook was last executed that fact won’t be reflected in
+this rendered notebook.</p>
+<p>This notebook is currently intended to be run manually when you feel the
+need, for example, when returning to the project.</p>
+<div id="renv-status" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> <code>{renv}</code> status</h1>
+<p><code>{renv}</code> tracks the used <code>R</code> packages and their versions.</p>
+<pre class="r"><code># Get {targets} to tell {renv} which packages it uses
+targets::tar_renv() </code></pre>
+<pre><code>here() starts at /home/ross/RG/projects/academic/entity_resolution/fa_sim_cal_TOP/fa_sim_cal</code></pre>
+<pre class="r"><code>renv::status()</code></pre>
+<pre><code>* The project is already synchronized with the lockfile.</code></pre>
+</div>
+<div id="targets-status" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> <code>{targets}</code> status</h1>
+<p><code>{targets}</code> is used to track the computational dependencies between the
+project components and orchestrate recalculation when any components are
+changed.</p>
+<ul>
+<li><code>c_*</code> components are in the core pipeline</li>
+<li><code>p_*</code> components are in the publications pipelines</li>
+<li><code>m_*</code> components are in the meta pipelines</li>
+</ul>
+<p>Functions may be used across multiple pipeline categories, so function
+names are not prefixed.</p>
+<p>Meta pipelines generally originate from a target on the core pipeline.
+Each meta pipeline generally explores some aspect of that source target
+which informs the design of the next stage of processing on the core
+pipeline.</p>
+<p>Each of the meta pipelines has leaves that are reports rendered from
+<code>Rmd</code> files that are managed jointly by <code>{targets}</code> and <code>{workflowr}</code>.
+<code>{targets}</code> is aware of the upstream dependencies (data and functions)
+and the <code>Rmd</code> file itself. If any of these is invalidated <code>tar_make()</code>
+will rebuild the report using <code>wflow_build()</code>.</p>
+<p><code>{targets}</code> is <em>not</em> aware of the rendered meta report files. The
+rendered report files are managed exclusively by <code>{workflowr}</code>. This
+means that you can use <code>{workflowr}</code> to build and publish the report
+without making <code>{targets}</code> think that the report is out of date because
+<code>{workflowr}</code> has re-rendered it.</p>
+<pre class="r"><code># outline
+targets::tar_glimpse()</code></pre>
+<pre><code>here() starts at /home/ross/RG/projects/academic/entity_resolution/fa_sim_cal_TOP/fa_sim_cal</code></pre>
+<div id="htmlwidget-de5f4fc1077b82c2ba03" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-de5f4fc1077b82c2ba03">{"x":{"nodes":{"name":["c_raw_entity_data_file","m_01_4_parse_dates","m_01_7_check_demog","m_01_9_clean_vars","m_01_8_check_name","m_01_6_check_resid","m_01_2_exclusions","m_01_1_read_raw_entity_data","m_01_5_check_admin","c_clean_entity_data","m_01_3_drop_novar"],"type":["stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem"],"status":["none","none","none","none","none","none","none","none","none","none","none"],"seconds":[null,null,null,null,null,null,null,null,null,null,null],"bytes":[null,null,null,null,null,null,null,null,null,null,null],"branches":[null,null,null,null,null,null,null,null,null,null,null],"id":["c_raw_entity_data_file","m_01_4_parse_dates","m_01_7_check_demog","m_01_9_clean_vars","m_01_8_check_name","m_01_6_check_resid","m_01_2_exclusions","m_01_1_read_raw_entity_data","m_01_5_check_admin","c_clean_entity_data","m_01_3_drop_novar"],"label":["c_raw_entity_data_file","m_01_4_parse_dates","m_01_7_check_demog","m_01_9_clean_vars","m_01_8_check_name","m_01_6_check_resid","m_01_2_exclusions","m_01_1_read_raw_entity_data","m_01_5_check_admin","c_clean_entity_data","m_01_3_drop_novar"],"level":[1,2,2,2,2,2,2,2,2,2,2],"color":["#94a4ac","#94a4ac","#94a4ac","#94a4ac","#94a4ac","#94a4ac","#94a4ac","#94a4ac","#94a4ac","#94a4ac","#94a4ac"],"shape":["dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot"]},"edges":{"from":["c_raw_entity_data_file","c_raw_entity_data_file","c_raw_entity_data_file","c_raw_entity_data_file","c_raw_entity_data_file","c_raw_entity_data_file","c_raw_entity_data_file","c_raw_entity_data_file","c_raw_entity_data_file","c_raw_entity_data_file"],"to":["m_01_4_parse_dates","m_01_7_check_demog","m_01_9_clean_vars","m_01_8_check_name","m_01_6_check_resid","m_01_2_exclusions","m_01_1_read_raw_entity_data","m_01_5_check_admin","c_clean_entity_data","m_01_3_drop_novar"],"arrows":["to","to","to","to","to","to","to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Stem"],"shape":["dot"],"color":["#899DA4"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code># core detail
+targets::tar_visnetwork(allow = starts_with(&quot;c_&quot;))</code></pre>
+<pre><code>here() starts at /home/ross/RG/projects/academic/entity_resolution/fa_sim_cal_TOP/fa_sim_cal</code></pre>
+<div id="htmlwidget-50ee4d395fad116a4b0a" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-50ee4d395fad116a4b0a">{"x":{"nodes":{"name":["c_clean_entity_data","c_raw_entity_data_file"],"type":["stem","stem"],"status":["uptodate","uptodate"],"seconds":[295.48,0.802],"bytes":[126758923,259976764],"branches":[null,null],"id":["c_clean_entity_data","c_raw_entity_data_file"],"label":["c_clean_entity_data","c_raw_entity_data_file"],"level":[2,1],"color":["#354823","#354823"],"shape":["dot","dot"]},"edges":{"from":["c_raw_entity_data_file"],"to":["c_clean_entity_data"],"arrows":["to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem"],"color":["#354823","#899DA4"],"shape":["dot","dot"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code># meta detail
+targets::tar_visnetwork(allow = starts_with(&quot;m_&quot;))</code></pre>
+<pre><code>here() starts at /home/ross/RG/projects/academic/entity_resolution/fa_sim_cal_TOP/fa_sim_cal</code></pre>
+<div id="htmlwidget-5a169349e00783be6aa5" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-5a169349e00783be6aa5">{"x":{"nodes":{"name":["m_01_1_read_raw_entity_data","m_01_2_exclusions","m_01_3_drop_novar","m_01_4_parse_dates","m_01_5_check_admin","m_01_6_check_resid","m_01_7_check_demog","m_01_8_check_name","m_01_9_clean_vars"],"type":["stem","stem","stem","stem","stem","stem","stem","stem","stem"],"status":["uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[75.425,69.625,913.276,90.185,256.704,430.326,187.743,569.235,428.975],"bytes":[8309,9398,4268,4613,15865,20569,6557,36987,25022],"branches":[null,null,null,null,null,null,null,null,null],"id":["m_01_1_read_raw_entity_data","m_01_2_exclusions","m_01_3_drop_novar","m_01_4_parse_dates","m_01_5_check_admin","m_01_6_check_resid","m_01_7_check_demog","m_01_8_check_name","m_01_9_clean_vars"],"label":["m_01_1_read_raw_entity_data","m_01_2_exclusions","m_01_3_drop_novar","m_01_4_parse_dates","m_01_5_check_admin","m_01_6_check_resid","m_01_7_check_demog","m_01_8_check_name","m_01_9_clean_vars"],"level":[0,0,0,0,0,0,0,0,0],"color":["#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823"],"shape":["dot","dot","dot","dot","dot","dot","dot","dot","dot"]},"edges":{"from":[],"to":[],"arrows":[]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem"],"color":["#354823","#899DA4"],"shape":["dot","dot"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code># excruciating detail
+targets::tar_visnetwork()</code></pre>
+<pre><code>here() starts at /home/ross/RG/projects/academic/entity_resolution/fa_sim_cal_TOP/fa_sim_cal</code></pre>
+<div id="htmlwidget-8034eabb29781fadc608" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-8034eabb29781fadc608">{"x":{"nodes":{"name":["c_clean_entity_data","c_raw_entity_data_file","m_01_1_read_raw_entity_data","m_01_2_exclusions","m_01_3_drop_novar","m_01_4_parse_dates","m_01_5_check_admin","m_01_6_check_resid","m_01_7_check_demog","m_01_8_check_name","m_01_9_clean_vars","raw_entity_data_add_id","raw_entity_data_clean_age","raw_entity_data_clean_all","raw_entity_data_clean_all_names","raw_entity_data_clean_all_names_1","raw_entity_data_clean_all_names_fix_zero","raw_entity_data_clean_all_names_remove_words","raw_entity_data_clean_first_name","raw_entity_data_clean_first_name_move_name","raw_entity_data_clean_last_name","raw_entity_data_clean_middle_name","raw_entity_data_clean_postprocess_names","raw_entity_data_clean_preprocess_char","raw_entity_data_clean_preprocess_char_1","raw_entity_data_drop_admin","raw_entity_data_drop_demog","raw_entity_data_drop_novar","raw_entity_data_excl_status","raw_entity_data_excl_test","raw_entity_data_make_clean","raw_entity_data_parse_dates","raw_entity_data_read"],"type":["stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","stem","function","function","function","function","function","function","function","function","function","function","function","function","function","function","function","function","function","function","function","function","function","function"],"status":["uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate","uptodate"],"seconds":[295.48,0.802,75.425,69.625,913.276,90.185,256.704,430.326,187.743,569.235,428.975,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"bytes":[126758923,259976764,8309,9398,4268,4613,15865,20569,6557,36987,25022,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"branches":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],"id":["c_clean_entity_data","c_raw_entity_data_file","m_01_1_read_raw_entity_data","m_01_2_exclusions","m_01_3_drop_novar","m_01_4_parse_dates","m_01_5_check_admin","m_01_6_check_resid","m_01_7_check_demog","m_01_8_check_name","m_01_9_clean_vars","raw_entity_data_add_id","raw_entity_data_clean_age","raw_entity_data_clean_all","raw_entity_data_clean_all_names","raw_entity_data_clean_all_names_1","raw_entity_data_clean_all_names_fix_zero","raw_entity_data_clean_all_names_remove_words","raw_entity_data_clean_first_name","raw_entity_data_clean_first_name_move_name","raw_entity_data_clean_last_name","raw_entity_data_clean_middle_name","raw_entity_data_clean_postprocess_names","raw_entity_data_clean_preprocess_char","raw_entity_data_clean_preprocess_char_1","raw_entity_data_drop_admin","raw_entity_data_drop_demog","raw_entity_data_drop_novar","raw_entity_data_excl_status","raw_entity_data_excl_test","raw_entity_data_make_clean","raw_entity_data_parse_dates","raw_entity_data_read"],"label":["c_clean_entity_data","c_raw_entity_data_file","m_01_1_read_raw_entity_data","m_01_2_exclusions","m_01_3_drop_novar","m_01_4_parse_dates","m_01_5_check_admin","m_01_6_check_resid","m_01_7_check_demog","m_01_8_check_name","m_01_9_clean_vars","raw_entity_data_add_id","raw_entity_data_clean_age","raw_entity_data_clean_all","raw_entity_data_clean_all_names","raw_entity_data_clean_all_names_1","raw_entity_data_clean_all_names_fix_zero","raw_entity_data_clean_all_names_remove_words","raw_entity_data_clean_first_name","raw_entity_data_clean_first_name_move_name","raw_entity_data_clean_last_name","raw_entity_data_clean_middle_name","raw_entity_data_clean_postprocess_names","raw_entity_data_clean_preprocess_char","raw_entity_data_clean_preprocess_char_1","raw_entity_data_drop_admin","raw_entity_data_drop_demog","raw_entity_data_drop_novar","raw_entity_data_excl_status","raw_entity_data_excl_test","raw_entity_data_make_clean","raw_entity_data_parse_dates","raw_entity_data_read"],"level":[6,1,2,2,2,2,2,2,2,2,6,1,1,4,3,2,1,1,2,1,2,2,1,2,1,1,1,1,1,1,5,1,1],"color":["#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823","#354823"],"shape":["dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","triangle","triangle","triangle","triangle","triangle","triangle","triangle","triangle","triangle","triangle","triangle","triangle","triangle","triangle","triangle","triangle","triangle","triangle","triangle","triangle","triangle","triangle"]},"edges":{"from":["raw_entity_data_parse_dates","raw_entity_data_clean_preprocess_char_1","raw_entity_data_drop_novar","raw_entity_data_drop_admin","raw_entity_data_excl_test","raw_entity_data_clean_age","raw_entity_data_read","raw_entity_data_clean_all_names_remove_words","raw_entity_data_clean_all_names_remove_words","raw_entity_data_clean_all_names_remove_words","raw_entity_data_clean_first_name_move_name","raw_entity_data_clean_first_name","raw_entity_data_add_id","raw_entity_data_clean_all_names_fix_zero","raw_entity_data_clean_all_names_1","raw_entity_data_excl_status","raw_entity_data_clean_all_names","raw_entity_data_clean_last_name","raw_entity_data_clean_middle_name","raw_entity_data_clean_preprocess_char","raw_entity_data_clean_all","raw_entity_data_drop_demog","raw_entity_data_clean_postprocess_names","c_raw_entity_data_file","raw_entity_data_drop_novar","raw_entity_data_excl_status","raw_entity_data_excl_test","raw_entity_data_parse_dates","raw_entity_data_read","c_raw_entity_data_file","raw_entity_data_drop_admin","raw_entity_data_drop_demog","raw_entity_data_drop_novar","raw_entity_data_excl_status","raw_entity_data_excl_test","raw_entity_data_parse_dates","raw_entity_data_read","c_raw_entity_data_file","raw_entity_data_drop_admin","raw_entity_data_drop_demog","raw_entity_data_drop_novar","raw_entity_data_excl_status","raw_entity_data_excl_test","raw_entity_data_make_clean","raw_entity_data_parse_dates","raw_entity_data_read","c_raw_entity_data_file","raw_entity_data_drop_admin","raw_entity_data_drop_demog","raw_entity_data_drop_novar","raw_entity_data_excl_status","raw_entity_data_excl_test","raw_entity_data_parse_dates","raw_entity_data_read","c_raw_entity_data_file","raw_entity_data_drop_admin","raw_entity_data_drop_novar","raw_entity_data_excl_status","raw_entity_data_excl_test","raw_entity_data_parse_dates","raw_entity_data_read","c_raw_entity_data_file","raw_entity_data_excl_status","raw_entity_data_excl_test","raw_entity_data_read","c_raw_entity_data_file","raw_entity_data_read","c_raw_entity_data_file","raw_entity_data_drop_admin","raw_entity_data_drop_novar","raw_entity_data_excl_status","raw_entity_data_excl_test","raw_entity_data_parse_dates","raw_entity_data_read","c_raw_entity_data_file","raw_entity_data_make_clean","c_raw_entity_data_file","raw_entity_data_drop_novar","raw_entity_data_excl_status","raw_entity_data_excl_test","raw_entity_data_read"],"to":["raw_entity_data_make_clean","raw_entity_data_clean_preprocess_char","raw_entity_data_make_clean","raw_entity_data_make_clean","raw_entity_data_make_clean","raw_entity_data_clean_all","raw_entity_data_make_clean","raw_entity_data_clean_first_name","raw_entity_data_clean_last_name","raw_entity_data_clean_middle_name","raw_entity_data_clean_first_name","raw_entity_data_clean_all","raw_entity_data_make_clean","raw_entity_data_clean_all_names_1","raw_entity_data_clean_all_names","raw_entity_data_make_clean","raw_entity_data_clean_all","raw_entity_data_clean_all","raw_entity_data_clean_all","raw_entity_data_clean_all","raw_entity_data_make_clean","raw_entity_data_make_clean","raw_entity_data_clean_all","m_01_4_parse_dates","m_01_4_parse_dates","m_01_4_parse_dates","m_01_4_parse_dates","m_01_4_parse_dates","m_01_4_parse_dates","m_01_7_check_demog","m_01_7_check_demog","m_01_7_check_demog","m_01_7_check_demog","m_01_7_check_demog","m_01_7_check_demog","m_01_7_check_demog","m_01_7_check_demog","m_01_9_clean_vars","m_01_9_clean_vars","m_01_9_clean_vars","m_01_9_clean_vars","m_01_9_clean_vars","m_01_9_clean_vars","m_01_9_clean_vars","m_01_9_clean_vars","m_01_9_clean_vars","m_01_8_check_name","m_01_8_check_name","m_01_8_check_name","m_01_8_check_name","m_01_8_check_name","m_01_8_check_name","m_01_8_check_name","m_01_8_check_name","m_01_6_check_resid","m_01_6_check_resid","m_01_6_check_resid","m_01_6_check_resid","m_01_6_check_resid","m_01_6_check_resid","m_01_6_check_resid","m_01_2_exclusions","m_01_2_exclusions","m_01_2_exclusions","m_01_2_exclusions","m_01_1_read_raw_entity_data","m_01_1_read_raw_entity_data","m_01_5_check_admin","m_01_5_check_admin","m_01_5_check_admin","m_01_5_check_admin","m_01_5_check_admin","m_01_5_check_admin","m_01_5_check_admin","c_clean_entity_data","c_clean_entity_data","m_01_3_drop_novar","m_01_3_drop_novar","m_01_3_drop_novar","m_01_3_drop_novar","m_01_3_drop_novar"],"arrows":["to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot","physics":false},"manipulation":{"enabled":false},"edges":{"smooth":{"type":"cubicBezier","forceDirection":"horizontal"}},"physics":{"stabilization":false},"layout":{"hierarchical":{"enabled":true,"direction":"LR"}}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)","highlight":false},"main":{"text":"","style":"font-family:Georgia, Times New Roman, Times, serif;font-weight:bold;font-size:20px;text-align:center;"},"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","highlight":{"enabled":false,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":true,"fit":false,"resetHighlight":true,"clusterOptions":null,"keepCoord":true,"labelSuffix":"(cluster)"},"legend":{"width":0.2,"useGroups":false,"position":"right","ncol":1,"stepX":100,"stepY":100,"zoom":true,"nodes":{"label":["Up to date","Stem","Function"],"color":["#354823","#899DA4","#899DA4"],"shape":["dot","dot","triangle"]},"nodesToDataframe":true}},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="workflowr-status" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> <code>{workflowr}</code> status</h1>
+<p><code>{workflowr}</code> is used to render the <em>meta</em> documents
+(<code>analysis/m_*.Rmd</code>) and build the project website.</p>
+<p><code>{workflowr}</code> is only concerned with the modification and <code>git</code> commit
+dates of the <code>Rmd</code> and <code>HTML</code> files, whereas <code>{targets}</code> is concerned
+with the computational dependencies. Thus, you should rely on the
+<code>{targets}</code> status to ensure the meta reports are computationally up to
+date, then rely on the <code>{workflowr}</code> status to manage the building and
+publication of the entire website.</p>
+<pre class="r"><code>workflowr::wflow_status()</code></pre>
+<pre><code>Status of 18 Rmd files
+
+Totals:
+ 18 Published (4 Modified)
+
+The following Rmd files require attention:
+
+Mod analysis/index.Rmd
+Mod analysis/m_00_status.Rmd
+Mod analysis/notes.Rmd
+Mod analysis/workflow.Rmd
+
+Key: Mod = Modified
+
+The current Git status is: working directory clean
+
+To publish your changes as part of your website, use `wflow_publish()`.
+To commit your changes without publishing them yet, use
+`wflow_git_commit()`.</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.1.0 (2021-05-18)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 20.10
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.9.0
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.9.0
+
+locale:
+ [1] LC_CTYPE=en_AU.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_AU.UTF-8        LC_COLLATE=en_AU.UTF-8    
+ [5] LC_MONETARY=en_AU.UTF-8    LC_MESSAGES=en_AU.UTF-8   
+ [7] LC_PAPER=en_AU.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_AU.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] targets_0.4.2
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.6        pillar_1.6.1      compiler_4.1.0    bslib_0.2.5      
+ [5] later_1.2.0       jquerylib_0.1.4   git2r_0.28.0      workflowr_1.6.2  
+ [9] tools_4.1.0       digest_0.6.27     jsonlite_1.7.2    evaluate_0.14    
+[13] lifecycle_1.0.0   tibble_3.1.2      pkgconfig_2.0.3   rlang_0.4.11     
+[17] igraph_1.2.6      rstudioapi_0.13   cli_2.5.0         yaml_2.2.1       
+[21] xfun_0.23         withr_2.4.2       stringr_1.4.0     knitr_1.33       
+[25] htmlwidgets_1.5.3 fs_1.5.0          vctrs_0.3.8       sass_0.4.0       
+[29] tidyselect_1.1.1  rprojroot_2.0.2   data.table_1.14.0 glue_1.4.2       
+[33] R6_2.5.0          processx_3.5.2    fansi_0.4.2       rmarkdown_2.8    
+[37] bookdown_0.22     purrr_0.3.4       callr_3.7.0       magrittr_2.0.1   
+[41] whisker_0.4       codetools_0.2-18  ps_1.6.0          promises_1.2.0.1 
+[45] ellipsis_0.3.2    htmltools_0.5.1.1 renv_0.13.2       httpuv_1.6.1     
+[49] utf8_1.2.1        stringi_1.6.2     visNetwork_2.0.9  crayon_1.4.1     </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4,h5",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

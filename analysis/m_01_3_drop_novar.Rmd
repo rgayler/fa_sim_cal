@@ -1,0 +1,150 @@
+---
+title: "[meta] Drop variables with no variation"
+subtitle: "m_01_3_drop_novar"
+author: "Ross Gayler"
+date: "2021-05-14"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+  markdown: 
+    wrap: 72
+---
+
+```{r setup}
+# NOTE this notebook can be run manually or automatically by {targets}
+# So load the packages required by this notebook here
+# rather than relying on _targets.R to load them.
+
+# Set up the project environment, because {workflowr} knits each Rmd file 
+# in a new R session, and doesn't execute the project .Rprofile
+
+library(targets) # access data from the targets cache
+
+library(tictoc) # capture execution time
+library(here) # construct file paths relative to project root
+library(fs) # file system operations
+library(dplyr) # data wrangling
+library(gt) # table formatting
+library(stringr) # string matching
+library(vroom) # fast reading of delimited text files
+library(skimr) # compact summary of each variable
+
+# start the execution time clock
+tictoc::tic("Computation time (excl. render)")
+
+# Get the path to the raw entity data file
+# This is a target managed by {targets}
+f_entity_raw_tsv <- tar_read(c_raw_entity_data_file)
+```
+
+```{r, include = FALSE, cache = FALSE}
+# Get all the functions used by {targets} 
+# so we can display and use them in this notebook
+# with a guarantee that they will be identical
+# here and when used by {targets}.
+
+# This is  work-around because tarchetypes::tar_knitr_deps()
+# fails if a call to here::here() is embedded in 
+# a call to knitr::read_chunk()
+knitr::read_chunk("R/functions.R")
+```
+
+# Introduction
+
+These meta notebooks document the development of functions that will be
+applied in the core pipeline.
+
+The aim of the m_01 set of meta notebooks is to work out how to read the
+raw entity data, drop excluded cases, discard irrelevant variables,
+apply any cleaning, and construct standardised names. This does not
+include construction of any modelling features. To be clear, the target
+(`c_raw_entity_data`) corresponding to the objective of this set of
+notebooks is the cleaned and standardised raw data, before constructing
+any modelling features.
+
+This notebook documents the process of dropping variables with no
+variation in values, because they are uninformative.
+
+The subsequent notebooks in this set will develop the other functions
+needed to generate the cleaned and standardised data.
+
+# Read entity data
+
+Read the raw entity data file and drop the excluded rows using the
+previously defined core pipeline functions, `raw_entity_data_read()`,
+`raw_entity_data_excl_status()`, and `raw_entity_data_excl_test`.
+
+```{r, raw_entity_data_read, echo = FALSE}
+```
+
+```{r, raw_entity_data_excl_status, echo = FALSE}
+```
+
+```{r, raw_entity_data_excl_test, echo = FALSE}
+```
+
+```{r}
+# Show the data file name
+fs::path_file(f_entity_raw_tsv)
+
+d <- raw_entity_data_read(f_entity_raw_tsv) %>% 
+  raw_entity_data_excl_status() %>% 
+  raw_entity_data_excl_test()
+
+dim(d)
+```
+
+# Skim all the variables
+
+Take a quick look at the distributions of all the variables.
+
+```{r}
+skimr::skim(d)
+```
+
+## No useful variation
+
+The most useful column to look at in the skim tables is `n_unique`. This
+shows the number of unique values of the variable.
+
+The following variable is entirely missing values:
+
+-   `ncid` - North Carolina identification number (NCID) of voter
+
+The following variables have exactly one unique nonmissing value:
+
+-   `snapshot_dt` - Date of snapshot
+-   `load_dt` - Data load date
+
+The following variables have exactly one unique nonmissing value because
+of selecting ACTIVE & VERIFIED records:
+
+-   `status_cd` Status code for voter registration
+-   `voter_status_desc` Status code description
+-   `reason_cd` Reason code for voter registration status
+-   `voter_status_reason_desc` Reason code description
+
+Those seven variables can not possibly be useful for analyses. Write a
+function to drop them from the data.
+
+```{r, raw_entity_data_drop_novar}
+```
+
+Apply the filter and track the number of rows before and after the
+filter.
+
+```{r}
+# number of columns before dropping
+d %>% names() %>% length
+
+d %>% 
+  raw_entity_data_drop_novar() %>% 
+  # number of columns after dropping
+  names() %>% length
+```
+
+# Timing {.unnumbered}
+
+```{r echo=FALSE}
+tictoc::toc()
+```

@@ -1,0 +1,300 @@
+---
+title: "[meta] Apply row exclusions"
+subtitle: "m_01_2_exclusions"
+author: "Ross Gayler"
+date: "2021-05-14"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+  markdown: 
+    wrap: 72
+---
+
+```{r setup}
+# NOTE this notebook can be run manually or automatically by {targets}
+# So load the packages required by this notebook here
+# rather than relying on _targets.R to load them.
+
+# Set up the project environment, because {workflowr} knits each Rmd file 
+# in a new R session, and doesn't execute the project .Rprofile
+
+library(targets) # access data from the targets cache
+
+library(tictoc) # capture execution time
+library(here) # construct file paths relative to project root
+library(fs) # file system operations
+library(dplyr) # data wrangling
+library(gt) # table formatting
+library(stringr) # string matching
+library(vroom) # fast reading of delimited text files
+
+# start the execution time clock
+tictoc::tic("Computation time (excl. render)")
+
+# Get the path to the raw entity data file
+# This is a target managed by {targets}
+f_entity_raw_tsv <- tar_read(c_raw_entity_data_file)
+```
+
+```{r, include = FALSE, cache = FALSE}
+# Get all the functions used by {targets} 
+# so we can display and use them in this notebook
+# with a guarantee that they will be identical
+# here and when used by {targets}.
+
+# This is  work-around because tarchetypes::tar_knitr_deps()
+# fails if a call to here::here() is embedded in 
+# a call to knitr::read_chunk()
+knitr::read_chunk("R/functions.R")
+```
+
+# Introduction
+
+These meta notebooks document the development of functions that will be
+applied in the core pipeline.
+
+The aim of the m_01 set of meta notebooks is to work out how to read the
+raw entity data, drop excluded cases, discard irrelevant variables,
+apply any cleaning, and construct standardised names. This does not
+include construction of any modelling features. To be clear, the target
+(`c_raw_entity_data`) corresponding to the objective of this set of
+notebooks is the cleaned and standardised raw data, before constructing
+any modelling features.
+
+This notebook documents the process of excluding data rows that are not
+useful for this project.
+
+The subsequent notebooks in this set will develop the other functions
+needed to generate the cleaned and standardised data.
+
+## Exclusions
+
+There are four variables dealing with voter status. Preliminary
+examination of these variables shows that some records correspond to
+people who have been removed from the electoral roll. This project
+focuses on ambiguity arising from the fact that some names are common
+Therefore, we want the entity data to be as accurate as possible and
+free of duplicate records so that we don't introduce ambiguity because
+of data quality issues.
+
+Speaking of data quality issues, it is my experience that large
+databases often contain test records.
+
+I will exclude all the data rows that have any of these data quality
+issues. I will do this early in the pipeline to minimise the number of
+records processed and to avoid including these records in the subsequent
+quality analyses.
+
+# Read entity data
+
+Read the raw entity data file using the previously defined core pipeline
+function, `raw_entity_data_read()`.
+
+```{r, raw_entity_data_read, echo = FALSE}
+```
+
+```{r}
+# Show the data file name
+fs::path_file(f_entity_raw_tsv)
+
+# Read the raw entity data
+d <- raw_entity_data_read(f_entity_raw_tsv)
+```
+
+# Voter status variables
+
+Check the internal consistency of the voter status variables.
+
+The data dictionary describes these as two pairs of variables, where
+each pair consists of a code variable and a label variable. I expect the
+code and label values to be in a 1:1 relationship.
+
+## Status
+
+-   `status_cd` - Status code for voter registration
+-   `voter_status_desc` - Status code descriptions
+
+```{r}
+d %>% 
+  dplyr::distinct(status_cd, voter_status_desc) %>% 
+  dplyr::arrange(status_cd, voter_status_desc) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = gt::cell_text(weight = "bold"), locations = gt::cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   `<NA>` is the missing value indicator.
+-   The code and label values are in a 1:1 relationship. Use the label
+    variable (`voter_status_desc`) because it is more explicitly
+    meaningful.
+
+Look at the distribution of values across the data.
+
+```{r}
+d %>% 
+  dplyr::count(voter_status_desc) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>") %>% 
+  gt::fmt_number(columns = n, decimals = 0)
+```
+
+-   \~60% of records are `ACTIVE`. All the other values have negative
+    connotations for expected data quality.
+
+## Reason
+
+-   `reason_cd` - Reason code for voter registration status
+-   `voter_status_reason_desc` - Reason code description
+
+```{r}
+d %>% 
+  dplyr::distinct(reason_cd, voter_status_reason_desc) %>% 
+  dplyr::arrange(reason_cd, voter_status_reason_desc) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = gt::cell_text(weight = "bold"), locations = gt::cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   `<NA>` is the missing value indicator.
+-   The code and label values are in a 1:1 relationship. Use the label
+    variable (`voter_status_reason_desc`) because it is more explicitly
+    meaningful.
+
+Look at the distribution of values.
+
+```{r}
+d %>% 
+  dplyr::count(voter_status_reason_desc) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>") %>% 
+  gt::fmt_number(columns = n, decimals = 0)
+```
+
+-   `<NA>` is the missing value indicator.
+-   \~50% of records are "VERIFIED". That value seems to have the most
+    positive connotations for expected data quality.
+
+## Status $\times$ Reason
+
+Look at the distribution of combinations of the two variables.
+
+```{r}
+d %>% 
+  dplyr::count(voter_status_desc, voter_status_reason_desc) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>") %>% 
+  gt::fmt_number(columns = n, decimals = 0)
+```
+
+-   \~50% are "ACTIVE" and "VERIFIED"
+
+On a common-sense interpretation of the labels, these are the records
+that have survived the registration checking process, so are most likely
+free of errors and duplicates.
+
+Write a function to filter the records to keep only those that are
+"ACTIVE" and "VERIFIED".
+
+```{r, raw_entity_data_excl_status}
+```
+
+Apply the filter before moving on to the next exclusion condition and
+track the number of rows before and after the filter.
+
+```{r}
+# number of rows before filtering
+nrow(d)
+
+d <- d %>% raw_entity_data_excl_status()
+
+# number of rows after filtering
+nrow(d)
+```
+
+-   Result as expected
+
+# Test cases
+
+Initial poking through the data showed the words DUMMY, PRACTICE, TEST,
+THIS, THISIS, and THISISA as person names appeared to be associated with
+records that were subjectively judged as being likely to be test cases.
+Look for any records that contain those strings as a word (i.e. enclosed
+by word boundaries) in the person name columns.
+
+```{r}
+# define the target regular expression
+target <- regex(
+  "\\bDUMMY\\b|\\bPRACTICE\\b|\\bTEST\\b|\\bTHIS\\b|\\bTHISIS\\b|\\bTHISISA\\b", 
+  ignore_case = TRUE
+)
+
+d %>% 
+  dplyr::select(
+    last_name, first_name, midl_name,
+    street_name, street_type_cd, res_city_desc,
+    sex, phone_num
+  ) %>% 
+  dplyr::filter(
+    stringr::str_detect(last_name, target)|
+      stringr::str_detect(first_name, target) |
+      stringr::str_detect(midl_name, target)
+  ) %>% 
+  dplyr::arrange(last_name, street_name) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>") %>% 
+  gt::tab_style(
+    style = gt::cell_fill(color = "yellow"),
+    locations = list(
+      gt::cells_body(columns = last_name, rows = stringr::str_detect(last_name, target)),
+      gt::cells_body(columns = first_name, rows = stringr::str_detect(first_name, target)),
+      gt::cells_body(columns = midl_name, rows = stringr::str_detect(midl_name, target))
+    )
+  )
+```
+
+-   Online search finds that "Test" is a known last name in the USA.
+-   The name "TEST, THIS" looks like a test case (with ACTIVE VERIFIED
+    status).
+
+Write a function to filter the records to exclude those with name "TEST,
+THIS".
+
+There are likely to be many other test cases not detected by this
+filter. However, they are probably only a tiny fraction of the records -
+so it's not a big problem for this project if they are missed. If I find
+any other test cases later I will come back here and revise the
+exclusion criteria.
+
+```{r, raw_entity_data_excl_test}
+```
+
+Apply the filter and track the number of rows before and after the
+filter.
+
+```{r}
+# number of rows before filtering
+nrow(d)
+
+d <- d %>% raw_entity_data_excl_test()
+
+# number of rows after filtering
+nrow(d)
+```
+
+-   Behaviour as expected
+
+# Timing {.unnumbered}
+
+```{r echo=FALSE}
+tictoc::toc()
+```

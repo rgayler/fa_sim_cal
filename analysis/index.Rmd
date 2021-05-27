@@ -28,6 +28,16 @@ rendered versions of manuscripts/documents/presentations.
 
 ------------------------------------------------------------------------
 
+## [Project Workflow Status](m_00_status.html) {.unnumbered}
+
+This notebook displays the computational status of the project, that is,
+whether everything is up to date. Ironically, this is currently the only
+notebook that must be run manually, so this notebook only displays the
+status **when the notebook was last executed** and there is no
+indication whether the project status has changed since then.
+
+------------------------------------------------------------------------
+
 # Overview documents {.unnumbered}
 
 ## [Proposal](proposal.html) {.unnumbered}
@@ -52,42 +62,71 @@ using `targets` and `workflowr`.
 
 ------------------------------------------------------------------------
 
-# Manuscripts {.unnumbered}
+# Publications {.unnumbered}
 
 Links to rendered manuscripts and presentations will go here.
 
 ------------------------------------------------------------------------
 
-# Analysis Notebooks {.unnumbered}
+# META Notebooks {.unnumbered}
+
+These notebooks capture the analyses that were carried out to develop
+the code of the core processing pipeline. They are organised as
+side-chains to the core processing pipeline.
+
+Typically, a meta notebook will analyse the data available at one stage
+of the core pipeline, to guide the writing of the functions required to
+get to the next stage of the core pipeline. These meta notebooks
+generally conclude with the definition of a function that will be used
+in the core pipeline.
+
+There may be multiple notebooks all relating to different aspects of the
+same stage of the core pipeline.
+
+Sometimes the analyses are more diffuse - characterising the data in a
+way that may be helpful for guiding the development of future core
+stages, but not immediately resulting in the development of functions
+for the core pipeline.
 
 ## 01 Read, check, and standardise the entity data {.unnumbered}
 
-Initial data preparation of imported entity records.
+Determine the initial data preparation of the imported entity records.
 
-### [01-1 Get, subset, check, and save data](01-1_get_data.html) {.unnumbered}
+### [m_01_1\_read_raw_entity_data](m_01_1_read_raw_entity_data.html) {.unnumbered}
 
-Import the raw data, cut it back to the subset of rows and columns that
-are possibly useful, sanity check the data, and save the data in an
-R-friendly format.
+Read the raw entity data.
 
-### [01-2 Check administrative variables](01-2_check_admin.html) {.unnumbered}
+### [m_01_2\_exclusions](m_01_2_exclusions.html) {.unnumbered}
 
-Check the "administrative" variables. This is data relating to the
-administration of voter registration.
+Apply the row exclusions (exclude test records and all records with
+status other than ACTIVE & VERIFIED).
 
-### [01-3 Check residence variables](01-3_check_resid.html) {.unnumbered}
+### [m_01_3\_drop_novar](m_01_3_drop_novar.html) {.unnumbered}
+
+Drop variables with no variation.
+
+### [m_01_4\_parse_dates](m_01_4_parse_dates.html) {.unnumbered}
+
+Parse the date columns.
+
+### [m_01_5\_check_admin](m_01_5_check_admin.html) {.unnumbered}
+
+Check the administrative variables (data relating to the administration
+of voter registration).
+
+### [m_01_6\_check_resid](m_01_6_check_resid.html) {.unnumbered}
 
 Check the residence variables - residential address and phone number.
 
-### [01-4 Check demographic variables](01-4_check_demog.html) {.unnumbered}
+### [m_01_7\_check_demog](m_01_7_check_demog.html) {.unnumbered}
 
 Check the demographic variables - sex, age, and birth place.
 
-### [01-5 Check name variables](01-5_check_name.html) {.unnumbered}
+### [m_01_8\_check_name](m_01_8_check_name.html) {.unnumbered}
 
 Check the name variables.
 
-### [01-6 Clean variables](01-6_clean_vars.html) {.unnumbered}
+### [m_01_9\_clean_vars](m_01_9_clean_vars.html) {.unnumbered}
 
 Clean all the variables.
 

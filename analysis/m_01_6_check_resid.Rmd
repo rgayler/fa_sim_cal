@@ -1,0 +1,686 @@
+---
+title: "[meta] Check residenial variables"
+subtitle: "m_01_6_check_resid"
+author: "Ross Gayler"
+date: "2021-05-15"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+  markdown: 
+    wrap: 72
+---
+
+```{r setup}
+# NOTE this notebook can be run manually or automatically by {targets}
+# So load the packages required by this notebook here
+# rather than relying on _targets.R to load them.
+
+# Set up the project environment, because {workflowr} knits each Rmd file 
+# in a new R session, and doesn't execute the project .Rprofile
+
+library(targets) # access data from the targets cache
+
+library(tictoc) # capture execution time
+library(here) # construct file paths relative to project root
+library(fs) # file system operations
+library(dplyr) # data wrangling
+library(gt) # table formatting
+library(stringr) # string matching
+library(vroom) # fast reading of delimited text files
+library(lubridate) # date parsing
+library(forcats) # manipulation of factors
+library(ggplot2) # graphics
+library(skimr) # compact summary of each variable
+library(tidyr) # data tidying
+
+# start the execution time clock
+tictoc::tic("Computation time (excl. render)")
+
+# Get the path to the raw entity data file
+# This is a target managed by {targets}
+f_entity_raw_tsv <- tar_read(c_raw_entity_data_file)
+```
+
+```{r, include = FALSE, cache = FALSE}
+# Get all the functions used by {targets} 
+# so we can display and use them in this notebook
+# with a guarantee that they will be identical
+# here and when used by {targets}.
+
+# This is  work-around because tarchetypes::tar_knitr_deps()
+# fails if a call to here::here() is embedded in 
+# a call to knitr::read_chunk()
+knitr::read_chunk("R/functions.R")
+```
+
+# Introduction
+
+These meta notebooks document the development of functions that will be
+applied in the core pipeline.
+
+The aim of the m_01 set of meta notebooks is to work out how to read the
+raw entity data, drop excluded cases, discard irrelevant variables,
+apply any cleaning, and construct standardised names. This does not
+include construction of any modelling features. To be clear, the target
+(`c_raw_entity_data`) corresponding to the objective of this set of
+notebooks is the cleaned and standardised raw data, before constructing
+any modelling features.
+
+This notebook documents the checking of the "residential" variables for
+any issues that need fixing. These are the residential address and the
+phone number (which is tied to the address if the telephone is a
+land-line).
+
+The subsequent notebooks in this set will develop the other functions
+needed to generate the cleaned and standardised data.
+
+Regardless of whether there are any issues that need to be fixed, the
+analyses here may inform our use of these variables in later analyses.
+
+We have no intention of using the residence variables as predictors for
+entity resolution. However, they may be of use for manually checking the
+results of entity resolution. Consequently, the checking done here is
+minimal.
+
+Define the residential variables:
+
+-   `unit_num` - Residential address unit number
+-   `house_num` - Residential address street number
+-   `half_code` - Residential address street number half code
+-   `street_dir` - Residential address street direction (N,S,E,W,NE,SW,
+    etc.)
+-   `street_name` - Residential address street name
+-   `street_type_cd` - Residential address street type (RD, ST, DR,
+    BLVD, etc.)
+-   `street_sufx_cd` - Residential address street suffix (BUS, EXT, and
+    directional)
+-   `res_city_desc` - Residential address city name
+-   `state_cd` - Residential address state code
+-   `zip_code` - Residential address zip code
+-   `area_cd` - Area code for phone number
+-   `phone_num` - Telephone number
+
+```{r}
+vars_resid <- c(
+  "unit_num", "house_num",      
+  "half_code", "street_dir", "street_name", "street_type_cd", "street_sufx_cd",
+  "res_city_desc", "state_cd", "zip_code",
+  "area_cd", "phone_num"
+)
+```
+
+# Read entity data
+
+Read the raw entity data file using the previously defined core pipeline
+functions `raw_entity_data_read()`, `raw_entity_data_excl_status()`,
+`raw_entity_data_excl_test()`, `raw_entity_data_drop_novar()`,
+`raw_entity_data_parse_dates()`, and `raw_entity_data_drop_cancel_dt()`.
+
+```{r, raw_entity_data_read, echo = FALSE}
+```
+
+```{r, raw_entity_data_excl_status, echo = FALSE}
+```
+
+```{r, raw_entity_data_excl_test, echo = FALSE}
+```
+
+```{r, raw_entity_data_drop_novar, echo = FALSE}
+```
+
+```{r, raw_entity_data_parse_dates, echo = FALSE}
+```
+
+```{r, raw_entity_data_drop_admin, echo = FALSE}
+```
+
+```{r}
+# Show the data file name
+fs::path_file(f_entity_raw_tsv)
+
+d <- raw_entity_data_read(f_entity_raw_tsv) %>% 
+  raw_entity_data_excl_status() %>% 
+  raw_entity_data_excl_test() %>% 
+  raw_entity_data_drop_novar() %>% 
+  raw_entity_data_parse_dates() %>% 
+  raw_entity_data_drop_admin()
+dim(d)
+```
+
+# Dwelling
+
+-   `unit_num` - Residential address unit number
+-   `house_num` - Residential address street number
+-   `half_code` - Residential address street number half code
+
+```{r}
+d %>% 
+  dplyr::select(unit_num, house_num, half_code) %>% 
+  skimr::skim()
+```
+
+We are mostly interested in how much these fields are used, so
+concentrate on `complete_rate`.
+
+All these variables are character variables, so `min` and `max` refer to
+the minimum and maximum lengths of the values as character strings.
+
+The number of unique values, `n_unique`, is also of interest.
+
+-   `unit_num`
+
+    -   8% filled
+    -   There are some awfully long unit numbers
+    -   There are an awful lot of unique unit numbers
+
+-   `house_num`
+
+    -   100% filled
+    -   There are some awfully long house numbers
+    -   There are an awful lot of unique house numbers
+
+-   `half_code` 0.3% filled
+
+    -   All exactly 1 character long
+    -   There are more unique values than I would expect for a one
+        character string
+
+## unit_num
+
+-   `unit_num` - Residential address unit number
+
+Look at some examples grouped by length
+
+```{r}
+d %>% 
+  dplyr::select(unit_num) %>% 
+  dplyr::filter(!is.na(unit_num)) %>% 
+  dplyr::mutate(length = stringr::str_length(unit_num)) %>% 
+  dplyr::group_by(length) %>% 
+  dplyr::count(unit_num) %>% # count occurrences of each unique value
+  dplyr::slice_max(order_by = n, n = 5) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>") %>% 
+  gt::fmt_number(columns = n, decimals = 0)
+```
+
+-   Longer values are due to inclusion of text, e.g. "APT-106"
+
+## house_num
+
+-   `house_num` - Residential address street number
+
+Look at some examples grouped by length
+
+```{r}
+d %>% 
+  dplyr::filter(!is.na(house_num)) %>% 
+  dplyr::count(house_num) %>% # count occurrences of each unique value
+  dplyr::mutate(length = stringr::str_length(house_num)) %>% 
+  dplyr::group_by(length) %>% 
+  dplyr::slice_max(order_by = n, n = 5, with_ties = FALSE) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>") %>% 
+  gt::fmt_number(columns = n, decimals = 0)
+```
+
+-   I am mildly surprised by house number "0". I wouldn't be surprised
+    if someone was using that as a missing value flag.
+-   Large numbers are plausible, because these are not uncommon in the
+    USA.
+-   Very large numbers are somewhat suspect.
+
+## half_code
+
+-   `half_code` - Residential address street number half code
+
+```{r}
+d %>% 
+  dplyr::select(half_code) %>% 
+  dplyr::filter(!is.na(half_code)) %>% 
+  dplyr::count(half_code) %>% # count occurrences of each unique value
+  dplyr::arrange(desc(n)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_number(columns = n, decimals = 0)
+```
+
+-   `half_code` appears to indicate where there are multiple dwellings
+    on one street-numbered block. Typical values would be A, B, ...
+-   Non-alphanumeric characters are not plausible
+
+# Street
+
+-   `street_dir` - Residential address street direction (N,S,E,W,NE,SW,
+    etc.)
+-   `street_name` - Residential address street name
+-   `street_type_cd` - Residential address street type (RD, ST, DR,
+    BLVD, etc.)
+-   `street_sufx_cd` - Residential address street suffix (BUS, EXT, and
+    directional)
+
+Take a quick look at the summaries.
+
+```{r}
+d %>% 
+  dplyr::select(starts_with("street_")) %>% 
+  skimr::skim()
+```
+
+We are mostly interested in how much these fields are used, so
+concentrate on `complete_rate`.
+
+All these variables are character variables, so `min` and `max` refer to
+the minimum and maximum lengths of the values as character strings.
+
+The number of unique values, `n_unique`, is also of interest.
+
+-   `street_dir`
+
+    -   7% filled
+    -   1 or 2 characters long
+    -   8 unique values
+
+-   `street_name`
+
+    -   \~100% filled (7 missing)
+    -   Some very short names
+    -   Wide range of lengths
+    -   Many unique values
+
+-   `street_type_cd`
+
+    -   96% filled
+    -   2 to 4 characters long
+    -   119 unique values
+
+-   `street_sufx_cd`
+
+    -   4% filled
+    -   1 to 3 characters long
+    -   11 unique values
+
+## street_dir
+
+-   `street_dir` - Residential address street direction (N,S,E,W,NE,SW,
+    etc.)
+
+Look at the distribution of values.
+
+```{r}
+d %>% 
+  dplyr::count(street_dir) %>% 
+  dplyr::arrange(desc(n)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>") %>% 
+  gt::fmt_number(columns = n, decimals = 0)
+```
+
+-   They are literally just compass directions.
+
+## street_name
+
+-   `street_name` - Residential address street name
+
+Seven records are missing street name. Look at them.
+
+```{r}
+d %>% 
+  dplyr::filter(is.na(street_name)) %>% 
+  dplyr::select(unit_num, house_num, half_code, starts_with("street_"), res_city_desc:zip_code) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   Seven records have no residential address. Are these homeless people
+    or data entry errors?
+
+Look at some other information for the same records.
+
+```{r}
+d %>% 
+  dplyr::filter(is.na(street_name)) %>% 
+  dplyr::select(last_name, first_name, sex, age, birth_place, phone_num) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   Lots of missing values for these people.
+
+Some street names are very short. Look at the distribution of length of
+street name.
+
+```{r}
+summary(stringr::str_length(d$street_name))
+
+d %>% 
+  ggplot() +
+  geom_histogram(aes(x = stringr::str_length(street_name) %>% replace_na(0)), binwidth = 1) +
+  scale_y_sqrt()
+```
+
+Look at examples of short street names.
+
+```{r}
+# length = 1
+d %>% 
+  dplyr::filter(stringr::str_length(street_name) == 1) %>% 
+  dplyr::select(starts_with("street_"), res_city_desc) %>%
+  dplyr::slice_sample(n = 20) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+
+# length = 2
+d %>% 
+  dplyr::filter(stringr::str_length(street_name) == 2) %>% 
+  dplyr::select(starts_with("street_"), res_city_desc) %>%
+  dplyr::slice_sample(n = 20) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+I checked some of these examples against a map.
+
+-   Some streets have names like A, B, C, ...
+-   "JC Road" is a valid street name
+
+Look at examples of long street names.
+
+```{r}
+# length >= 28
+d %>% 
+  dplyr::filter(stringr::str_length(street_name) >= 28) %>% 
+  dplyr::select(starts_with("street_"), res_city_desc) %>%
+  dplyr::distinct(.keep_all = TRUE) %>% 
+  dplyr::arrange(street_name) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   Long street names are multi-word phrases
+
+    -   Some appear to have been truncated
+
+## street_type_cd
+
+-   `street_type_cd` - Residential address street type (RD, ST, DR,
+    BLVD, etc.)
+
+```{r}
+d %>% 
+  dplyr::count(street_type_cd) %>% 
+  dplyr::arrange(desc(n)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>") %>% 
+  gt::fmt_number(columns = n, decimals = 0)
+```
+
+## street_sufx_cd
+
+-   `street_sufx_cd` - Residential address street suffix (BUS, EXT, and
+    directional)
+
+```{r}
+d %>% 
+  dplyr::count(street_sufx_cd) %>% 
+  dplyr::arrange(desc(n)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>") %>% 
+  gt::fmt_number(columns = n, decimals = 0)
+```
+
+# Locality
+
+-   `res_city_desc` - Residential address city name\
+-   `state_cd` - Residential address state code\
+-   `zip_code` - Residential address zip code
+
+```{r}
+d %>% 
+  dplyr::select(res_city_desc : zip_code) %>% 
+  skimr::skim()
+```
+
+-   `res_city_desc` \~100% filled (19 missing)
+-   `state_cd` \~100% filled (18 missing)
+-   `zip_code` \~100% filled (21 missing)
+
+Look at the addresses with any missing locality variable.
+
+```{r}
+d %>% 
+  dplyr::filter(is.na(res_city_desc) | is.na(state_cd) | is.na(zip_code)) %>% 
+  dplyr::select(house_num : zip_code) %>%
+  dplyr::distinct(.keep_all = TRUE) %>%
+  dplyr::arrange(state_cd, res_city_desc, zip_code) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   Some appear to be good addresses, apart from a missing zip code
+-   One appears to be a good address, apart from a missing state code
+-   Some are CONFIDENTIAL addresses, with all details missing
+-   Some appear to be completely missing the address (homeless persons?)
+
+## res_city_desc
+
+-   `res_city_desc` Residential address city name\
+
+Some city names are very short. Look at the distribution of length of
+city name.
+
+```{r}
+d %>% pull(res_city_desc) %>% stringr::str_length() %>% summary()
+
+d %>% 
+  ggplot() +
+  geom_histogram(aes(x = stringr::str_length(res_city_desc) %>% replace_na(0)), binwidth = 1) +
+  scale_y_sqrt()
+```
+
+Look at examples of short city names.
+
+```{r}
+# length = 3
+d %>% 
+  dplyr::filter(stringr::str_length(res_city_desc) == 3) %>% 
+  dplyr::count(res_city_desc) %>%
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(desc(n)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>") %>% 
+  gt::fmt_number(columns = n, decimals = 0)
+
+# length = 4
+d %>% 
+  dplyr::filter(stringr::str_length(res_city_desc) == 4) %>% 
+  dplyr::count(res_city_desc) %>%
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(desc(n)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>") %>% 
+  gt::fmt_number(columns = n, decimals = 0)
+```
+
+-   These look like plausible place names
+
+Look at examples of long city names.
+
+```{r}
+# length >= 17
+d %>% 
+  dplyr::filter(stringr::str_length(res_city_desc) >= 17) %>% 
+  dplyr::count(res_city_desc) %>%
+  dplyr::slice_sample(n = 20) %>% 
+  dplyr::arrange(desc(n)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>") %>% 
+  gt::fmt_number(columns = n, decimals = 0)
+```
+
+-   Long city names are multi-word phrases
+
+## state_cd
+
+-   `state_cd` - Residential address state code
+
+```{r}
+d %>% 
+  dplyr::count(state_cd) %>% 
+  dplyr::arrange(desc(n)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>") %>% 
+  gt::fmt_number(columns = n, decimals = 0)
+```
+
+-   Residential state codes are almost entirely NC (North Carolina)
+
+    -   There are a small number in neighbouring states (non-resident
+        voters?)
+
+## zip_code
+
+`zip_code` Residential address zip code
+
+The zip codes are not all the same length. Look at the distribution of
+length of zip code
+
+```{r}
+d %>% 
+  dplyr::select(zip_code) %>% 
+  dplyr::mutate(length = stringr::str_length(zip_code)) %>% 
+  dplyr::count(length) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>") %>% 
+  gt::fmt_number(columns = n, decimals = 0)
+```
+
+Look at the 9-digit zip codes.
+
+```{r}
+d %>% 
+  dplyr::filter(stringr::str_length(zip_code) == 9) %>% 
+  dplyr::select(street_name : zip_code) %>%
+  dplyr::arrange(zip_code) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   The addresses with 9-digit zipcodes look plausible
+-   5-digit and 9-digit zip codes are
+    [valid](https://en.wikipedia.org/wiki/ZIP_Code)\
+
+# Telephone
+
+-   `area_cd` - Area code for phone number
+-   `phone_num` - Telephone number
+
+```{r}
+d %>% 
+  dplyr::select(area_cd, phone_num) %>% 
+  skimr::skim()
+```
+
+- Area code ~36% filled
+- Phone number ~38% filled
+
+Look at the relationship between missing area code and missing phone
+number.
+
+```{r}
+table(area_miss = is.na(d$area_cd), phone_miss = is.na(d$phone_num))
+```
+
+-   Area code and phone number are generally missing together, but ...
+-   Area code is frequently missing even when phone number is present (possibly assumed to be a local number)
+-   Phone number is less frequently missing when area code is present (possibly assumed to be in the local area, but phone number unknown)
+
+## area_cd
+
+-   `area_cd` - Area code for phone number
+
+Look at some area code examples grouped by length, *where there is a
+phone number*.
+
+```{r}
+d %>% 
+  dplyr::filter(!is.na(phone_num)) %>%
+  dplyr::count(area_cd) %>% # count occurrences of each unique value
+  dplyr::mutate(length = stringr::str_length(area_cd) %>% replace_na(0)) %>% 
+  dplyr::group_by(length) %>% 
+  dplyr::slice_max(order_by = n, n = 10, with_ties = FALSE) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>") %>% 
+  gt::fmt_number(columns = n, decimals = 0)
+```
+
+-   Many records with phone numbers are missing area code.
+-   Area codes less than 3 characters long are probably typos.
+-   Area code "999" and "000" are probably missing.
+
+## phone_num
+
+-   `phone_num` - Telephone number
+
+Look at some phone number examples grouped by length, *where there is a
+phone number*.
+
+```{r}
+d %>% 
+  dplyr::filter(!is.na(phone_num)) %>%
+  dplyr::count(phone_num) %>% # count occurrences of each unique value
+  dplyr::mutate(length = stringr::str_length(phone_num) %>% replace_na(0)) %>% 
+  dplyr::group_by(length) %>% 
+  dplyr::slice_max(order_by = n, n = 5, with_ties = FALSE) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>") %>% 
+  gt::fmt_number(columns = n, decimals = 0)
+```
+
+-   Phone numbers less than 7 characters long are probably typos.
+-   Phone numbers "0000000" and "9999999" are probably missing.
+
+# Timing {.unnumbered}
+
+```{r echo=FALSE}
+tictoc::toc()
+```

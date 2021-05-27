@@ -15,13 +15,22 @@
 
 <title>Proposal</title>
 
-<script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.8/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
@@ -51,11 +60,6 @@ div.section {
     </style>
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -68,32 +72,6 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
 
 <style type="text/css">
 /* for pandoc --citeproc since 2.11 */
@@ -127,10 +105,6 @@ div.csl-indent {
   margin-left: auto;
   margin-right: auto;
 }
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
 img {
   max-width:100%;
 }
@@ -146,40 +120,13 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+pre code {
+  padding: 0;
+}
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 51px;
-  padding-bottom: 40px;
-}
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
 .dropdown-submenu {
   position: relative;
 }
@@ -207,7 +154,7 @@ body {
   margin-right: -10px;
 }
 .dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
+  border-left-color: #adb5bd;
 }
 .dropdown-submenu.pull-left {
   float: none;
@@ -219,7 +166,7 @@ body {
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -230,10 +177,23 @@ $(document).ready(function () {
   var menuAnchor = $('a[href="' + href + '"]');
 
   // mark it active
-  menuAnchor.parent().addClass('active');
+  menuAnchor.tab('show');
 
   // if it's got a parent navbar menu mark it active as well
   menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
 
@@ -245,7 +205,6 @@ $(document).ready(function () {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
-  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -371,7 +330,7 @@ div.tocify {
 
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row-fluid">
+<div class="row">
 <div class="col-xs-12 col-sm-4 col-md-3">
 <div id="TOC" class="tocify">
 </div>
@@ -417,7 +376,7 @@ div.tocify {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
@@ -452,7 +411,7 @@ Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></sp
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-01-09
+<strong>Last updated:</strong> 2021-05-27
 </p>
 <p>
 <strong>Checks:</strong>
@@ -580,20 +539,20 @@ makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreee67f27dc5107a0a9ce2f63e2c2cf76196eb3a46ctargetblanke67f27da">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreeb85e679df406f192d111b194522d54f343893e1ftargetblankb85e679a">
 <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/e67f27dc5107a0a9ce2f63e2c2cf76196eb3a46c" target="_blank">e67f27d</a>
+<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/b85e679df406f192d111b194522d54f343893e1f" target="_blank">b85e679</a>
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreee67f27dc5107a0a9ce2f63e2c2cf76196eb3a46ctargetblanke67f27da" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreeb85e679df406f192d111b194522d54f343893e1ftargetblankb85e679a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and
 connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/e67f27dc5107a0a9ce2f63e2c2cf76196eb3a46c" target="_blank">e67f27d</a>.
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/b85e679df406f192d111b194522d54f343893e1f" target="_blank">b85e679</a>.
 See the <em>Past versions</em> tab to see a history of the changes made to the
 R Markdown and HTML files.
 </p>
@@ -610,13 +569,12 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    .tresorit/
+    Ignored:    _targets/
     Ignored:    data/VR_20051125.txt.xz
-    Ignored:    output/d.fst
+    Ignored:    data/VR_Snapshot_20081104.txt.xz
     Ignored:    renv/library/
+    Ignored:    renv/local/
     Ignored:    renv/staging/
-
-Untracked files:
-    Untracked:  analysis/01-1_get_data.Rmd
 
 </code></pre>
 <p>
@@ -661,6 +619,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/4c318d4ea243bf81d57f3d1d8c46ff8fd312312b/docs/proposal.html" target="_blank">4c318d4</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-01-09
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1174,7 +1149,7 @@ Session information
 </button>
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
-<pre><code>R version 4.0.3 (2020-10-10)
+<pre><code>R version 4.1.0 (2021-05-18)
 Platform: x86_64-pc-linux-gnu (64-bit)
 Running under: Ubuntu 20.10
 
@@ -1194,21 +1169,22 @@ attached base packages:
 [1] stats     graphics  grDevices datasets  utils     methods   base     
 
 other attached packages:
-[1] ggplot2_3.3.3   magrittr_2.0.1  workflowr_1.6.2
+[1] ggplot2_3.3.3  magrittr_2.0.1
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.5       highr_0.8        pillar_1.4.7     compiler_4.0.3  
- [5] later_1.1.0.1    git2r_0.27.1     tools_4.0.3      digest_0.6.27   
- [9] evaluate_0.14    lifecycle_0.2.0  tibble_3.0.4     gtable_0.3.0    
-[13] pkgconfig_2.0.3  rlang_0.4.10     rstudioapi_0.13  yaml_2.2.1      
-[17] xfun_0.20        withr_2.3.0      stringr_1.4.0    dplyr_1.0.2     
-[21] knitr_1.30       generics_0.1.0   fs_1.5.0         vctrs_0.3.6     
-[25] tidyselect_1.1.0 rprojroot_2.0.2  grid_4.0.3       glue_1.4.2      
-[29] R6_2.5.0         rmarkdown_2.6    bookdown_0.21    farver_2.0.3    
-[33] purrr_0.3.4      whisker_0.4      scales_1.1.1     promises_1.1.1  
-[37] ellipsis_0.3.1   htmltools_0.5.0  colorspace_2.0-0 renv_0.12.4     
-[41] httpuv_1.5.4     labeling_0.4.2   stringi_1.5.3    munsell_0.5.0   
-[45] crayon_1.3.4    </code></pre>
+ [1] Rcpp_1.0.6        highr_0.9         pillar_1.6.1      compiler_4.1.0   
+ [5] bslib_0.2.5       later_1.2.0       jquerylib_0.1.4   git2r_0.28.0     
+ [9] workflowr_1.6.2   tools_4.1.0       digest_0.6.27     jsonlite_1.7.2   
+[13] evaluate_0.14     lifecycle_1.0.0   tibble_3.1.2      gtable_0.3.0     
+[17] pkgconfig_2.0.3   rlang_0.4.11      yaml_2.2.1        xfun_0.23        
+[21] withr_2.4.2       dplyr_1.0.6       stringr_1.4.0     knitr_1.33       
+[25] generics_0.1.0    fs_1.5.0          vctrs_0.3.8       sass_0.4.0       
+[29] tidyselect_1.1.1  rprojroot_2.0.2   grid_4.1.0        glue_1.4.2       
+[33] R6_2.5.0          fansi_0.4.2       rmarkdown_2.8     bookdown_0.22    
+[37] farver_2.1.0      purrr_0.3.4       whisker_0.4       scales_1.1.1     
+[41] promises_1.2.0.1  ellipsis_0.3.2    htmltools_0.5.1.1 colorspace_2.0-1 
+[45] renv_0.13.2       httpuv_1.6.1      labeling_0.4.2    utf8_1.2.1       
+[49] stringi_1.6.2     munsell_0.5.0     crayon_1.4.1     </code></pre>
 </div>
 </div>
 
@@ -1255,7 +1231,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
+    $(this).parent().toggleClass('nav-tabs-open');
   });
 });
 </script>
@@ -1294,7 +1270,7 @@ $(document).ready(function ()  {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "site_libs/mathjax-local/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>
