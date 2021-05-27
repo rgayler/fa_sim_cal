@@ -6,6 +6,11 @@ date: "`r date()`"
 output: workflowr::wflow_html
 editor_options:
   chunk_output_type: console
+<<<<<<< HEAD
+=======
+  markdown: 
+    wrap: 72
+>>>>>>> 0e893b2b6ac0165542d0bbdae0e09af26c155cf8
 ---
 
 ```{r, echo = FALSE}

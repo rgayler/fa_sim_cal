@@ -1,9 +1,3 @@
----
-editor_options: 
-  markdown: 
-    wrap: 72
----
-
 # Frequency-Aware Similarity Calibration
 
 This is an open, shareable, reproducible, computational research project
