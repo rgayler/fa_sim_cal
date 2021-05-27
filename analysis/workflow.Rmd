@@ -1,7 +1,7 @@
 ---
 title: "Workflow management"
 author: "Ross Gayler"
-# date: "2021-02-26"
+# date: "2021-05-27"
 output: workflowr::wflow_html
 editor_options:
   chunk_output_type: console
@@ -32,7 +32,7 @@ let me know, rather than me having to find out the hard way.
 
 -   `targets` and `workflowr` both work by tracking some set of entities
     and the computational dependencies between them. When any of the
-    tracked entities changes the packages calculate the minimal set of
+    tracked entities changes, the packages calculate the minimal set of
     downstream dependencies that need to be recomputed to bring all the
     entities into a consistent state of being up to date.
 
@@ -46,8 +46,12 @@ let me know, rather than me having to find out the hard way.
         pipeline (rather than human generated text in reports).
 
         -   Although reports can be rendered, they appear to be treated
-            as optional final steps like generating a plot, rather than
-            as a core concern.
+            as optional final steps (like generating a plot), rather
+            than as a core concern.
+        -   That's quite reasonable because the output of a
+            report-generating step will be a document or image that's
+            very unlikely to be the input to another computational step.
+            So reports are necessarily leaves on the computation graph.
 
     -   Knows about high-performance computing and can run computations
         in parallel.
@@ -62,11 +66,18 @@ let me know, rather than me having to find out the hard way.
 
         -   `workflowr::wflow_build()` tracks modification dates of Rmd
             files and the corresponding rendered output files
+
         -   `workflowr::wflow_publish()` tracks git status of Rmd files
             and the corresponding rendered output files
+
+            -   The decision to publish the analyses seems necessarily
+                manual to me.
+
         -   The computational consistency aspect are really only about
             the consistency between the notebook Rmd files and their
-            rendered counterparts
+            rendered counterparts. That is, \`workflowr\` really only
+            knows about notebook rendering and not about the
+            computations in those notebooks.
 
     -   The computational reproducibility aspect is restricted to
         ensuring that random number seeds are set appropriately, that
@@ -79,9 +90,9 @@ let me know, rather than me having to find out the hard way.
 
     -   Automatic publication of website served by GitHub Pages
 
--   Comparison
+-   Comparison of `targets` and `workflowr`
 
-    -   `targets` provides more general and fine-grained control of
+    -   `targets` provides more general and fine-grained control of the
         computational pipeline
 
         -   Rendering of Rmd documents can be treated as just another
@@ -96,41 +107,41 @@ let me know, rather than me having to find out the hard way.
     -   If I use `targets` to manage computational dependency tracking,
         what extra capabilities does `workflowr` provide?
 
-        -   Automatic generation of a website mof rendered notebooks
+        -   Automatic generation of a website of rendered notebooks
         -   Automatic publication of the website via GitHub pages
             (provided you use GitHub as the git remote repository).
         -   I want this project to be publicly accessible and I don't
             want the trouble of having to manually generate a website,
             so I will use `workflowr` to handle the building and
-            publication of a project website.
+            publication of the project website.
 
 -   Design states and design reasoning
 
     -   The design state of the computational pipeline (loosely defined)
         reflects the *current* best beliefs. That is, any previous
-        states were believed to be flawed in some way and the current
-        design state is believed to be better.
+        design states are believed to be flawed in some way and the
+        current design state is believed to be better.
 
     -   While the system is being modified from the prior design state
         to the current design state it is transiently broken and there
         is no need for that broken state to be preserved and easily
         accessible later.
 
-    -   Prior design states are not interesting (because they are
-        believed to be worse than the current design state) so there is
-        no need for prior design states to be preserved and easily
-        accessible later.
+    -   Prior design states of the computational are not very
+        interesting (because they are believed to be worse than the
+        current design state) so there is no need for prior design
+        states to be preserved and easily accessible later.
 
     -   The reasoning behind the current design state is important and
         must be preserved and immediately accessible.
 
     -   The reasoning behind the current design state *may* involve
         reference to prior design states and prior design reasoning.
-        Where these references are needed they are inclluded directly in
+        Where these references are needed they are included directly in
         the design reasoning for the current design state and are
         preserved and immediately accessible.
 
-        -   Thes design reasoning consists of manually constructed text,
+        -   The design reasoning consists of manually constructed text,
             possibly supported by specific analyses of data derived from
             the computational pipeline.
 
@@ -181,14 +192,31 @@ let me know, rather than me having to find out the hard way.
 
     -   There may be computational steps to generate data objects needed
         specifically for meta documents.
+
+        -   These computational steps are managed by `targets`, so
+            resulting data objects will be cached by `targets`.
+
     -   However, there is less pressure to minimise computation in the
-        Rmd documents.
+        Rmd documents, because individual design decisions are less
+        likely to need re-execution than the calculations on the core
+        pipeline
+
     -   The meta publications are `workflowr` Rmd notebooks.
+
     -   The meta-specific data objects and the rendering of the Rmd
         documents are managed by `targets`.
+
     -   The meta documents are rendered to a `workflowr` website.
+
     -   The `workflowr` website also has links to the rendered
         publications.
+
+    -   `workflowr` istinguished between building and publishing
+        documents.
+
+        -   The decision to publish is inherently manual, so building
+            isinvoked from `targets` whereas publishing is only invoked
+            manually.
 
 An example is summarised in the following diagram.
 
@@ -352,81 +380,14 @@ rendered documents of interest (meta publications and external
 publications) and is rendered to become the home page of the project
 website.
 
-# Open questions
+# Technical details
 
-These are not immediately relevant to how I think the current project
-will pan out, but I could easily imagine them being relevant in other
-projects.
-
-These questions arise because of my earlier assumption that `targets`
-and `workflowr` are focused on creating a current status of the project
-that is computationally consistent (up to date). Consequently, I have
-assumed that the current status of the project is directly accessible,
-but prior consistent states of the project are not directly (and
-therefore not easily) accessible from within the project. The questions
-below relate to use-cases where we would want current and prior states
-of the project to be simultaneously and directly available.
-
-These questions are based on the assumption that it's advantageous to
-have the *entire* computational process managed by `targets` or
-`workflowr` to ensure that everything is in a consistent state. That is,
-I am trying to avoid having any computational processes that are not
-managed by `targets` or `workflowr`.
-
-I suspect that [`tarchetypes`](https://github.com/ropensci/tarchetypes)
-and branching may be relevant to these questions.
-
-## Accumulating historical/indexed states
-
-Imagine a computational pipeline that ingests some data and reports on
-it. The current output reports reflect the current input data.
-
-Now imagine that the input data is regularly updated. Whenever the input
-data is updated the output reports would also be updated so that the
-previous output no longer exists in the pipeline environment. However,
-in that use-case it is generally required that all the generated reports
-continue to be available.
-
-The results could be accumulated outside the computational pipeline but
-that would appear to mean that part of the computational process is not
-visible to and managed by `targets` or `workflowr`.
-
--   So, is there a reasonable way in `targets` or `workflowr` to
-    accumulate an arbitrary number of analyses/results from the same
-    pipeline?
-
--   As a related question, would that support regenerating *all* the
-    reports if the pipeline functions were updated (e.g. a bug was
-    fixed)?
-
--   Related to the previous question: Would it be possible to accumulate
-    reports corresponding to different definitions of the pipeline
-    functions (e.g. applying different modelling techniques to the
-    data)?
-
-The last question makes clear that referring to "historical" is somewhat
-misleading. It would more generally be thought of as (potentially
-multidimensional) indexing across data sets and pipeline definitions.
-
-This might be easier to do if it was conceptualised as a point in time
-computation with the indexing variable(s) used as a grouping variable(s)
-in one input data set. However, that point in time view would require
-recomputing all the outputs when the input is updated, even though
-recomputing the previous outputs is unnecessary.
-
-## Comparing historical/indexed states
-
-The previous questions dealt with the case where the outputs are just
-accumulated. Now consider the case where outputs for different index
-values are combined computationally inside the pipeline managed by
-`targets` or `workflowr`. This might be used to look at how output
-values change over time or over changes in the pipeline definition.
-
--   Is there a reasonable way in `targets` or `workflowr` to accumulate
-    an arbitrary number of analyses/results, indexed by data sets and/or
-    pipeline definitions, from the same pipeline such that indexed
-    results can be computational combined in later steps of the same
-    pipeline?
+- In https://github.com/ropensci/tarchetypes/discussions/46#discussioncomment-693001 (@wlandau)[https://github.com/wlandau] recommends
+that a target tracking an Rmd document should also track the rendered output file to guard against corruption of the output.
+Unfortunately, if the Rmd document is built or published with `workflowr` the rendered output file is updated, which invalidates the corresponding target in `targets`.
+  - Consequently, I do not track the rendered output file for `workflowr` notebooks in the corresponding target.
+    - Build the document via `tar_make()` which calls `wflow_build()`.
+    -Publish the document by manually calling `wflow_publish()`.
 
 # Useful inks
 
@@ -438,5 +399,8 @@ values change over time or over changes in the pipeline definition.
     documents and allowing sketching out a pipeline by having dummy
     target definitions:
     <https://github.com/ropensci/targets/discussions/336>
+-   GitHub {tarchetypes} issue on tracking changes in Rmarkdown
+    documents:
+    <https://github.com/ropensci/tarchetypes/discussions/46>
 -   A YouTube video on using Rmarkdown with {targets}:
     <https://www.youtube.com/watch?v=jAkNwaGRku0&feature=youtu.be>

@@ -1,6 +1,0 @@
-# keep tentative documents off GitHub
-test*
-
-# keep large data files off GitHub
-*xz
-

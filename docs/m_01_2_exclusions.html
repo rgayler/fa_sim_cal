@@ -1,0 +1,3673 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Ross Gayler" />
+
+<meta name="date" content="2021-05-14" />
+
+<title>[meta] Apply row exclusions</title>
+
+<script src="site_libs/header-attrs-2.8/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Frequency-Aware Similarity Calibration</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/rgayler/fa_sim_cal">
+    <span class="fas fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">[meta] Apply row exclusions</h1>
+<h3 class="subtitle">m_01_2_exclusions</h3>
+<h4 class="author">Ross Gayler</h4>
+<h4 class="date">2021-05-14</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks">
+Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-05-27
+</p>
+<p>
+<strong>Checks:</strong>
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+7
+<span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+0
+</p>
+<p>
+<strong>Knit directory:</strong>
+<code>fa_sim_cal/</code>
+<span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version
+1.6.2). The <em>Checks</em> tab describes the
+reproducibility checks that were applied when the results were created.
+The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you
+know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Environment:</strong> empty
+</a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global
+environment can affect the analysis in your R Markdown file in unknown ways.
+For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20201104code">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Seed:</strong> <code>set.seed(20201104)</code>
+</a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20201104code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20201104)</code> was run prior to running the code in the R Markdown file.
+Setting a seed ensures that any results that rely on randomness, e.g.
+subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Session information:</strong> recorded
+</a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is
+critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Cache:</strong> none
+</a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident
+that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>File paths:</strong> relative
+</a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project
+makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreea6fb2e3554dac977062b37d69d0adb1d328baeb9targetblanka6fb2e3a">
+<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/a6fb2e3554dac977062b37d69d0adb1d328baeb9" target="_blank">a6fb2e3</a>
+</a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreea6fb2e3554dac977062b37d69d0adb1d328baeb9targetblanka6fb2e3a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and
+connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/a6fb2e3554dac977062b37d69d0adb1d328baeb9" target="_blank">a6fb2e3</a>.
+See the <em>Past versions</em> tab to see a history of the changes made to the
+R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the
+analysis have been committed to Git prior to generating the results (you can
+use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only
+checks the R Markdown file, but you know if there are other scripts or data
+files that it depends on. Below is the status of the Git repository when the
+results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    .tresorit/
+    Ignored:    _targets/
+    Ignored:    data/VR_20051125.txt.xz
+    Ignored:    data/VR_Snapshot_20081104.txt.xz
+    Ignored:    renv/library/
+    Ignored:    renv/local/
+    Ignored:    renv/staging/
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in
+this status report because it is ok for generated content to have uncommitted
+changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made
+to the R Markdown (<code>analysis/m_01_2_exclusions.Rmd</code>) and HTML (<code>docs/m_01_2_exclusions.html</code>)
+files. If you’ve configured a remote Git repository (see
+<code>?wflow_git_remote</code>), click on the hyperlinks in the table below to
+view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/ab90fe6e4a497237dc300c11d3441a2b5855e0bb/docs/m_01_2_exclusions.html" target="_blank">ab90fe6</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-18
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/24d95c0566a32dd720743eacdc11a3606f275f12/analysis/m_01_2_exclusions.Rmd" target="_blank">24d95c0</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-15
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/24d95c0566a32dd720743eacdc11a3606f275f12/docs/m_01_2_exclusions.html" target="_blank">24d95c0</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-15
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/d7b5c395ca46f651d57d33d0a39b41a15e5d1570/analysis/m_01_2_exclusions.Rmd" target="_blank">d7b5c39</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-15
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/1df745a9b792646d80fbf936182bd02dccaa5f72/analysis/m_01_2_exclusions.Rmd" target="_blank">1df745a</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-14
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/e1b609b672901f81f28585c656a293f6e0e3504e/analysis/m_01_2_exclusions.Rmd" target="_blank">e1b609b</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-14
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/410907839f4926bcfedb54e968a26028303b9b91/analysis/m_01_2_exclusions.Rmd" target="_blank">4109078</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-13
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/410907839f4926bcfedb54e968a26028303b9b91/docs/m_01_2_exclusions.html" target="_blank">4109078</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-13
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/411de1eac1cc9d3abf616f2e8c7cba1a6400b60e/analysis/m_01_2_exclusions.Rmd" target="_blank">411de1e</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-04-04
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/411de1eac1cc9d3abf616f2e8c7cba1a6400b60e/docs/m_01_2_exclusions.html" target="_blank">411de1e</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-04-04
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/ebd787ee67b6a30a4fbd82d7a71c01358b56fd7a/analysis/m_01_2_exclusions.Rmd" target="_blank">ebd787e</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-28
+</td>
+<td>
+WIP
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/ebd787ee67b6a30a4fbd82d7a71c01358b56fd7a/docs/m_01_2_exclusions.html" target="_blank">ebd787e</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-03-28
+</td>
+<td>
+WIP
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code># NOTE this notebook can be run manually or automatically by {targets}
+# So load the packages required by this notebook here
+# rather than relying on _targets.R to load them.
+
+# Set up the project environment, because {workflowr} knits each Rmd file 
+# in a new R session, and doesn&#39;t execute the project .Rprofile
+
+library(targets) # access data from the targets cache
+
+library(tictoc) # capture execution time
+library(here) # construct file paths relative to project root</code></pre>
+<pre><code>here() starts at /home/ross/RG/projects/academic/entity_resolution/fa_sim_cal_TOP/fa_sim_cal</code></pre>
+<pre class="r"><code>library(fs) # file system operations
+library(dplyr) # data wrangling</code></pre>
+<pre><code>
+Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>The following objects are masked from &#39;package:stats&#39;:
+
+    filter, lag</code></pre>
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(gt) # table formatting
+library(stringr) # string matching
+library(vroom) # fast reading of delimited text files
+
+# start the execution time clock
+tictoc::tic(&quot;Computation time (excl. render)&quot;)
+
+# Get the path to the raw entity data file
+# This is a target managed by {targets}
+f_entity_raw_tsv &lt;- tar_read(c_raw_entity_data_file)</code></pre>
+<div id="introduction" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<p>These meta notebooks document the development of functions that will be
+applied in the core pipeline.</p>
+<p>The aim of the m_01 set of meta notebooks is to work out how to read the
+raw entity data, drop excluded cases, discard irrelevant variables,
+apply any cleaning, and construct standardised names. This does not
+include construction of any modelling features. To be clear, the target
+(<code>c_raw_entity_data</code>) corresponding to the objective of this set of
+notebooks is the cleaned and standardised raw data, before constructing
+any modelling features.</p>
+<p>This notebook documents the process of excluding data rows that are not
+useful for this project.</p>
+<p>The subsequent notebooks in this set will develop the other functions
+needed to generate the cleaned and standardised data.</p>
+<div id="exclusions" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> Exclusions</h2>
+<p>There are four variables dealing with voter status. Preliminary
+examination of these variables shows that some records correspond to
+people who have been removed from the electoral roll. This project
+focuses on ambiguity arising from the fact that some names are common
+Therefore, we want the entity data to be as accurate as possible and
+free of duplicate records so that we don’t introduce ambiguity because
+of data quality issues.</p>
+<p>Speaking of data quality issues, it is my experience that large
+databases often contain test records.</p>
+<p>I will exclude all the data rows that have any of these data quality
+issues. I will do this early in the pipeline to minimise the number of
+records processed and to avoid including these records in the subsequent
+quality analyses.</p>
+</div>
+</div>
+<div id="read-entity-data" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Read entity data</h1>
+<p>Read the raw entity data file using the previously defined core pipeline
+function, <code>raw_entity_data_read()</code>.</p>
+<pre class="r"><code># Show the data file name
+fs::path_file(f_entity_raw_tsv)</code></pre>
+<pre><code>[1] &quot;VR_20051125.txt.xz&quot;</code></pre>
+<pre class="r"><code># Read the raw entity data
+d &lt;- raw_entity_data_read(f_entity_raw_tsv)</code></pre>
+</div>
+<div id="voter-status-variables" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Voter status variables</h1>
+<p>Check the internal consistency of the voter status variables.</p>
+<p>The data dictionary describes these as two pairs of variables, where
+each pair consists of a code variable and a label variable. I expect the
+code and label values to be in a 1:1 relationship.</p>
+<div id="status" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Status</h2>
+<ul>
+<li><code>status_cd</code> - Status code for voter registration</li>
+<li><code>voter_status_desc</code> - Status code descriptions</li>
+</ul>
+<pre class="r"><code>d %&gt;% 
+  dplyr::distinct(status_cd, voter_status_desc) %&gt;% 
+  dplyr::arrange(status_cd, voter_status_desc) %&gt;% 
+  gt::gt() %&gt;% 
+  gt::opt_row_striping() %&gt;% 
+  gt::tab_style(style = gt::cell_text(weight = &quot;bold&quot;), locations = gt::cells_column_labels()) %&gt;% 
+  gt::fmt_missing(columns = everything(), missing_text = &quot;&lt;NA&gt;&quot;)</code></pre>
+<div id="dcehvnnqlr" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#dcehvnnqlr .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#dcehvnnqlr .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#dcehvnnqlr .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#dcehvnnqlr .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#dcehvnnqlr .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#dcehvnnqlr .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#dcehvnnqlr .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#dcehvnnqlr .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#dcehvnnqlr .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#dcehvnnqlr .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#dcehvnnqlr .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#dcehvnnqlr .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#dcehvnnqlr .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#dcehvnnqlr .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#dcehvnnqlr .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#dcehvnnqlr .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#dcehvnnqlr .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#dcehvnnqlr .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#dcehvnnqlr .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#dcehvnnqlr .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#dcehvnnqlr .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#dcehvnnqlr .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#dcehvnnqlr .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#dcehvnnqlr .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#dcehvnnqlr .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#dcehvnnqlr .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#dcehvnnqlr .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#dcehvnnqlr .gt_left {
+  text-align: left;
+}
+
+#dcehvnnqlr .gt_center {
+  text-align: center;
+}
+
+#dcehvnnqlr .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#dcehvnnqlr .gt_font_normal {
+  font-weight: normal;
+}
+
+#dcehvnnqlr .gt_font_bold {
+  font-weight: bold;
+}
+
+#dcehvnnqlr .gt_font_italic {
+  font-style: italic;
+}
+
+#dcehvnnqlr .gt_super {
+  font-size: 65%;
+}
+
+#dcehvnnqlr .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 65%;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">status_cd</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">voter_status_desc</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left">A</td>
+<td class="gt_row gt_left">ACTIVE</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">D</td>
+<td class="gt_row gt_left gt_striped">DENIED</td></tr>
+    <tr><td class="gt_row gt_left">I</td>
+<td class="gt_row gt_left">INACTIVE</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">R</td>
+<td class="gt_row gt_left gt_striped">REMOVED</td></tr>
+    <tr><td class="gt_row gt_left">S</td>
+<td class="gt_row gt_left">TEMPORARY REGISTRATION</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">&lt;NA&gt;</td>
+<td class="gt_row gt_left gt_striped">&lt;NA&gt;</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+<ul>
+<li><code>&lt;NA&gt;</code> is the missing value indicator.</li>
+<li>The code and label values are in a 1:1 relationship. Use the label
+variable (<code>voter_status_desc</code>) because it is more explicitly
+meaningful.</li>
+</ul>
+<p>Look at the distribution of values across the data.</p>
+<pre class="r"><code>d %&gt;% 
+  dplyr::count(voter_status_desc) %&gt;% 
+  gt::gt() %&gt;% 
+  gt::opt_row_striping() %&gt;% 
+  gt::tab_style(style = cell_text(weight = &quot;bold&quot;), locations = cells_column_labels()) %&gt;% 
+  gt::fmt_missing(columns = everything(), missing_text = &quot;&lt;NA&gt;&quot;) %&gt;% 
+  gt::fmt_number(columns = n, decimals = 0)</code></pre>
+<div id="dtbwrdjpqr" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#dtbwrdjpqr .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#dtbwrdjpqr .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#dtbwrdjpqr .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#dtbwrdjpqr .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#dtbwrdjpqr .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#dtbwrdjpqr .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#dtbwrdjpqr .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#dtbwrdjpqr .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#dtbwrdjpqr .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#dtbwrdjpqr .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#dtbwrdjpqr .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#dtbwrdjpqr .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#dtbwrdjpqr .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#dtbwrdjpqr .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#dtbwrdjpqr .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#dtbwrdjpqr .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#dtbwrdjpqr .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#dtbwrdjpqr .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#dtbwrdjpqr .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#dtbwrdjpqr .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#dtbwrdjpqr .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#dtbwrdjpqr .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#dtbwrdjpqr .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#dtbwrdjpqr .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#dtbwrdjpqr .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#dtbwrdjpqr .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#dtbwrdjpqr .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#dtbwrdjpqr .gt_left {
+  text-align: left;
+}
+
+#dtbwrdjpqr .gt_center {
+  text-align: center;
+}
+
+#dtbwrdjpqr .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#dtbwrdjpqr .gt_font_normal {
+  font-weight: normal;
+}
+
+#dtbwrdjpqr .gt_font_bold {
+  font-weight: bold;
+}
+
+#dtbwrdjpqr .gt_font_italic {
+  font-style: italic;
+}
+
+#dtbwrdjpqr .gt_super {
+  font-size: 65%;
+}
+
+#dtbwrdjpqr .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 65%;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">voter_status_desc</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-weight: bold;">n</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left">ACTIVE</td>
+<td class="gt_row gt_right">4,914,521</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">DENIED</td>
+<td class="gt_row gt_right gt_striped">41,348</td></tr>
+    <tr><td class="gt_row gt_left">INACTIVE</td>
+<td class="gt_row gt_right">495,603</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">REMOVED</td>
+<td class="gt_row gt_right gt_striped">2,546,485</td></tr>
+    <tr><td class="gt_row gt_left">TEMPORARY REGISTRATION</td>
+<td class="gt_row gt_right">5,334</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">&lt;NA&gt;</td>
+<td class="gt_row gt_right gt_striped">2</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+<ul>
+<li>~60% of records are <code>ACTIVE</code>. All the other values have negative
+connotations for expected data quality.</li>
+</ul>
+</div>
+<div id="reason" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Reason</h2>
+<ul>
+<li><code>reason_cd</code> - Reason code for voter registration status</li>
+<li><code>voter_status_reason_desc</code> - Reason code description</li>
+</ul>
+<pre class="r"><code>d %&gt;% 
+  dplyr::distinct(reason_cd, voter_status_reason_desc) %&gt;% 
+  dplyr::arrange(reason_cd, voter_status_reason_desc) %&gt;% 
+  gt::gt() %&gt;% 
+  gt::opt_row_striping() %&gt;% 
+  gt::tab_style(style = gt::cell_text(weight = &quot;bold&quot;), locations = gt::cells_column_labels()) %&gt;% 
+  gt::fmt_missing(columns = everything(), missing_text = &quot;&lt;NA&gt;&quot;)</code></pre>
+<div id="jdvzypbhcc" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#jdvzypbhcc .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#jdvzypbhcc .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#jdvzypbhcc .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#jdvzypbhcc .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#jdvzypbhcc .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#jdvzypbhcc .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#jdvzypbhcc .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#jdvzypbhcc .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#jdvzypbhcc .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#jdvzypbhcc .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#jdvzypbhcc .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#jdvzypbhcc .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#jdvzypbhcc .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#jdvzypbhcc .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#jdvzypbhcc .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#jdvzypbhcc .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#jdvzypbhcc .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#jdvzypbhcc .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jdvzypbhcc .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#jdvzypbhcc .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jdvzypbhcc .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#jdvzypbhcc .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#jdvzypbhcc .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#jdvzypbhcc .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#jdvzypbhcc .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#jdvzypbhcc .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#jdvzypbhcc .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#jdvzypbhcc .gt_left {
+  text-align: left;
+}
+
+#jdvzypbhcc .gt_center {
+  text-align: center;
+}
+
+#jdvzypbhcc .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#jdvzypbhcc .gt_font_normal {
+  font-weight: normal;
+}
+
+#jdvzypbhcc .gt_font_bold {
+  font-weight: bold;
+}
+
+#jdvzypbhcc .gt_font_italic {
+  font-style: italic;
+}
+
+#jdvzypbhcc .gt_super {
+  font-size: 65%;
+}
+
+#jdvzypbhcc .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 65%;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">reason_cd</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">voter_status_reason_desc</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left">A1</td>
+<td class="gt_row gt_left">UNVERIFIED</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">A2</td>
+<td class="gt_row gt_left gt_striped">CONFIRMATION PENDING</td></tr>
+    <tr><td class="gt_row gt_left">AA</td>
+<td class="gt_row gt_left">ARMED FORCES</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">AL</td>
+<td class="gt_row gt_left gt_striped">LEGACY DATA</td></tr>
+    <tr><td class="gt_row gt_left">AN</td>
+<td class="gt_row gt_left">UNVERIFIED NEW</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">AP</td>
+<td class="gt_row gt_left gt_striped">VERIFICATION PENDING</td></tr>
+    <tr><td class="gt_row gt_left">AV</td>
+<td class="gt_row gt_left">VERIFIED</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">DI</td>
+<td class="gt_row gt_left gt_striped">UNAVAILABLE ESSENTIAL INFORMATION</td></tr>
+    <tr><td class="gt_row gt_left">DU</td>
+<td class="gt_row gt_left">VERIFICATION RETURNED UNDELIVERABLE</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">IL</td>
+<td class="gt_row gt_left gt_striped">LEGACY - CONVERSION</td></tr>
+    <tr><td class="gt_row gt_left">IN</td>
+<td class="gt_row gt_left">CONFIRMATION NOT RETURNED</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">IU</td>
+<td class="gt_row gt_left gt_striped">CONFIRMATION RETURNED UNDELIVERABLE</td></tr>
+    <tr><td class="gt_row gt_left">R2</td>
+<td class="gt_row gt_left">DUPLICATE</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">RA</td>
+<td class="gt_row gt_left gt_striped">ADMINISTRATIVE</td></tr>
+    <tr><td class="gt_row gt_left">RC</td>
+<td class="gt_row gt_left">REMOVED DUE TO SUSTAINED CHALLENGE</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">RD</td>
+<td class="gt_row gt_left gt_striped">DECEASED</td></tr>
+    <tr><td class="gt_row gt_left">RF</td>
+<td class="gt_row gt_left">FELONY CONVICTION</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">RL</td>
+<td class="gt_row gt_left gt_striped">MOVED FROM COUNTY</td></tr>
+    <tr><td class="gt_row gt_left">RM</td>
+<td class="gt_row gt_left">REMOVED AFTER 2 FED GENERAL ELECTIONS IN INACTIVE STATUS</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">RP</td>
+<td class="gt_row gt_left gt_striped">REMOVED UNDER OLD PURGE LAW</td></tr>
+    <tr><td class="gt_row gt_left">RQ</td>
+<td class="gt_row gt_left">REQUEST FROM VOTER</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">RS</td>
+<td class="gt_row gt_left gt_striped">MOVED FROM STATE</td></tr>
+    <tr><td class="gt_row gt_left">RT</td>
+<td class="gt_row gt_left">TEMPORARY REGISTRANT</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">SM</td>
+<td class="gt_row gt_left gt_striped">MILITARY</td></tr>
+    <tr><td class="gt_row gt_left">SO</td>
+<td class="gt_row gt_left">OVERSEAS CITIZEN</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">SP</td>
+<td class="gt_row gt_left gt_striped">PREVIOUSLY REGISTERED</td></tr>
+    <tr><td class="gt_row gt_left">&lt;NA&gt;</td>
+<td class="gt_row gt_left">&lt;NA&gt;</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+<ul>
+<li><code>&lt;NA&gt;</code> is the missing value indicator.</li>
+<li>The code and label values are in a 1:1 relationship. Use the label
+variable (<code>voter_status_reason_desc</code>) because it is more explicitly
+meaningful.</li>
+</ul>
+<p>Look at the distribution of values.</p>
+<pre class="r"><code>d %&gt;% 
+  dplyr::count(voter_status_reason_desc) %&gt;% 
+  gt::gt() %&gt;% 
+  gt::opt_row_striping() %&gt;% 
+  gt::tab_style(style = cell_text(weight = &quot;bold&quot;), locations = cells_column_labels()) %&gt;% 
+  gt::fmt_missing(columns = everything(), missing_text = &quot;&lt;NA&gt;&quot;) %&gt;% 
+  gt::fmt_number(columns = n, decimals = 0)</code></pre>
+<div id="dqonznrklk" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#dqonznrklk .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#dqonznrklk .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#dqonznrklk .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#dqonznrklk .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#dqonznrklk .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#dqonznrklk .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#dqonznrklk .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#dqonznrklk .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#dqonznrklk .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#dqonznrklk .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#dqonznrklk .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#dqonznrklk .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#dqonznrklk .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#dqonznrklk .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#dqonznrklk .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#dqonznrklk .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#dqonznrklk .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#dqonznrklk .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#dqonznrklk .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#dqonznrklk .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#dqonznrklk .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#dqonznrklk .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#dqonznrklk .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#dqonznrklk .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#dqonznrklk .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#dqonznrklk .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#dqonznrklk .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#dqonznrklk .gt_left {
+  text-align: left;
+}
+
+#dqonznrklk .gt_center {
+  text-align: center;
+}
+
+#dqonznrklk .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#dqonznrklk .gt_font_normal {
+  font-weight: normal;
+}
+
+#dqonznrklk .gt_font_bold {
+  font-weight: bold;
+}
+
+#dqonznrklk .gt_font_italic {
+  font-style: italic;
+}
+
+#dqonznrklk .gt_super {
+  font-size: 65%;
+}
+
+#dqonznrklk .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 65%;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">voter_status_reason_desc</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-weight: bold;">n</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left">ADMINISTRATIVE</td>
+<td class="gt_row gt_right">59,008</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">ARMED FORCES</td>
+<td class="gt_row gt_right gt_striped">50</td></tr>
+    <tr><td class="gt_row gt_left">CONFIRMATION NOT RETURNED</td>
+<td class="gt_row gt_right">181,320</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">CONFIRMATION PENDING</td>
+<td class="gt_row gt_right gt_striped">71,296</td></tr>
+    <tr><td class="gt_row gt_left">CONFIRMATION RETURNED UNDELIVERABLE</td>
+<td class="gt_row gt_right">303,197</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">DECEASED</td>
+<td class="gt_row gt_right gt_striped">443,486</td></tr>
+    <tr><td class="gt_row gt_left">DUPLICATE</td>
+<td class="gt_row gt_right">78,951</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">FELONY CONVICTION</td>
+<td class="gt_row gt_right gt_striped">63,501</td></tr>
+    <tr><td class="gt_row gt_left">LEGACY - CONVERSION</td>
+<td class="gt_row gt_right">10,585</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">LEGACY DATA</td>
+<td class="gt_row gt_right gt_striped">523,899</td></tr>
+    <tr><td class="gt_row gt_left">MILITARY</td>
+<td class="gt_row gt_right">3,975</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">MOVED FROM COUNTY</td>
+<td class="gt_row gt_right gt_striped">888,056</td></tr>
+    <tr><td class="gt_row gt_left">MOVED FROM STATE</td>
+<td class="gt_row gt_right">89,049</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">OVERSEAS CITIZEN</td>
+<td class="gt_row gt_right gt_striped">1,307</td></tr>
+    <tr><td class="gt_row gt_left">PREVIOUSLY REGISTERED</td>
+<td class="gt_row gt_right">51</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">REMOVED AFTER 2 FED GENERAL ELECTIONS IN INACTIVE STATUS</td>
+<td class="gt_row gt_right gt_striped">551,073</td></tr>
+    <tr><td class="gt_row gt_left">REMOVED DUE TO SUSTAINED CHALLENGE</td>
+<td class="gt_row gt_right">662</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">REMOVED UNDER OLD PURGE LAW</td>
+<td class="gt_row gt_right gt_striped">367,511</td></tr>
+    <tr><td class="gt_row gt_left">REQUEST FROM VOTER</td>
+<td class="gt_row gt_right">4,194</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">TEMPORARY REGISTRANT</td>
+<td class="gt_row gt_right gt_striped">729</td></tr>
+    <tr><td class="gt_row gt_left">UNAVAILABLE ESSENTIAL INFORMATION</td>
+<td class="gt_row gt_right">6,991</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">UNVERIFIED</td>
+<td class="gt_row gt_right gt_striped">13,737</td></tr>
+    <tr><td class="gt_row gt_left">UNVERIFIED NEW</td>
+<td class="gt_row gt_right">7,517</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">VERIFICATION PENDING</td>
+<td class="gt_row gt_right gt_striped">198,333</td></tr>
+    <tr><td class="gt_row gt_left">VERIFICATION RETURNED UNDELIVERABLE</td>
+<td class="gt_row gt_right">34,357</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">VERIFIED</td>
+<td class="gt_row gt_right gt_striped">4,100,220</td></tr>
+    <tr><td class="gt_row gt_left">&lt;NA&gt;</td>
+<td class="gt_row gt_right">238</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+<ul>
+<li><code>&lt;NA&gt;</code> is the missing value indicator.</li>
+<li>~50% of records are “VERIFIED”. That value seems to have the most
+positive connotations for expected data quality.</li>
+</ul>
+</div>
+<div id="status-times-reason" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> Status <span class="math inline">\(\times\)</span> Reason</h2>
+<p>Look at the distribution of combinations of the two variables.</p>
+<pre class="r"><code>d %&gt;% 
+  dplyr::count(voter_status_desc, voter_status_reason_desc) %&gt;% 
+  gt::gt() %&gt;% 
+  gt::opt_row_striping() %&gt;% 
+  gt::tab_style(style = cell_text(weight = &quot;bold&quot;), locations = cells_column_labels()) %&gt;% 
+  gt::fmt_missing(columns = everything(), missing_text = &quot;&lt;NA&gt;&quot;) %&gt;% 
+  gt::fmt_number(columns = n, decimals = 0)</code></pre>
+<div id="wtjahdkfau" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#wtjahdkfau .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#wtjahdkfau .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#wtjahdkfau .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#wtjahdkfau .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#wtjahdkfau .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#wtjahdkfau .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#wtjahdkfau .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#wtjahdkfau .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#wtjahdkfau .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#wtjahdkfau .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#wtjahdkfau .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#wtjahdkfau .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#wtjahdkfau .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#wtjahdkfau .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#wtjahdkfau .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#wtjahdkfau .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#wtjahdkfau .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#wtjahdkfau .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#wtjahdkfau .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#wtjahdkfau .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#wtjahdkfau .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#wtjahdkfau .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#wtjahdkfau .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#wtjahdkfau .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#wtjahdkfau .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#wtjahdkfau .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#wtjahdkfau .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#wtjahdkfau .gt_left {
+  text-align: left;
+}
+
+#wtjahdkfau .gt_center {
+  text-align: center;
+}
+
+#wtjahdkfau .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#wtjahdkfau .gt_font_normal {
+  font-weight: normal;
+}
+
+#wtjahdkfau .gt_font_bold {
+  font-weight: bold;
+}
+
+#wtjahdkfau .gt_font_italic {
+  font-style: italic;
+}
+
+#wtjahdkfau .gt_super {
+  font-size: 65%;
+}
+
+#wtjahdkfau .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 65%;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">voter_status_desc</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">voter_status_reason_desc</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" style="font-weight: bold;">n</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left">ACTIVE</td>
+<td class="gt_row gt_left">ARMED FORCES</td>
+<td class="gt_row gt_right">50</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">ACTIVE</td>
+<td class="gt_row gt_left gt_striped">CONFIRMATION PENDING</td>
+<td class="gt_row gt_right gt_striped">71,295</td></tr>
+    <tr><td class="gt_row gt_left">ACTIVE</td>
+<td class="gt_row gt_left">LEGACY - CONVERSION</td>
+<td class="gt_row gt_right">1</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">ACTIVE</td>
+<td class="gt_row gt_left gt_striped">LEGACY DATA</td>
+<td class="gt_row gt_right gt_striped">523,897</td></tr>
+    <tr><td class="gt_row gt_left">ACTIVE</td>
+<td class="gt_row gt_left">UNVERIFIED</td>
+<td class="gt_row gt_right">13,731</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">ACTIVE</td>
+<td class="gt_row gt_left gt_striped">UNVERIFIED NEW</td>
+<td class="gt_row gt_right gt_striped">7,516</td></tr>
+    <tr><td class="gt_row gt_left">ACTIVE</td>
+<td class="gt_row gt_left">VERIFICATION PENDING</td>
+<td class="gt_row gt_right">198,331</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">ACTIVE</td>
+<td class="gt_row gt_left gt_striped">VERIFIED</td>
+<td class="gt_row gt_right gt_striped">4,099,700</td></tr>
+    <tr><td class="gt_row gt_left">DENIED</td>
+<td class="gt_row gt_left">UNAVAILABLE ESSENTIAL INFORMATION</td>
+<td class="gt_row gt_right">6,990</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">DENIED</td>
+<td class="gt_row gt_left gt_striped">VERIFICATION RETURNED UNDELIVERABLE</td>
+<td class="gt_row gt_right gt_striped">34,357</td></tr>
+    <tr><td class="gt_row gt_left">DENIED</td>
+<td class="gt_row gt_left">VERIFIED</td>
+<td class="gt_row gt_right">1</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">INACTIVE</td>
+<td class="gt_row gt_left gt_striped">CONFIRMATION NOT RETURNED</td>
+<td class="gt_row gt_right gt_striped">181,320</td></tr>
+    <tr><td class="gt_row gt_left">INACTIVE</td>
+<td class="gt_row gt_left">CONFIRMATION RETURNED UNDELIVERABLE</td>
+<td class="gt_row gt_right">303,197</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">INACTIVE</td>
+<td class="gt_row gt_left gt_striped">LEGACY - CONVERSION</td>
+<td class="gt_row gt_right gt_striped">10,584</td></tr>
+    <tr><td class="gt_row gt_left">INACTIVE</td>
+<td class="gt_row gt_left">LEGACY DATA</td>
+<td class="gt_row gt_right">2</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">INACTIVE</td>
+<td class="gt_row gt_left gt_striped">VERIFICATION PENDING</td>
+<td class="gt_row gt_right gt_striped">1</td></tr>
+    <tr><td class="gt_row gt_left">INACTIVE</td>
+<td class="gt_row gt_left">VERIFIED</td>
+<td class="gt_row gt_right">499</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">REMOVED</td>
+<td class="gt_row gt_left gt_striped">ADMINISTRATIVE</td>
+<td class="gt_row gt_right gt_striped">59,008</td></tr>
+    <tr><td class="gt_row gt_left">REMOVED</td>
+<td class="gt_row gt_left">CONFIRMATION PENDING</td>
+<td class="gt_row gt_right">1</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">REMOVED</td>
+<td class="gt_row gt_left gt_striped">DECEASED</td>
+<td class="gt_row gt_right gt_striped">443,486</td></tr>
+    <tr><td class="gt_row gt_left">REMOVED</td>
+<td class="gt_row gt_left">DUPLICATE</td>
+<td class="gt_row gt_right">78,951</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">REMOVED</td>
+<td class="gt_row gt_left gt_striped">FELONY CONVICTION</td>
+<td class="gt_row gt_right gt_striped">63,501</td></tr>
+    <tr><td class="gt_row gt_left">REMOVED</td>
+<td class="gt_row gt_left">MOVED FROM COUNTY</td>
+<td class="gt_row gt_right">888,055</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">REMOVED</td>
+<td class="gt_row gt_left gt_striped">MOVED FROM STATE</td>
+<td class="gt_row gt_right gt_striped">89,049</td></tr>
+    <tr><td class="gt_row gt_left">REMOVED</td>
+<td class="gt_row gt_left">PREVIOUSLY REGISTERED</td>
+<td class="gt_row gt_right">1</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">REMOVED</td>
+<td class="gt_row gt_left gt_striped">REMOVED AFTER 2 FED GENERAL ELECTIONS IN INACTIVE STATUS</td>
+<td class="gt_row gt_right gt_striped">551,072</td></tr>
+    <tr><td class="gt_row gt_left">REMOVED</td>
+<td class="gt_row gt_left">REMOVED DUE TO SUSTAINED CHALLENGE</td>
+<td class="gt_row gt_right">662</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">REMOVED</td>
+<td class="gt_row gt_left gt_striped">REMOVED UNDER OLD PURGE LAW</td>
+<td class="gt_row gt_right gt_striped">367,511</td></tr>
+    <tr><td class="gt_row gt_left">REMOVED</td>
+<td class="gt_row gt_left">REQUEST FROM VOTER</td>
+<td class="gt_row gt_right">4,194</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">REMOVED</td>
+<td class="gt_row gt_left gt_striped">TEMPORARY REGISTRANT</td>
+<td class="gt_row gt_right gt_striped">729</td></tr>
+    <tr><td class="gt_row gt_left">REMOVED</td>
+<td class="gt_row gt_left">UNAVAILABLE ESSENTIAL INFORMATION</td>
+<td class="gt_row gt_right">1</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">REMOVED</td>
+<td class="gt_row gt_left gt_striped">UNVERIFIED</td>
+<td class="gt_row gt_right gt_striped">4</td></tr>
+    <tr><td class="gt_row gt_left">REMOVED</td>
+<td class="gt_row gt_left">UNVERIFIED NEW</td>
+<td class="gt_row gt_right">1</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">REMOVED</td>
+<td class="gt_row gt_left gt_striped">VERIFICATION PENDING</td>
+<td class="gt_row gt_right gt_striped">1</td></tr>
+    <tr><td class="gt_row gt_left">REMOVED</td>
+<td class="gt_row gt_left">VERIFIED</td>
+<td class="gt_row gt_right">20</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">REMOVED</td>
+<td class="gt_row gt_left gt_striped">&lt;NA&gt;</td>
+<td class="gt_row gt_right gt_striped">238</td></tr>
+    <tr><td class="gt_row gt_left">TEMPORARY REGISTRATION</td>
+<td class="gt_row gt_left">MILITARY</td>
+<td class="gt_row gt_right">3,975</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">TEMPORARY REGISTRATION</td>
+<td class="gt_row gt_left gt_striped">OVERSEAS CITIZEN</td>
+<td class="gt_row gt_right gt_striped">1,307</td></tr>
+    <tr><td class="gt_row gt_left">TEMPORARY REGISTRATION</td>
+<td class="gt_row gt_left">PREVIOUSLY REGISTERED</td>
+<td class="gt_row gt_right">50</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">TEMPORARY REGISTRATION</td>
+<td class="gt_row gt_left gt_striped">UNVERIFIED</td>
+<td class="gt_row gt_right gt_striped">2</td></tr>
+    <tr><td class="gt_row gt_left">&lt;NA&gt;</td>
+<td class="gt_row gt_left">MOVED FROM COUNTY</td>
+<td class="gt_row gt_right">1</td></tr>
+    <tr><td class="gt_row gt_left gt_striped">&lt;NA&gt;</td>
+<td class="gt_row gt_left gt_striped">REMOVED AFTER 2 FED GENERAL ELECTIONS IN INACTIVE STATUS</td>
+<td class="gt_row gt_right gt_striped">1</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+<ul>
+<li>~50% are “ACTIVE” and “VERIFIED”</li>
+</ul>
+<p>On a common-sense interpretation of the labels, these are the records
+that have survived the registration checking process, so are most likely
+free of errors and duplicates.</p>
+<p>Write a function to filter the records to keep only those that are
+“ACTIVE” and “VERIFIED”.</p>
+<pre class="r"><code># Function to exclude records based on voter status
+raw_entity_data_excl_status &lt;- function(
+  d # data frame - raw entity data
+) {
+  d %&gt;%
+    dplyr::filter(
+      voter_status_desc == &quot;ACTIVE&quot; &amp; voter_status_reason_desc == &quot;VERIFIED&quot;
+    )
+}</code></pre>
+<p>Apply the filter before moving on to the next exclusion condition and
+track the number of rows before and after the filter.</p>
+<pre class="r"><code># number of rows before filtering
+nrow(d)</code></pre>
+<pre><code>[1] 8003293</code></pre>
+<pre class="r"><code>d &lt;- d %&gt;% raw_entity_data_excl_status()
+
+# number of rows after filtering
+nrow(d)</code></pre>
+<pre><code>[1] 4099700</code></pre>
+<ul>
+<li>Result as expected</li>
+</ul>
+</div>
+</div>
+<div id="test-cases" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Test cases</h1>
+<p>Initial poking through the data showed the words DUMMY, PRACTICE, TEST,
+THIS, THISIS, and THISISA as person names appeared to be associated with
+records that were subjectively judged as being likely to be test cases.
+Look for any records that contain those strings as a word (i.e. enclosed
+by word boundaries) in the person name columns.</p>
+<pre class="r"><code># define the target regular expression
+target &lt;- regex(
+  &quot;\\bDUMMY\\b|\\bPRACTICE\\b|\\bTEST\\b|\\bTHIS\\b|\\bTHISIS\\b|\\bTHISISA\\b&quot;, 
+  ignore_case = TRUE
+)
+
+d %&gt;% 
+  dplyr::select(
+    last_name, first_name, midl_name,
+    street_name, street_type_cd, res_city_desc,
+    sex, phone_num
+  ) %&gt;% 
+  dplyr::filter(
+    stringr::str_detect(last_name, target)|
+      stringr::str_detect(first_name, target) |
+      stringr::str_detect(midl_name, target)
+  ) %&gt;% 
+  dplyr::arrange(last_name, street_name) %&gt;% 
+  gt::gt() %&gt;% 
+  gt::opt_row_striping() %&gt;% 
+  gt::tab_style(style = cell_text(weight = &quot;bold&quot;), locations = cells_column_labels()) %&gt;% 
+  gt::fmt_missing(columns = everything(), missing_text = &quot;&lt;NA&gt;&quot;) %&gt;% 
+  gt::tab_style(
+    style = gt::cell_fill(color = &quot;yellow&quot;),
+    locations = list(
+      gt::cells_body(columns = last_name, rows = stringr::str_detect(last_name, target)),
+      gt::cells_body(columns = first_name, rows = stringr::str_detect(first_name, target)),
+      gt::cells_body(columns = midl_name, rows = stringr::str_detect(midl_name, target))
+    )
+  )</code></pre>
+<div id="kjyngiybhl" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#kjyngiybhl .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#kjyngiybhl .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#kjyngiybhl .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#kjyngiybhl .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#kjyngiybhl .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#kjyngiybhl .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#kjyngiybhl .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#kjyngiybhl .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#kjyngiybhl .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#kjyngiybhl .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#kjyngiybhl .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#kjyngiybhl .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#kjyngiybhl .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#kjyngiybhl .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#kjyngiybhl .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#kjyngiybhl .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#kjyngiybhl .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#kjyngiybhl .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#kjyngiybhl .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#kjyngiybhl .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#kjyngiybhl .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#kjyngiybhl .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#kjyngiybhl .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#kjyngiybhl .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#kjyngiybhl .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#kjyngiybhl .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#kjyngiybhl .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#kjyngiybhl .gt_left {
+  text-align: left;
+}
+
+#kjyngiybhl .gt_center {
+  text-align: center;
+}
+
+#kjyngiybhl .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#kjyngiybhl .gt_font_normal {
+  font-weight: normal;
+}
+
+#kjyngiybhl .gt_font_bold {
+  font-weight: bold;
+}
+
+#kjyngiybhl .gt_font_italic {
+  font-style: italic;
+}
+
+#kjyngiybhl .gt_super {
+  font-size: 65%;
+}
+
+#kjyngiybhl .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 65%;
+}
+</style>
+<table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">last_name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">first_name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">midl_name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">street_name</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">street_type_cd</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">res_city_desc</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">sex</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="font-weight: bold;">phone_num</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td class="gt_row gt_left" style="background-color: #FFFF00;">TEST</td>
+<td class="gt_row gt_left">KAY</td>
+<td class="gt_row gt_left">ANN</td>
+<td class="gt_row gt_left">ELM</td>
+<td class="gt_row gt_left">ST</td>
+<td class="gt_row gt_left">WELDON</td>
+<td class="gt_row gt_left">FEMALE</td>
+<td class="gt_row gt_left">&lt;NA&gt;</td></tr>
+    <tr><td class="gt_row gt_left gt_striped" style="background-color: #FFFF00;">TEST</td>
+<td class="gt_row gt_left gt_striped">DAVID</td>
+<td class="gt_row gt_left gt_striped">W</td>
+<td class="gt_row gt_left gt_striped">GREENWAY</td>
+<td class="gt_row gt_left gt_striped">AVE</td>
+<td class="gt_row gt_left gt_striped">CHARLOTTE</td>
+<td class="gt_row gt_left gt_striped">MALE</td>
+<td class="gt_row gt_left gt_striped">&lt;NA&gt;</td></tr>
+    <tr><td class="gt_row gt_left" style="background-color: #FFFF00;">TEST</td>
+<td class="gt_row gt_left">KATHERINE</td>
+<td class="gt_row gt_left">COOKE</td>
+<td class="gt_row gt_left">GREENWAY</td>
+<td class="gt_row gt_left">AVE</td>
+<td class="gt_row gt_left">CHARLOTTE</td>
+<td class="gt_row gt_left">FEMALE</td>
+<td class="gt_row gt_left">&lt;NA&gt;</td></tr>
+    <tr><td class="gt_row gt_left gt_striped" style="background-color: #FFFF00;">TEST</td>
+<td class="gt_row gt_left gt_striped">FREDERICK</td>
+<td class="gt_row gt_left gt_striped">HAROLD</td>
+<td class="gt_row gt_left gt_striped">HENDERSONVILLE</td>
+<td class="gt_row gt_left gt_striped">RD</td>
+<td class="gt_row gt_left gt_striped">ASHEVILLE</td>
+<td class="gt_row gt_left gt_striped">MALE</td>
+<td class="gt_row gt_left gt_striped">&lt;NA&gt;</td></tr>
+    <tr><td class="gt_row gt_left" style="background-color: #FFFF00;">TEST</td>
+<td class="gt_row gt_left">DANIEL</td>
+<td class="gt_row gt_left">W</td>
+<td class="gt_row gt_left">HICKORY KNOLL</td>
+<td class="gt_row gt_left">CT</td>
+<td class="gt_row gt_left">GREENSBORO</td>
+<td class="gt_row gt_left">MALE</td>
+<td class="gt_row gt_left">&lt;NA&gt;</td></tr>
+    <tr><td class="gt_row gt_left gt_striped" style="background-color: #FFFF00;">TEST</td>
+<td class="gt_row gt_left gt_striped" style="background-color: #FFFF00;">THIS</td>
+<td class="gt_row gt_left gt_striped">&lt;NA&gt;</td>
+<td class="gt_row gt_left gt_striped">HIGH POINT</td>
+<td class="gt_row gt_left gt_striped">RD</td>
+<td class="gt_row gt_left gt_striped">JAMESTOWN</td>
+<td class="gt_row gt_left gt_striped">MALE</td>
+<td class="gt_row gt_left gt_striped">&lt;NA&gt;</td></tr>
+    <tr><td class="gt_row gt_left" style="background-color: #FFFF00;">TEST</td>
+<td class="gt_row gt_left">GEORGE</td>
+<td class="gt_row gt_left">A</td>
+<td class="gt_row gt_left">ROSWELL</td>
+<td class="gt_row gt_left">AVE</td>
+<td class="gt_row gt_left">CHARLOTTE</td>
+<td class="gt_row gt_left">MALE</td>
+<td class="gt_row gt_left">&lt;NA&gt;</td></tr>
+    <tr><td class="gt_row gt_left gt_striped" style="background-color: #FFFF00;">TEST</td>
+<td class="gt_row gt_left gt_striped">DORIS</td>
+<td class="gt_row gt_left gt_striped">L</td>
+<td class="gt_row gt_left gt_striped">ROSWELL</td>
+<td class="gt_row gt_left gt_striped">AVE</td>
+<td class="gt_row gt_left gt_striped">CHARLOTTE</td>
+<td class="gt_row gt_left gt_striped">FEMALE</td>
+<td class="gt_row gt_left gt_striped">&lt;NA&gt;</td></tr>
+    <tr><td class="gt_row gt_left" style="background-color: #FFFF00;">TEST</td>
+<td class="gt_row gt_left">KENNETH</td>
+<td class="gt_row gt_left">FARREL</td>
+<td class="gt_row gt_left">WAVERLY</td>
+<td class="gt_row gt_left">DR</td>
+<td class="gt_row gt_left">CLAYTON</td>
+<td class="gt_row gt_left">MALE</td>
+<td class="gt_row gt_left">&lt;NA&gt;</td></tr>
+    <tr><td class="gt_row gt_left gt_striped" style="background-color: #FFFF00;">THIS</td>
+<td class="gt_row gt_left gt_striped">KELLY</td>
+<td class="gt_row gt_left gt_striped">RENEE</td>
+<td class="gt_row gt_left gt_striped">HATTIE HILL</td>
+<td class="gt_row gt_left gt_striped">RD</td>
+<td class="gt_row gt_left gt_striped">VILAS</td>
+<td class="gt_row gt_left gt_striped">FEMALE</td>
+<td class="gt_row gt_left gt_striped">2627458</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+<ul>
+<li>Online search finds that “Test” is a known last name in the USA.</li>
+<li>The name “TEST, THIS” looks like a test case (with ACTIVE VERIFIED
+status).</li>
+</ul>
+<p>Write a function to filter the records to exclude those with name “TEST,
+THIS”.</p>
+<p>There are likely to be many other test cases not detected by this
+filter. However, they are probably only a tiny fraction of the records -
+so it’s not a big problem for this project if they are missed. If I find
+any other test cases later I will come back here and revise the
+exclusion criteria.</p>
+<pre class="r"><code># Function to exclude test records based on names
+raw_entity_data_excl_test &lt;- function(
+  d # data frame - raw entity data
+) {
+  d %&gt;%
+    dplyr::filter(
+      ! (
+        stringr::str_detect(last_name, regex(&quot;\\bTEST\\b&quot;, ignore_case = TRUE)) &amp;
+          stringr::str_detect(first_name, regex(&quot;\\bTHIS\\b&quot;, ignore_case = TRUE))
+      )
+    )
+}</code></pre>
+<p>Apply the filter and track the number of rows before and after the
+filter.</p>
+<pre class="r"><code># number of rows before filtering
+nrow(d)</code></pre>
+<pre><code>[1] 4099700</code></pre>
+<pre class="r"><code>d &lt;- d %&gt;% raw_entity_data_excl_test()
+
+# number of rows after filtering
+nrow(d)</code></pre>
+<pre><code>[1] 4099699</code></pre>
+<ul>
+<li>Behaviour as expected</li>
+</ul>
+</div>
+<div id="timing" class="section level1 unnumbered">
+<h1>Timing</h1>
+<pre><code>Computation time (excl. render): 62.505 sec elapsed</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.1.0 (2021-05-18)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 20.10
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.9.0
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.9.0
+
+locale:
+ [1] LC_CTYPE=en_AU.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_AU.UTF-8        LC_COLLATE=en_AU.UTF-8    
+ [5] LC_MONETARY=en_AU.UTF-8    LC_MESSAGES=en_AU.UTF-8   
+ [7] LC_PAPER=en_AU.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_AU.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+[1] vroom_1.4.0   stringr_1.4.0 gt_0.3.0      dplyr_1.0.6   fs_1.5.0     
+[6] here_1.0.1    tictoc_1.0.1  targets_0.4.2
+
+loaded via a namespace (and not attached):
+ [1] tidyselect_1.1.1  xfun_0.23         bslib_0.2.5       purrr_0.3.4      
+ [5] colorspace_2.0-1  vctrs_0.3.8       generics_0.1.0    htmltools_0.5.1.1
+ [9] yaml_2.2.1        utf8_1.2.1        rlang_0.4.11      jquerylib_0.1.4  
+[13] later_1.2.0       pillar_1.6.1      glue_1.4.2        withr_2.4.2      
+[17] bit64_4.0.5       lifecycle_1.0.0   munsell_0.5.0     gtable_0.3.0     
+[21] workflowr_1.6.2   codetools_0.2-18  evaluate_0.14     knitr_1.33       
+[25] callr_3.7.0       httpuv_1.6.1      ps_1.6.0          parallel_4.1.0   
+[29] fansi_0.4.2       Rcpp_1.0.6        backports_1.2.1   checkmate_2.0.0  
+[33] renv_0.13.2       promises_1.2.0.1  scales_1.1.1      jsonlite_1.7.2   
+[37] bit_4.0.4         ggplot2_3.3.3     digest_0.6.27     stringi_1.6.2    
+[41] bookdown_0.22     processx_3.5.2    rprojroot_2.0.2   grid_4.1.0       
+[45] cli_2.5.0         tools_4.1.0       magrittr_2.0.1    sass_0.4.0       
+[49] tibble_3.1.2      crayon_1.4.1      whisker_0.4       pkgconfig_2.0.3  
+[53] ellipsis_0.3.2    data.table_1.14.0 rmarkdown_2.8     R6_2.5.0         
+[57] igraph_1.2.6      git2r_0.28.0      compiler_4.1.0   </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4,h5",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

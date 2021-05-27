@@ -1,0 +1,499 @@
+---
+title: "[meta] Check administrative variables"
+subtitle: "m_01_5_check_admin"
+author: "Ross Gayler"
+date: "2021-05-15"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+  markdown: 
+    wrap: 72
+---
+
+```{r setup}
+# NOTE this notebook can be run manually or automatically by {targets}
+# So load the packages required by this notebook here
+# rather than relying on _targets.R to load them.
+
+# Set up the project environment, because {workflowr} knits each Rmd file 
+# in a new R session, and doesn't execute the project .Rprofile
+
+library(targets) # access data from the targets cache
+
+library(tictoc) # capture execution time
+library(here) # construct file paths relative to project root
+library(fs) # file system operations
+library(dplyr) # data wrangling
+library(gt) # table formatting
+library(stringr) # string matching
+library(vroom) # fast reading of delimited text files
+library(lubridate) # date parsing
+library(forcats) # manipulation of factors
+library(ggplot2) # graphics
+
+# start the execution time clock
+tictoc::tic("Computation time (excl. render)")
+
+# Get the path to the raw entity data file
+# This is a target managed by {targets}
+f_entity_raw_tsv <- tar_read(c_raw_entity_data_file)
+```
+
+```{r, include = FALSE, cache = FALSE}
+# Get all the functions used by {targets} 
+# so we can display and use them in this notebook
+# with a guarantee that they will be identical
+# here and when used by {targets}.
+
+# This is  work-around because tarchetypes::tar_knitr_deps()
+# fails if a call to here::here() is embedded in 
+# a call to knitr::read_chunk()
+knitr::read_chunk("R/functions.R")
+```
+
+# Introduction
+
+These meta notebooks document the development of functions that will be
+applied in the core pipeline.
+
+The aim of the m_01 set of meta notebooks is to work out how to read the
+raw entity data, drop excluded cases, discard irrelevant variables,
+apply any cleaning, and construct standardised names. This does not
+include construction of any modelling features. To be clear, the target
+(`c_raw_entity_data`) corresponding to the objective of this set of
+notebooks is the cleaned and standardised raw data, before constructing
+any modelling features.
+
+This notebook documents the checking the "administrative" variables for
+any issues that need fixing.
+
+The subsequent notebooks in this set will develop the other functions
+needed to generate the cleaned and standardised data.
+
+Regardless of whether there are any issues that need to be fixed, the
+analyses here may inform our use of these variables in later analyses.
+
+We don't know any of the details on how the NCVR data is collected and
+processed, so our interpretations are only educated guesses. We have no
+intention of using the administrative variables as predictors for entity
+resolution. However, it's possible that they may shed some light on data
+quality which might influence our choice of the records to be used for
+modelling.
+
+Define the "administrative" variables:
+
+-   `county_id` - County identification number
+-   `county_desc` - County description
+-   `voter_reg_num` - Voter registration number (unique by county)
+-   `registr_dt` - Voter registration date
+-   `cancellation_dt` - Cancellation date
+
+```{r}
+vars_admin <- c("county_id", "county_desc", "voter_reg_num", "registr_dt", "cancellation_dt")  
+```
+
+# Read entity data
+
+Read the raw entity data file using the previously defined core pipeline
+functions `raw_entity_data_read()`, `raw_entity_data_excl_status()`,
+`raw_entity_data_excl_test()`, `raw_entity_data_drop_novar()`, and
+`raw_entity_data_parse_dates()`.
+
+```{r, raw_entity_data_read, echo = FALSE}
+```
+
+```{r, raw_entity_data_excl_status, echo = FALSE}
+```
+
+```{r, raw_entity_data_excl_test, echo = FALSE}
+```
+
+```{r, raw_entity_data_drop_novar, echo = FALSE}
+```
+
+```{r, raw_entity_data_parse_dates, echo = FALSE}
+```
+
+```{r}
+# Show the data file name
+fs::path_file(f_entity_raw_tsv)
+
+d <- raw_entity_data_read(f_entity_raw_tsv) %>% 
+  raw_entity_data_excl_status() %>% 
+  raw_entity_data_excl_test() %>% 
+  raw_entity_data_drop_novar() %>% 
+  raw_entity_data_parse_dates()
+
+dim(d)
+```
+
+# county_id & county_desc
+
+`county_id` - County identification number\
+`county_desc` - County description
+
+Look at a sample of values.
+
+```{r}
+d %>% 
+  dplyr::select(starts_with("county_")) %>% 
+  dplyr::slice_sample(n = 10) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = gt::cell_text(weight = "bold"), locations = gt::cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+Look at `county_id`, a numeric code indicating a geographical area.
+
+```{r}
+# number of unique values
+d$county_id %>% unique() %>% length()
+
+# summary of distribution of county ID interpreted as a number
+d$county_id %>% as.integer() %>% summary()
+
+# number of records per county
+d %>% 
+  dplyr::count(county_id) %>% 
+  dplyr::arrange(desc(n)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>") %>% 
+  gt::fmt_number(columns = n, decimals = 0)
+
+# plot the number of records per county
+ggplot(d) +
+  geom_bar(aes(x = forcats::fct_infreq(county_id))) +
+  theme(panel.grid.major = element_blank(), 
+        axis.text.x = element_text(angle = 90, hjust=1, vjust = 0.5)
+  )
+```
+
+-   Never missing
+-   Integer 1 .. 100 (as strings)
+-   A small number of populous counties with a long tail of small
+    counties
+
+`county_desc` appears to be a text label corresponding to `county_desc`.
+Check that the county descriptions are in a 1:1 relationship with the
+county IDs.
+
+```{r}
+# number of unique values
+d$county_desc %>% unique() %>% length()
+
+# number of unique values of code:label combinations
+paste(d$county_id, d$county_desc) %>% unique() %>% length()
+
+# Is code:label a 1:1 relationship?
+# Is the number of unique labels equal to the number of unique code:label combinations
+(d$county_desc %>% unique() %>% length()) ==
+  (paste(d$county_id, d$county_desc) %>% unique() %>% length())
+```
+
+-   100 unique values
+-   `county_desc` in 1:1 relationship with `county_id`
+
+They look reasonable, to the extent that I can tell without knowing
+anything about the counties.
+
+Because the variables are in a 1:1 relationship we don't need both of
+them. I will drop the numeric `county_id` because knowing the county
+name may be helpful when manually checking records against online
+sources.
+
+# voter_reg_num
+
+`voter_reg_num` - Voter registration number (unique by county)
+
+```{r}
+# Show some examples from the beginning of the file
+d %>% 
+  dplyr::select(voter_reg_num) %>% 
+  dplyr::slice_head(n = 10) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = gt::cell_text(weight = "bold"), locations = gt::cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+
+# Show some examples from the end of the file
+d %>% 
+  dplyr::select(voter_reg_num) %>% 
+  dplyr::slice_tail(n = 10) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = gt::cell_text(weight = "bold"), locations = gt::cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+
+# number of unique values
+d$voter_reg_num %>% unique() %>% length()
+
+# summary of distribution of voter registration number interpreted as a number
+d$voter_reg_num %>% as.integer() %>% summary()
+```
+
+-   \~1.8M unique values
+
+    -   Much less than the number of rows, so the numbers are reused
+
+-   Never missing
+
+-   Integer 1 .. \~401M (as strings)
+
+-   12-digit integers with leading zeroes
+
+Check whether `county_id` $\times$ `voter_reg_num` is unique, as
+claimed.
+
+```{r}
+# number of records
+nrow(d)
+
+# number of unique county_id x voter_reg_num combinations
+paste(d$county_id, d$voter_reg_num) %>% unique() %>% length()
+
+# Are the county_id x voter_reg_num combinations unique?
+# Number of unique county_id x voter_reg_num combinations equals the number of rows?
+nrow(d) ==
+  (paste(d$county_id, d$voter_reg_num) %>% unique() %>% length())
+```
+
+-   `county_id` $\times$ `voter_reg_num` is unique, as claimed
+
+# registr_dt
+
+`registr_dt` - Voter registration date
+
+```{r}
+# summary of distribution of registration date interpreted as a date
+d$registr_dt %>% summary()
+
+# Get records apparently registered after the snapshot was taken (2005-11-25)
+# The snapshot date is taken from earlier analyses before it was dropped
+x <- d %>% 
+  dplyr::filter(registr_dt > lubridate::ymd("2005-11-25")) # after snapshot date
+
+# Number of records apparently registered after the snapshot was taken
+nrow(x)
+
+# Show records apparently registered after the snapshot was taken
+x %>% 
+  dplyr::select(
+    registr_dt, county_desc, voter_reg_num, last_name, first_name, 
+    street_name, street_type_cd, res_city_desc, age
+  ) %>% 
+  dplyr::arrange(county_desc, voter_reg_num) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   Never missing
+
+-   18 records have registration date after the snapshot date
+
+    -   Range from a couple of years to millennia in the future
+    -   Presumably these are typos
+
+-   Some records have very early registration dates
+
+-   There is nothing obviously odd about the cases with registration
+    date after the snapshot date. The problem is proibabably just in the
+    registration date.
+
+Investigate the early registration dates.
+
+First form a view on how early is too early by finding the maximum age
+and assuming registration at 21 years of age.
+
+```{r}
+# summary of distribution of age interpreted as an integer
+d$age %>% as.integer() %>% summary()
+
+# get some extreme quantiles of the age distribution
+d$age %>% as.integer() %>% quantile(probs = c(0.003, 0.004, 0.995, 0.996, 0.997, 0.998, 0.999))
+
+# plot the distribution of age <= 21
+d %>% 
+  dplyr::mutate(age = as.integer(age)) %>% 
+  dplyr::filter(age <= 21) %>% 
+  ggplot() +
+  geom_vline(xintercept = 18, colour = "red") +
+  geom_histogram(aes(x = age), binwidth = 1) +
+  scale_y_log10()
+
+# plot the distribution of age >= 80
+d %>% 
+  dplyr::mutate(age = as.integer(age)) %>% 
+  dplyr::filter(age >= 80) %>% 
+  ggplot() +
+  geom_vline(xintercept = c(105, 125, 204), colour = "red") +
+  geom_histogram(aes(x = age), binwidth = 1) +
+  scale_y_log10()
+```
+
+-   Age 18 seems to be the generally youngest age, but some are
+    registered at 17, which seems plausible.
+
+-   The only younger people have an age of 0 or 8 years. These are
+    obviously wrong.
+
+-   The distribution of ages 80+ opened a can of worms. There are
+    obviously some issues with `age`. I will deal with that in detail in
+    a later notebook.
+
+Without considering `age` in detail, it appears that the maximum
+accurate age is not more than 120 years.
+
+Assume that the maximum possible voter age is 116 years. The minimum
+registration age in North Carolina is 16 years (although I have no idea
+what it was 100 years ago). Therefore, assume that the oldest possible
+voter could have registered 100 years prior to the snapshot date. That
+is, regard any registration earlier than 1905-11-25 as very unlikely to
+be correct.
+
+Now look at the distribution of registration dates that are no later
+than the snapshot date.
+
+```{r}
+d %>% 
+  dplyr::filter(registr_dt <= lubridate::ymd("2005-11-25")) %>% 
+  ggplot() +
+  geom_vline(xintercept = c(lubridate::ymd("1905-11-25"), lubridate::ymd("1935-11-25")),
+             colour = "red") +
+  geom_histogram(aes(x = registr_dt), binwidth = 365.25) + # 1yr bins
+  scale_y_sqrt()
+```
+
+-   There is a large spike of registrations in 1900. These are bound to
+    be errors. (1900 is a common default value for year.)
+
+-   Registration dates before \~1935 are suspect (because the
+    distribution of probably accurate dates appears to run out around
+
+    1935) 
+
+Look at the relationship between age and registration date. The vast
+majority of these records will be OK, so spreading the observations over
+two dimensions may make it easier to spot anomalous regions.
+
+First look at all the records (excluding those with registration date
+after the snapshot date).
+
+```{r}
+d %>% 
+  dplyr::mutate(age = as.integer(age)) %>% 
+  dplyr::filter(registr_dt <= lubridate::ymd("2005-11-25")) %>%
+  ggplot() +
+  geom_hex(aes(x = age, y = registr_dt, fill = stat(log10(count))), binwidth = c(1, 365.25)) # 1yr bins x&y
+```
+
+The heavily populated triangular region contains most of the cases and
+shows the (mostly) plausible combinations of registration date and age
+at snapshot date.
+
+Now exclude the manifestly unlikely ages (\< 17 or \> 104 years).
+
+```{r}
+d %>% 
+  dplyr::mutate(age = as.integer(age)) %>% 
+  dplyr::filter(
+    dplyr::between(registr_dt, lubridate::ymd("1901-01-01"), lubridate::ymd("2005-11-25")),
+    dplyr::between(age, 17, 104)
+  ) %>%
+  ggplot() +
+  geom_hex(aes(x = age, y = registr_dt, fill = stat(log10(count))), binwidth = c(1, 365.25)) # 1yr bins x&y
+```
+
+-   The blue'ish upper triangle corresponds to people who were at least
+    18 years old at registration.
+
+-   The black fringe below the blue-ish upper triangle corresponds to
+    people who were less that 18 years old at registration.
+
+-   The negative diagonal line corresponds to people who would have been
+    zero years old at registration.
+
+-   The points below the negative diagonal line correspond to people who
+    appear to have been registered before they were born.
+
+-   Most registration dates are consistent with age
+
+-   A significant fraction of registration dates are *inconsistent* with
+    age.
+
+There appear to be a nontrivial number of age and registration date
+combinations that are implausible. These are most likely due to typos in
+those variables.
+
+-   The implausible combinations are only a small fraction of the total
+    records.
+-   We are not intending to use age or registration date in the models,
+    so the oddities are probably not an issue. However, it does indicate
+    that we don't want to treat this data as though it is perfectly
+    accurate.
+-   Drop `registr_dt` because it won't be used in modelling and it can
+    not be checked against any external data source.
+
+# cancellation_dt
+
+`cancellation_dt` - Cancellation date
+
+```{r}
+# summary of distribution of cancellation date interpreted as a date
+d$cancellation_dt %>% summary()
+
+# look at the fraction of missing values
+table(missing = is.na(d$cancellation_dt))
+table(missing = is.na(d$cancellation_dt)) %>% prop.table() %>% round(3)
+
+# plot the distribution of nonmissing cancellation date
+d %>% 
+  dplyr::filter(!is.na(cancellation_dt)) %>% # not missing
+  ggplot() +
+  geom_histogram(aes(x = cancellation_dt), binwidth = 7) + # 1wk bins
+  scale_y_sqrt()
+```
+
+-   Cancellation date is almost always missing
+
+    -   `r nrow(x)` (`r round(100*nrow(x)/nrow(d), 1)`%) nonmissing
+
+-   Concentrated in 1996 and early 1997 (presumably some sort of
+    administrative purge)
+
+It is not clear what having a cancellation date means for records that
+are flagged as ACTIVE & VERIFIED. Perhaps they had been removed from the
+electoral roll in the past and subsequently reinstated.
+
+- Drop the cancellation date because of the high proportion of missing values, we won't use it in modelling, and it can't be checked against any external data source.
+
+# Drop unneeded variables
+
+Drop `county_id`, `registr_dt`, and  `cancellation_dt`.
+
+```{r, raw_entity_data_drop_admin}
+```
+
+Apply the filter and track the number of rows before and after the
+filter.
+
+```{r}
+# number of columns before dropping
+d %>% 
+  names() %>% length
+
+d %>% 
+  raw_entity_data_drop_admin() %>% 
+  # number of columns after dropping
+  names() %>% length
+```
+
+# Timing {.unnumbered}
+
+```{r echo=FALSE}
+tictoc::toc()
+```

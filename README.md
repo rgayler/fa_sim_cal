@@ -1,273 +1,344 @@
+---
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
 # Frequency-Aware Similarity Calibration
 
-This is an open, shareable, reproducible, computational research project on entity resolution.
+This is an open, shareable, reproducible, computational research project
+on entity resolution.
 
 It is the joint work of:
 
-* [Ross W. Gayler][]
-* [Peter Christen][]
+-   [Ross W. Gayler](https://www.rossgayler.com/)
+-   [Peter Christen](https://users.cecs.anu.edu.au/~Peter.Christen/)
 
-Given a collection of records which are each "about" one entity,
-[entity resolution][] is the process of determining which records *probably* refer to the same entity.
-It is used in contexts where there is no uniquely identifying entity key on the records,
-so the process is forced to rely on record attributes that are associated with identity, 
-but not uniquely determined by identity
+Given a collection of records which are each "about" one entity, [entity
+resolution](https://en.wikipedia.org/wiki/Record_linkage) is the process
+of determining which records *probably* refer to the same entity. It is
+used in contexts where there is no uniquely identifying entity key on
+the records, so the process is forced to rely on record attributes that
+are associated with identity, but not uniquely determined by identity
 (e.g. height, weight, and eye colour as attributes of persons).
 
-This inference of two records referring to the same entity is inherently probabilistic 
-because it is always possible that multiple entities
-might have identical values on the available record attributes,
-and are therefore functionally identical.
-So, given a pair of records, 
-we are interested in the *probability* that they refer to the same entity.
+This inference of two records referring to the same entity is inherently
+probabilistic because it is always possible that multiple entities might
+have identical values on the available record attributes, and are
+therefore functionally identical. So, given a pair of records, we are
+interested in the *probability* that they refer to the same entity.
 
-Entity resolution is typically conceptualised in terms of the [similarity][] between records,
-and similarity is *assumed* to be monotonic with the probability of referring to the same entity.
-This project investigates the value of empirically determining 
-the relationship between similarity and probability of co-reference.
-Determining the precise relationship between similarity and probability of co-reference
-can be seen as an example of [calibration][].
+Entity resolution is typically conceptualised in terms of the
+[similarity](https://en.wikipedia.org/wiki/Similarity_measure) between
+records, and similarity is *assumed* to be monotonic with the
+probability of referring to the same entity. This project investigates
+the value of empirically determining the relationship between similarity
+and probability of co-reference. Determining the precise relationship
+between similarity and probability of co-reference can be seen as an
+example of
+[calibration](https://en.wikipedia.org/wiki/Calibration_(statistics)).
 
-We also investigate whether that calibration varies as a function 
-of other measurable quantities of the specific records being compared.
-For example, we could look at the frequency in the collection of the record attribute values being compared,
-and see whether that information can be exploited to yield better entity resolution.
+We also investigate whether that calibration varies as a function of
+other measurable quantities of the specific records being compared. For
+example, we could look at the frequency in the collection of the record
+attribute values being compared, and see whether that information can be
+exploited to yield better entity resolution.
 
-Entity resolution typically uses a small number of fixed similarity functions (e.g. edit distance between strings)
-that are defined without reference to the specific pair of records being compared.
-Incorporation of other predictors, which are functions of the specific records being compared,
-into the calibration function
-can be seen as similar in spirit to having a customised similarity function for every pair of records.
-This parallels the practice of using subpopulation-specific model calibration functions 
-to better combine model estimates across multiple subpopulations.
+Entity resolution typically uses a small number of fixed similarity
+functions (e.g. edit distance between strings) that are defined without
+reference to the specific pair of records being compared. Incorporation
+of other predictors, which are functions of the specific records being
+compared, into the calibration function can be seen as similar in spirit
+to having a customised similarity function for every pair of records.
+This parallels the practice of using subpopulation-specific model
+calibration functions to better combine model estimates across multiple
+subpopulations.
 
 ## Project organisation
 
-This is an open, shareable, reproducible, computational research project. 
+This is an open, shareable, reproducible, computational research
+project.
 
-* All the computational work and document preparation
-  is done with the [R][] statistical computing environment
-  and the [Rstudio][] integrated development environment.
+-   All the computational work and document preparation is done with the
+    [R](https://www.r-project.org/) statistical computing environment
+    and the [Rstudio](https://www.r-project.org/) integrated development
+    environment.
 
-* The entire research project is contained in a single directory
-  that corresponds to an RStudio R project.
+-   The entire research project is contained in a single directory that
+    corresponds to an RStudio R project.
 
-* We are using the [`workflowr`][] package 
-  to structure the project so that the work is computationally reproducible
-  and all the materials and outputs are available
-  via an openly accessible, automatically generated website.
+-   We use the [`renv`](https://rstudio.github.io/renv/) package to
+    manage the R package versions used by the project
 
-* The project code and documents are shared publicly on GitHub at https://github.com/rgayler/fa_sim_cal
+-   We are using the [`targets`](https://github.com/ropensci/targets)
+    package to structure the project so that the work is computationally
+    reproducible.
 
-* The website automatically generated by `worklowr` from the rendered project documents 
-  is at https://rgayler.github.io/fa_sim_cal/
+-   We are using the
+    [`workflowr`](https://github.com/jdblischak/workflowr) package to
+    structure the project so that all the materials and outputs are
+    available via an openly accessible, automatically generated website.
 
-* We use the [`renv`][] package to manage the package versions used by the project
+-   The project code and documents are shared publicly on GitHub at
+    <https://github.com/rgayler/fa_sim_cal>
+
+-   The website automatically generated by `workflowr` from the rendered
+    project documents is at <https://rgayler.github.io/fa_sim_cal/>
 
 ## Project directory structure
 
+### `_targets` directory
+
+This directory is managed by the `targets` package. It contains the
+metadata describing the status of the computational pipelines and the
+cached results of those computations. You will normally only manipulate
+these via functions from `targets`.
+
 ### `workflowr` directories
 
-* [`workflowr`][] creates a set of standard directories.
-  See the package documentation for details on how these directories are used.
-  The brief purposes are:
-  * `analysis` - [`rmarkdown`][] analysis notebooks
-  * `code` - R code not in analysis notebooks
-  * `data` - raw data and associated metadata
-  * `docs` - automatically generated website
-  * `output` - generated data and other objects
+[`workflowr`](https://github.com/jdblischak/workflowr) creates a set of
+standard directories. See the package documentation for details on how
+these directories are used. The brief purposes are:
 
-* [`workflowr`][] only manages the subset of files that it knows about,
-so you will need to manually stage and commit any other files
-that need to be mirrored on GitHub.
+-   `analysis` - [`rmarkdown`](https://rmarkdown.rstudio.com/) analysis
+    notebooks
+-   `R` - R code not in analysis notebooks (changed from the `workflowr`
+    default of `code`)
+-   `data` - raw data and associated metadata
+-   `docs` - automatically generated website
+-   `output` - generated data and other objects
 
-* If any files in `data` and `output` are more than trivially small,
-  they are not shared via Git and GitHub.
-  * `.gitignore` is used to keep them out of Git.
-  * There will be a separate mechanism (e.g. [Zenodo][]) for sharing those large files.
+[`workflowr`](https://github.com/jdblischak/workflowr) only manages the
+subset of files that it knows about, so you will need to manually stage
+and commit any other files that need to be mirrored on GitHub.
 
-### `manuscripts` directory  
+If any files in `data` and `output` are more than trivially small, they
+are not shared via Git and GitHub.
 
-The analysis notebooks are for capturing all the analytical work that was done,
-including exploratory work and abandoned directions.
-They contain both the code and enough interpretation/explanation
-to make sense of the results.
+-   `.gitignore` is used to keep them out of Git.
+-   There will be a separate mechanism (e.g.
+    [Zenodo](https://about.zenodo.org/)) for sharing those large files.
 
-The notebooks will be too verbose,
-and inappropriately structured/formatted for publication.
-Publishable documents are written separately
-and kept in the `manuscripts` directory.
+### `manuscripts` directory
 
-* `manuscripts` - contains a directory for each manuscript/document/presentation
+The `analysis` notebooks are for capturing all the analytical work that
+was done, including exploratory work and abandoned directions. They
+contain both the code and enough interpretation/explanation to make
+sense of the results.
 
-Each manuscript/document/presentation is prepared and formatted 
-using a package like [`rticles`][] or[`bookdown`][].
-Each document is prepared in a separate subdirectory of `manuscripts`
-that contains all the necessary infrastructure files (templates, bibliographies, etc.).
+The notebooks will be too verbose, and inappropriately
+structured/formatted for publication. Publishable documents are written
+separately and kept in the `manuscripts` directory.
+
+`manuscripts` contains a subdirectory for each
+manuscript/document/presentation.
+
+Each manuscript/document/presentation is prepared and formatted using a
+package like [`rticles`](https://github.com/rstudio/rticles) or
+[`bookdown`](https://github.com/rstudio/bookdown). Each document is
+prepared in a separate subdirectory of `manuscripts` that contains all
+the necessary infrastructure files (templates, bibliographies, etc.).
 
 ### `renv` directory
 
-The [`renv`][] package keeps track of the packages (and their versions) used by the project.
-It allows anyone to reinstate the same packages and versions in their local copy of the project.
+The [`renv`](https://rstudio.github.io/renv/) package keeps track of the
+R packages (and their versions) used by the project. It allows anyone to
+reinstate the same packages and versions in their local copy of the
+project.
 
-* `renv` - contains the information need by `renv` to reinstate the local package environment
+The `renv` directory contains the information need by `renv` to
+reinstate the local package environment
 
-## Key documents
+### `.gitignore`
 
-There are two key content documents:
+`.gitignore` in the R project root directory is used for all manual
+entries so that all the manual rules are in one place. Packages, such as
+`renv`, may create their own `.gitignore` files in subdirectories that
+they manage.
 
-* `docs/index.html` (also on the website as https://rgayler.github.io/fa_sim_cal/index.html)
-  contains the table of contents for the project.
-  There are links to all the analysis notebooks and publication documents.
-* `docs/idea.html` (also on the website as https://rgayler.github.io/fa_sim_cal/idea.html)
-  explains the idea on which this project is based.
+## Browsing the automatically generated website
 
-## How to
+The static website automatically generated by `workflowr` is stored in
+the `docs` directory.
 
-* All detailed setup instructions and notes go in this project-level `READ.md` file.
-* The `README.md` files in the subdirectories only state the purpose of each directory
-  and the files in that directory.
+The key document is `docs/index.html`. Open this file with a browser to
+get access to the website. `docs/index.html` allows you to navigate to
+all the generated content.
+
+This index page is mirrored on the internet at
+<https://rgayler.github.io/fa_sim_cal/index.html>
+
+## How to do things
+
+-   All detailed setup instructions and notes go in this project-level
+    `READ.md` file.
+-   The `README.md` files in the subdirectories only state the purpose
+    of each subdirectory and the files in that directory.
 
 ### Installation
 
-This assumes that you already have current versions
-of R and RStudio installed.
+This assumes that you already have current versions of R and RStudio
+installed.
 
-1. Clone the project repository https://github.com/rgayler/fa_sim_cal from GitHub
+1.  Clone the project repository <https://github.com/rgayler/fa_sim_cal>
+    from GitHub
 
-2. Open the cloned repository as an RStudio project
+2.  Open the cloned repository as an RStudio project
 
-You can combine steps 1 and 2 using RStudio
-by creating a new project from the GitHub repository:  
+You can combine steps 1 and 2 using RStudio by creating a new project
+from the GitHub repository:  
 `File | New Project... | Version Control | Git | Create Project`
 
-When you open the project you will get warning messages 
-about packages not being installed.
-This is because you need to use the [`renv`][] package
-to reinstate the packages that are used by the project.
+When you open the project you will get warning messages about packages
+not being installed. This is because you need to use the
+[`renv`](https://rstudio.github.io/renv/) package to reinstate the
+packages that are used by the project.
 
-3. Install [`renv`][] in that project if it is not already installed
+1.  Install [`renv`](https://rstudio.github.io/renv/) in that project if
+    it is not already installed
 
-4. Use `renv` to install all the needed packages in the project-specific library:
-   ```
-   renv::restore()
-   ```
+2.  Use `renv::restore()` to install all the needed packages in the
+    project-specific library:
+
+        renv::restore()
+
+### Workflow management
+
+The computational work of this project is separated into core, meta, and
+publication pipelines.
+
+The core pipeline contains the computational steps that are essential to
+the subject matter of the project. The core uses `targets` but not
+`workflowr`. It is purely computational and only produces data objects
+as outputs. The core pipeline is managed by editing the definitions in
+`_targets/R`.
+
+The publication pipelines contain the computational steps required to
+convert the outputs of the core pipeline into publications. The leaves
+of the publication pipelines are Rmarkdown documents that are rendered
+to publications. The publication pipelines may also contain purely
+computational steps to perform publication-specific transformations of
+the outputs from the core pipeline. The publication pipelines are
+managed by editing the definitions in `_targets/R`.
+
+The meta pipelines contain the analyses used to design and develop the
+core pipeline. The leaves of the meta pipelines are `workflowr`
+Rmarkdown documents that are rendered to web pages. The meta pipelines
+may also contain purely computational steps to remove computational cost
+from the rendered leaves. The meta pipelines are managed by a mixture of
+`targets` and `workflowr`. While the meta pipelines are being developed
+they are primarily executed manually via `workflowr`. They are also
+recorded as definitions in `_targets/R` so that they can be
+automatically re-executed after they are finalised.
+
+See the Workflow Management notebook for a detailed description of the
+logic behind this organisation.
 
 ### Get data
 
-Any files in `data` and `output` that are more than trivially small
-are not shared via Git and GitHub.
-They will be shared via a separate, yet to be determined,  mechanism (e.g. [Zenodo][]).
+Any files in `data`, `output` and `_targets` that are more than
+trivially small are not shared via Git and GitHub. They will be shared
+via a separate, yet to be determined, mechanism (e.g.
+[Zenodo](https://about.zenodo.org/)).
 
-For the immediate purposes of this project 
-the raw data files should be downloadable from the internet
-and any processed data can be locally regenerated.
-In the longer term, the raw data should be bundled with the project somehow
-so that there is no dependency on continued data availability via the internet.
+For the immediate purposes of this project the raw data files should be
+downloadable from the internet and any processed data can be locally
+regenerated. The relevant analysis notebooks indicate where to get the
+data. In the longer term, the raw data should be bundled with the
+project somehow so that there is no dependency on continued data
+availability via the internet.
 
-### Analysis & website publication
+### "meta" analyses & website publication
 
-The analysis notebooks follow the `workflowr` workflow.
-See the [getting started][] vignette for an introduction.
+The purpose of the meta analyses is to work out what analyses we really
+want the project to do and how to implement them in the core pipeline.
+The meta notebooks document the process and reasoning by which we
+arrived at the design of the core pipeline.
 
-* Create a new analysis notebook:
-  ```
-  workflowr::wflow_open("analysis/new_notebook_name.Rmd")
-  ```
+Most meta notebooks focus on the development of functions that will be
+used in the core pipeline as the computational edges in the computation
+graph. Some meta notebooks are more diffuse in that they perform general
+background analyses of data available in the core pipeline so we better
+understand the data in order to support later design reasoning.
 
-* Build the website locally:
-  ```
-  workflowr::wflow_build()
-  ```
+The analysis notebooks follow the `workflowr` workflow. See the [getting
+started](https://jdblischak.github.io/workflowr/articles/wflow-01-getting-started.html#add-a-new-analysis-file)
+vignette for an introduction.
 
-* Publish the website online.
-  This will only work if you have `push` authorisation
-  for the GitHub remote repository.
-  ```
-  workflowr::wflow_publish("analysis/*.Rmd" "A commit message")
-  ```
+-   Create a new analysis notebook:
 
-* Add `mathjax = "local"` as an argument to `workflowr::wflow_html` in `analysis/_site.yml`
-  so that the MathJax JavaScript library is bundled with the website in `docs/`
-  rather than being loaded from a remote server when the website is viewed.
-  This removes the dependency on the remote server being available.
-  See https://github.com/jdblischak/workflowr/issues/211
-  ```
-  output:
-    workflowr::wflow_html:
-      mathjax: "local"
-  ```
+        workflowr::wflow_open("analysis/new_notebook_name.Rmd")
 
-* Bibliography records for citations in the `analysis/` notebooks
-  are stored in `analysis/references.bib`.
-  * Rstudio provides convenient [features for managing citations][].
+-   Build the website locally (either manually or indirectly via `targets`):
 
-* The reference style sheet for citations in the `analysis/` notebooks
-  is stored in `analysis/some_style_name.csl`.
-  
-See the R Markdown [citation guide][] for more details.
+        workflowr::wflow_build()
+
+-   Publish the website online (manually). This will only work if you have `push`
+    authorisation for the GitHub remote repository.
+
+        workflowr::wflow_publish("analysis/*.Rmd" "A commit message")
+
+-   Add `mathjax = "local"` as an argument to `workflowr::wflow_html` in
+    `analysis/_site.yml` so that the MathJax JavaScript library is
+    bundled with the website in `docs/` rather than being loaded from a
+    remote server when the website is viewed. This removes the
+    dependency on the remote server being available. See
+    <https://github.com/jdblischak/workflowr/issues/211>
+
+        output:
+          workflowr::wflow_html:
+            mathjax: "local"
+
+-   Bibliography records for citations in the `analysis/` notebooks are
+    stored in `analysis/references.bib`.
+
+    -   Rstudio provides convenient [features for managing
+        citations](https://blog.rstudio.com/2020/11/09/rstudio-1-4-preview-citations/).
+
+-   The reference style sheet for citations in the `analysis/` notebooks
+    is stored in `analysis/some_style_name.csl`.
+
+See the R Markdown [citation
+guide](https://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html)
+for more details.
 
 ### `renv` collaboration
 
-The `renv` package is used to keep track of the installed packages and their versions.
-See the `renv` [collaboration guide][] or the workflow
-for synchronising package environments between collaborators.
+The `renv` package is used to keep track of the installed packages and
+their versions. See the `renv` [collaboration
+guide](https://rstudio.github.io/renv/articles/collaborating.html) or
+the workflow for synchronising package environments between
+collaborators.
 
 ### Manuscript preparation
 
-* Each publishable document is managed in a separate subdirectory of `manuscripts`.
+-   Each publishable document is managed in a separate subdirectory of
+    `manuscripts`.
 
-* The `manuscripts` directory is not managed by [`workflowr`][],
-  so must be manually managed with respect to Git.
+-   The `manuscripts` directory is not managed by
+    [`workflowr`](https://github.com/jdblischak/workflowr), so must be
+    manually managed with respect to Git.
 
-* Each publishable R Markdown document is prepared and formatted 
-  using a package like [`rticles`][] or[`bookdown`][],
-  so the details may vary between documents.
+-   Each publishable Rmarkdown document is prepared and formatted using
+    a package like [`rticles`](https://github.com/rstudio/rticles)
+    or[`bookdown`](https://github.com/rstudio/bookdown), so the details
+    may vary between documents.
+    
+-   The rendering of each publishable Rmarkdown document is managed via `targets`.
 
-* The publishable R Markdown documents should avoid heavy computation.
-  It is generally better if heavy computation is done in analysis notebooks
-  and the results stored in the `output` directory.
-  Those results can then be picked up by the publishable R Markdown document.
+-   The publishable Rmarkdown documents should avoid heavy computation.
+    It is generally better if heavy computation is done in analysis
+    notebooks and the results stored in the `output` directory. Those
+    results can then be picked up by the publishable R Markdown
+    document.
 
-* Each rendered publishable document
-  will be created in its subdirectory of `manuscripts`.
-  * The rendered document *must* be stored in the `docs` directory
-    so that the GitHub website can access it.
-    (See https://github.com/jdblischak/workflowr/issues/209)
-  * The manuscript subdirectory must contain a symlink 
-    to the rendered document in the `docs` directory.
-    This allows the manuscript rendering process
-    to update the rendered file in the `docs` directory.
-  
-[Ross W. Gayler]: https://www.rossgayler.com/
-[Peter Christen]: https://users.cecs.anu.edu.au/~Peter.Christen/
+-   Each rendered publishable document will be created in its
+    subdirectory of `manuscripts`.
 
-[entity resolution]: https://en.wikipedia.org/wiki/Record_linkage
-
-[similarity]: https://en.wikipedia.org/wiki/Similarity_measure
-
-[calibration]: https://en.wikipedia.org/wiki/Calibration_(statistics)
-
-[R]: https://www.r-project.org/
-
-[RStudio]: https://www.r-project.org/
-
-[`workflowr`]: https://github.com/jdblischak/workflowr
-
-[`renv`]: https://rstudio.github.io/renv/
-
-[`rmarkdown`]: https://rmarkdown.rstudio.com/
-
-[`rticles`]: https://github.com/rstudio/rticles
-
-[`bookdown`]: https://github.com/rstudio/bookdown
-
-[Zenodo]: https://about.zenodo.org/
-
-[getting started]: https://jdblischak.github.io/workflowr/articles/wflow-01-getting-started.html#add-a-new-analysis-file
-
-[citation guide]: https://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html
-
-[collaboration guide]: https://rstudio.github.io/renv/articles/collaborating.html
-
-[features for managing citations]: https://blog.rstudio.com/2020/11/09/rstudio-1-4-preview-citations/
+    -   The rendered document *must* be stored in the `docs` directory
+        so that the GitHub website can access it. (See
+        <https://github.com/jdblischak/workflowr/issues/209>)
+    -   The manuscript subdirectory must contain a symlink to the
+        rendered document in the `docs` directory. This allows the
+        manuscript rendering process to update the rendered file in the
+        `docs` directory.

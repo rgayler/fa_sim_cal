@@ -18,7 +18,7 @@ library(DiagrammeR)
 
 This document is for keeping notes of any points that may be useful for
 later project or manuscript development and which are not covered in the
-analysis notebooks or at risk of getting lost in the notebooks.
+analysis notebooks or are at risk of getting lost in the notebooks.
 
 # Entity data
 
@@ -75,8 +75,8 @@ about the frequencies of names in the population).
 
     -   This is probably unnecessary given how the data will be used.
 
-    -   I can't bring myself to model data without scrutinising it
-        first.
+    -   However, I can't bring myself to model data without scrutinising
+        it first.
 
 -   Only keep records that are ACTIVE and VERIFIED for modelling.
 
@@ -109,18 +109,19 @@ about the frequencies of names in the population).
     dictionary records.
 
     -   This can be handled but is fiddly and not the focus of this
-        project.
+        project. So we will probably exclude all records that have any
+        missing values for blocking variables.
     -   Handling missing *predictor* values in regression-based
         compatibility models is simple.
-
--   Exclude from use all records with missing values on the blocking
-    records, so that missing values don't have to be allowed for in
-    blocking.
 
 -   Try to choose blocking variables with a small proportion of missing
     values, so as to minimise systematic bias due to their exclusion.
 
 -   Construct a few potentially useful blocking variables.
+
+    -   Construction includes choosing category boundaries for
+        continuous variables and, also, combining multiple variable to
+        produce a composite blocking variable.
 
 -   Blocking can induce changes in the distributions of names.
 
@@ -132,7 +133,8 @@ about the frequencies of names in the population).
         blocks because of name popularity varying over time.
 
     -   Blocking on registration county *may* give more homogeneity of
-        last names within blocks because of families living together.
+        last names within blocks because of families living near each
+        other.
 
 # Entity data characterisation
 
@@ -578,7 +580,7 @@ The construction of the data sets under each of the other "train/test
 # Writing/theory
 
 -   Note the relationship to Fellegi & Sunter / probabilistic record
-    linkage (in proposal?).
+    linkage.
 
 ## Quantity to be modelled
 

@@ -1,0 +1,242 @@
+---
+title: "[meta] Check demographic variables"
+subtitle: "m_01_7_check_demog"
+author: "Ross Gayler"
+date: "2021-05-16"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+  markdown: 
+    wrap: 72
+---
+
+```{r setup}
+# NOTE this notebook can be run manually or automatically by {targets}
+# So load the packages required by this notebook here
+# rather than relying on _targets.R to load them.
+
+# Set up the project environment, because {workflowr} knits each Rmd file 
+# in a new R session, and doesn't execute the project .Rprofile
+
+library(targets) # access data from the targets cache
+
+library(tictoc) # capture execution time
+library(here) # construct file paths relative to project root
+library(fs) # file system operations
+library(dplyr) # data wrangling
+library(gt) # table formatting
+library(stringr) # string matching
+library(vroom) # fast reading of delimited text files
+library(lubridate) # date parsing
+library(forcats) # manipulation of factors
+library(ggplot2) # graphics
+library(skimr) # compact summary of each variable
+library(tidyr) # data tidying
+
+# start the execution time clock
+tictoc::tic("Computation time (excl. render)")
+
+# Get the path to the raw entity data file
+# This is a target managed by {targets}
+f_entity_raw_tsv <- tar_read(c_raw_entity_data_file)
+```
+
+```{r, include = FALSE, cache = FALSE}
+# Get all the functions used by {targets} 
+# so we can display and use them in this notebook
+# with a guarantee that they will be identical
+# here and when used by {targets}.
+
+# This is  work-around because tarchetypes::tar_knitr_deps()
+# fails if a call to here::here() is embedded in 
+# a call to knitr::read_chunk()
+knitr::read_chunk("R/functions.R")
+```
+
+# Introduction
+
+These meta notebooks document the development of functions that will be
+applied in the core pipeline.
+
+The aim of the m_01 set of meta notebooks is to work out how to read the
+raw entity data, drop excluded cases, discard irrelevant variables,
+apply any cleaning, and construct standardised names. This does not
+include construction of any modelling features. To be clear, the target
+(`c_raw_entity_data`) corresponding to the objective of this set of
+notebooks is the cleaned and standardised raw data, before constructing
+any modelling features.
+
+This notebook documents the checking of the demographic variables for
+any issues that need fixing. These are the non-name variables that are
+reasonably interpretable as properties of the person.
+
+We will probably use some of these variables as predictors in a
+compatibility model and/or as blocking variables.
+
+Regardless of whether there are any issues that need to be fixed, the
+analyses here may inform our use of these variables in later analyses.
+
+Define the demographic variables.
+
+-   `sex_code` - Gender code
+-   `sex` - Gender description
+-   `age` - Age at snapshot date (years)
+-   `birth_place` - Birth place
+
+```{r}
+vars_resid <- c(
+  "sex_code", "sex", "age", "birth_place" 
+)
+```
+
+# Read entity data
+
+Read the raw entity data file using the previously defined functions
+`raw_entity_data_read()`, `raw_entity_data_excl_status()`,
+`raw_entity_data_excl_test()`, `raw_entity_data_drop_novar()`,
+`raw_entity_data_parse_dates()`, and `raw_entity_data_drop_cancel_dt()`.
+
+```{r, raw_entity_data_read, echo = FALSE}
+```
+
+```{r, raw_entity_data_excl_status, echo = FALSE}
+```
+
+```{r, raw_entity_data_excl_test, echo = FALSE}
+```
+
+```{r, raw_entity_data_drop_novar, echo = FALSE}
+```
+
+```{r, raw_entity_data_parse_dates, echo = FALSE}
+```
+
+```{r, raw_entity_data_drop_admin, echo = FALSE}
+```
+
+```{r}
+# Show the data file name
+fs::path_file(f_entity_raw_tsv)
+
+d <- raw_entity_data_read(f_entity_raw_tsv) %>% 
+  raw_entity_data_excl_status() %>% 
+  raw_entity_data_excl_test() %>% 
+  raw_entity_data_drop_novar() %>% 
+  raw_entity_data_parse_dates() %>% 
+  raw_entity_data_drop_admin()
+dim(d)
+```
+
+Take a quick look at the distributions.
+
+```{r}
+d %>% 
+  dplyr::select(sex_code, sex, age, birth_place) %>% 
+  skimr::skim()
+```
+
+-   `sex_code` 100% filled
+-   `sex` 100% filled
+-   `age` 100% filled
+-   `birth_place` 82% filled
+
+# sex_code & sex
+
+-   `sex_code` - Gender code\
+-   `sex` Gender - description
+
+These are presumably a code and label in a 1:1 relationship.
+
+```{r}
+d %>% 
+  dplyr::count(sex_code, sex) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>") %>% 
+  gt::fmt_number(columns = n, decimals = 0)
+```
+
+-   `sex_code` and `sex` in 1-1 relationship
+
+-   Drop `sex_code` as redundant
+
+# birth_place
+
+`birth_place` Birth place
+
+```{r}
+d %>% 
+  dplyr::count(birth_place) %>% 
+  dplyr::arrange(desc(n)) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>") %>% 
+  gt::fmt_number(columns = n, decimals = 0)
+```
+
+-   `birth_place` values appear to be 2-character [US state
+    abbreviations](https://en.wikipedia.org/wiki/List_of_U.S._state_and_territory_abbreviations)
+-   OC might mean "other country"
+-   VI, GU, AS are probably Virgin Islands, Guam, American Samoa
+
+# age
+
+`age` Age (years)
+
+I presume that the source documents actually record date of birth rather
+than age, and that age is reported in these files as a gesture to
+privacy.
+
+Look at the distribution of age.
+
+```{r}
+x <- d %>% 
+  dplyr::mutate(age = as.integer(age))
+                
+x$age %>% summary()
+
+x$age %>% quantile(probs = c(0.003, 0.004, 0.995, 0.996, 0.997, 0.998, 0.999))
+
+x %>% 
+  # dplyr::filter(age >= 80) %>% 
+  ggplot() +
+  geom_vline(xintercept = c(17, 105, 125, 204), colour = "orange") +
+  geom_histogram(aes(x = age), binwidth = 1) +
+  scale_y_log10()
+```
+
+-   Voters may be pre-registered at 17 years
+-   The ages less than 17 years (especially zero) are effectively
+    missing
+-   The spikes at 105, 125, and 204 years must be from some special
+    process which generates those specific ages.
+-   Any age greater than or equal to 105 years, seems very implausible.
+
+# Drop unneeded variables
+
+Drop `sex_code`.
+
+```{r, raw_entity_data_drop_demog}
+```
+
+Apply the filter and track the number of rows before and after the
+filter.
+
+```{r}
+# number of columns before dropping
+d %>% 
+  names() %>% length
+
+d %>% 
+  raw_entity_data_drop_demog %>% 
+  # number of columns after dropping
+  names() %>% length
+```
+
+# Timing {.unnumbered}
+
+```{r echo=FALSE}
+tictoc::toc()
+```

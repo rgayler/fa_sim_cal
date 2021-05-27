@@ -1,0 +1,844 @@
+---
+title: "[meta] Clean all the variables"
+subtitle: "m_01_9_clean_vars"
+author: "Ross Gayler"
+date: "2021-05-26"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+  markdown: 
+    wrap: 72
+---
+
+```{r setup}
+# NOTE this notebook can be run manually or automatically by {targets}
+# So load the packages required by this notebook here
+# rather than relying on _targets.R to load them.
+
+# Set up the project environment, because {workflowr} knits each Rmd file 
+# in a new R session, and doesn't execute the project .Rprofile
+
+library(targets) # access data from the targets cache
+
+library(tictoc) # capture execution time
+library(here) # construct file paths relative to project root
+library(fs) # file system operations
+library(dplyr) # data wrangling
+library(gt) # table formatting
+library(vroom) # fast reading of delimited text files
+library(tibble) # enhanced data frames
+library(stringr) # string matching
+library(skimr) # compact summary of each variable
+library(lubridate) # date parsing
+library(forcats) # manipulation of factors
+library(ggplot2) # graphics
+library(tidyr) # data tidying
+#
+
+# start the execution time clock
+tictoc::tic("Computation time (excl. render)")
+
+# Get the path to the raw entity data file
+# This is a target managed by {targets}
+f_entity_raw_tsv <- tar_read(c_raw_entity_data_file)
+```
+
+```{r, include = FALSE, cache = FALSE}
+# Get all the functions used by {targets} 
+# so we can display and use them in this notebook
+# with a guarantee that they will be identical
+# here and when used by {targets}.
+
+# This is  work-around because tarchetypes::tar_knitr_deps()
+# fails if a call to here::here() is embedded in 
+# a call to knitr::read_chunk()
+knitr::read_chunk("R/functions.R")
+```
+
+# Introduction
+
+The aim of this set of meta notebooks is to work out how to read the raw
+entity data. and get it sufficiently neatened so that we can construct
+standardised names and modelling features without needing any further
+neatening. To be clear, the target (`c_raw_entity_data`) corresponding
+to the objective of this set of notebooks is the neatened raw data,
+before constructing any modelling features.
+
+This notebook documents the cleaning of all the variables based on the
+issues discovered in the previous analyses.
+
+It also adds a record ID variable.
+
+## Variable roles
+
+The name variables, `last_name`, `first_name`, and `midl_name`, will
+definitely be used in compatibility modelling.
+
+We intend to use the one snapshot file as both the database to be
+queried and as the set of queries. Consequently, strictly speaking, we
+don't need to standardise the name variables because the database and
+query records are guaranteed to be identical (they will literally be the
+same record). However, we will look at the name variables with an eye to
+standardisation because it is never a good idea to statistically model
+data without having an idea about the quality of the data. We will apply
+some basic standardisation to the name variables, if appropriate,
+because it parallels what would be necessary in practice.
+
+The demographic variables `sex`, `age`, `birth_place`, and the
+administrative variable `county_desc` may be used as predictors and/or
+blocking variables.
+
+The remainder of the variables (residence and administrative variables)
+will be kept in case they are useful for manually assessing claimed
+matches.
+
+## Cleanup for predictors
+
+### Name standardisation
+
+Standardisation will be applied to the name variables `last_name`,
+`first_name`, and `midl_name`. This attempts to remove variation that is
+probably irrelevant to identity (e.g. case, punctuation, and spacing).
+
+### Missing values
+
+In the previous notebooks I have converted empty strings to missing
+values (`NA_character_` in R). This was convenient because `table()` and
+`skim()` count missing values as a separate category. However, modelling
+is a different kettle of fish.
+
+In modelling, we want to get an estimated probability of identity match
+for every query, regardless of how many attributes have missing values.
+Typical modelling functions do not tolerate any missing (`NA`) values in
+predictors. If any of the predictors is missing then the estimate is
+also missing.
+
+We avoid that problem by transforming the missing values into some
+nonmissing value and creating an extra variable to indicate the
+missingness. This will be done for the name variables `last_name`,
+`first_name`, and `midl_name`, and the demographic variable `age`. (This
+is not necessary for `birth_place` because "missing" is just another
+valid level of the variable.
+
+### Cleanup summary
+
+The cleanup actions to be applied are (in order):
+
+-   *age*
+
+-   convert from string to integer
+
+-   add missing value indicator and set to true if age \< 17 or age \>
+    104
+
+-   if age missing indicator is true, set age to 0
+
+-   *preprocess all character variables*
+
+-   map missing to empty string
+
+-   map lower case letters to upper case
+
+-   *all names*
+
+-   map each non-alphanumeric character to a space (Remove variability
+    of punctuation while preserving word boundaries.)
+
+-   map words 11, 111, 1111 to words II, III, IIII (Correct substitution
+    of 1 for I in generation suffixes.)
+
+-   if name contains zero and no other digits, map zero to O (Correct
+    substitution of 0 for O in names.)
+
+-   map each remaining digit to an empty string (Remove random digit
+    insertions)
+
+-   *last name*
+
+-   map words DR, II, III, IIII, IV, JR, MD, SR to empty string
+
+-   if number of letters in last name = 1, map name to empty string
+
+-   *middle name*
+
+-   map words AKA, DR, II, III, IV, JR, MD, MISS, MR, MRS, MS, NMN, NN,
+    REV, SR to empty string
+
+-   *first name*
+
+-   map words DR, FATHER, III, IV, JR, MD, MISS, MR, MRS, NMN, REV,
+    SISTER, SR to empty string
+
+-   if number of letters in first name = 0, move first word of middle
+    name to first name
+
+-   *postprocess all name variables*
+
+-   map all spaces to empty strings (Remove variability of spacing.)
+
+-   add missing value indicator variables for all name variables
+
+# Read entity data
+
+Read the raw entity data file using the previously defined functions
+`raw_entity_data_read()`, `raw_entity_data_excl_status()`,
+`raw_entity_data_excl_test()`, `raw_entity_data_drop_novar()`,
+`raw_entity_data_parse_dates()`, and `raw_entity_data_drop_cancel_dt()`.
+
+```{r, raw_entity_data_read, echo = FALSE}
+```
+
+```{r, raw_entity_data_excl_status, echo = FALSE}
+```
+
+```{r, raw_entity_data_excl_test, echo = FALSE}
+```
+
+```{r, raw_entity_data_drop_novar, echo = FALSE}
+```
+
+```{r, raw_entity_data_parse_dates, echo = FALSE}
+```
+
+```{r, raw_entity_data_drop_admin, echo = FALSE}
+```
+
+```{r, raw_entity_data_drop_demog, echo = FALSE}
+```
+
+```{r}
+# Show the data file name
+fs::path_file(f_entity_raw_tsv)
+
+d <- raw_entity_data_read(f_entity_raw_tsv) %>% 
+  raw_entity_data_excl_status() %>% 
+  raw_entity_data_excl_test() %>% 
+  raw_entity_data_drop_novar() %>% 
+  raw_entity_data_parse_dates() %>% 
+  raw_entity_data_drop_admin() %>% 
+  raw_entity_data_drop_demog()
+
+dim(d)
+```
+
+# Define and apply cleanup functions
+
+### Age
+
+-   convert from string to integer
+-   add missing indicator and set to true if age \< 17 or age \> 104
+-   if age missing indicator is true, set age to 0
+
+```{r, raw_entity_data_clean_age}
+```
+
+Apply and check function.
+
+```{r}
+# Apply
+
+dim(d)
+
+d <- d %>% raw_entity_data_clean_age()
+
+dim(d)
+
+# After
+
+summary(d$age_cln)
+
+summary(d$age_cln_miss)
+
+d %>% 
+  dplyr::select(starts_with("age_cln")) %>% 
+  dplyr::group_by(age_cln_miss) %>% 
+  dplyr::summarise(qtl = quantile(age_cln) %>% list()) %>%
+  tidyr::unnest_wider(col = qtl) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels())
+```
+
+### Preprocess all character variables
+
+-   map missing to empty string
+-   map lower case letters to upper case
+
+Note that this is an in-place transformation of the character variables
+rather than adding the transformed values as new variables. This is
+because I am viewing this a light tidying rather than as creating
+distinctly new cleaned values.
+
+```{r, raw_entity_data_clean_preprocess_char}
+```
+
+Apply and check function.
+
+```{r}
+# This is only a partial check - look at a very small subset of variables
+
+# Before
+
+d %>% 
+  dplyr::select(ends_with("_name")) %>% 
+  skimr::skim()
+
+d %>% 
+  dplyr::select(ends_with("_name")) %>% 
+  dplyr::filter(stringr::str_detect(first_name, "[a-z]")) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+
+# Apply
+
+d <- d %>% raw_entity_data_clean_preprocess_char()
+
+# After
+
+d %>% 
+  dplyr::select(ends_with("_name")) %>% 
+  skimr::skim()
+
+d %>% 
+  dplyr::select(ends_with("_name")) %>% 
+  dplyr::filter(stringr::str_detect(first_name, "[a-z]")) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+### All names
+
+-   map each non-alphanumeric character to a space (Remove variability
+    of punctuation. This preserves word boundaries.)
+-   map words 11, 111, 1111 to words II, III, IIII (Correct substitution
+    of 1 for I in generation suffixes.)
+-   if name contains zero and no other digits, map zero to O (Correct
+    substitution of 0 for O in names.)
+-   map each digit to an empty string (Remove random digit insertions)
+
+```{r, raw_entity_data_clean_all_names}
+```
+
+Apply and check function.
+
+```{r}
+# This is only a partial check
+
+# Apply
+
+dim(d)
+
+d <- d %>% raw_entity_data_clean_all_names()
+
+dim(d)
+
+# After
+
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, first_name, first_name_cln, midl_name, midl_name_cln
+  ) %>% 
+  dplyr::filter(stringr::str_detect(first_name, "[^ a-zA-Z0-9]")) %>% 
+  dplyr::distinct(first_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, first_name, first_name_cln, midl_name, midl_name_cln
+  ) %>% 
+  dplyr::filter(stringr::str_detect(midl_name, "111*")) %>% 
+  dplyr::distinct(midl_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, first_name, first_name_cln, midl_name, midl_name_cln
+  ) %>% 
+  dplyr::filter(stringr::str_detect(first_name, "0")) %>% 
+  dplyr::distinct(first_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, first_name, first_name_cln, midl_name, midl_name_cln
+  ) %>% 
+  dplyr::filter(stringr::str_detect(midl_name, "[2-9]")) %>% 
+  dplyr::distinct(midl_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+### Last name
+
+-   map words DR, II, III, IIII, IV, JR, MD, SR to empty string
+-   if number of letters in last name = 1, map name to empty string
+
+```{r, raw_entity_data_clean_last_name}
+```
+
+Apply and check function.
+
+```{r}
+# This is only a partial check
+
+# Before
+
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, first_name, first_name_cln, midl_name, midl_name_cln
+  ) %>% 
+  dplyr::filter(stringr::str_detect(
+    last_name_cln, 
+    "\\bDR\\b|\\bII\\b|\\bIII\\b|\\bIIII\\b|\\bIV\\b|\\bJR\b|\\bMD\\b|\\bSR\\b")
+  ) %>% 
+  dplyr::distinct(last_name_cln, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, first_name, first_name_cln, midl_name, midl_name_cln
+  ) %>% 
+  dplyr::filter(stringr::str_length(last_name_cln) <= 1) %>% 
+  dplyr::distinct(last_name_cln, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+
+# Apply
+
+dim(d)
+
+d <- d %>% raw_entity_data_clean_last_name()
+
+dim(d)
+
+# After
+
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, first_name, first_name_cln, midl_name, midl_name_cln
+  ) %>% 
+  dplyr::filter(stringr::str_detect(
+    last_name_cln, 
+    "\\bDR\\b|\\bII\\b|\\bIII\\b|\\bIIII\\b|\\bIV\\b|\\bJR\b|\\bMD\\b|\\bSR\\b")
+  ) %>% 
+  dplyr::distinct(last_name_cln, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, first_name, first_name_cln, midl_name, midl_name_cln
+  ) %>% 
+  dplyr::filter(stringr::str_length(last_name_cln) <= 1) %>% 
+  dplyr::distinct(last_name_cln, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+### Middle name
+
+-   map words AKA, DR, II, III, IV, JR, MD, MISS, MR, MRS, MS, NMN, NN,
+    REV, SR to empty string
+
+```{r, raw_entity_data_clean_middle_name}
+```
+
+Apply and check function.
+
+```{r}
+# This is only a partial check
+
+# Before
+
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, first_name, first_name_cln, midl_name, midl_name_cln
+  ) %>% 
+  dplyr::filter(stringr::str_detect(
+    midl_name_cln, 
+    "\\bAKA\\b|\\bDR\\b|\\bII\\b|\\bIII\\b|\\bIV\\b|\\bJR\b|\\bMD\\b|\\bMISS\\b|\\bMR\\b|\\MRS\\b|\\bMS\\b|\\bNMN\\b|\\bNN\\b|\\bREV\\b|\\bSR\\b")
+  ) %>% 
+  dplyr::distinct(midl_name_cln, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+
+# Apply
+
+dim(d)
+
+d <- d %>% raw_entity_data_clean_middle_name()
+
+dim(d)
+
+# After
+
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, first_name, first_name_cln, midl_name, midl_name_cln
+  ) %>% 
+  dplyr::filter(stringr::str_detect(
+    midl_name_cln, 
+    "\\bAKA\\b|\\bDR\\b|\\bII\\b|\\bIII\\b|\\bIV\\b|\\bJR\b|\\bMD\\b|\\bMISS\\b|\\bMR\\b|\\MRS\\b|\\bMS\\b|\\bNMN\\b|\\bNN\\b|\\bREV\\b|\\bSR\\b")
+  ) %>% 
+  dplyr::distinct(midl_name_cln, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+### First name
+
+-   map words DR, FATHER, III, IV, JR, MD, MISS, MR, MRS, NMN, REV,
+    SISTER, SR to empty string
+-   if number of letters in first name = 0, move first word of middle
+    name to first name
+
+```{r, raw_entity_data_clean_first_name}
+```
+
+Apply and check function.
+
+```{r}
+# This is only a partial check
+
+# Before
+
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, first_name, first_name_cln, midl_name, midl_name_cln
+  ) %>% 
+  dplyr::filter(stringr::str_detect(
+    first_name_cln, 
+    "\\bDR\\b|\\bFATHER\\b|\\bIII\\b|\\bIV\\b|\\bJR\b|\\bMD\\b|\\bMISS\\b|\\bMR\\b|\\MRS\\b|\\bNMN\\b|\\bREV\\b|\\bSISTER\\b|\\bSR\\b")
+  ) %>% 
+  dplyr::distinct(first_name_cln, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, first_name, first_name_cln, midl_name, midl_name_cln
+  ) %>% 
+  dplyr::filter(stringr::str_length(first_name_cln) == 0) %>% 
+  dplyr::distinct(first_name_cln, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+
+# Apply
+
+dim(d)
+
+d <- d %>% raw_entity_data_clean_first_name()
+
+dim(d)
+
+# After
+
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, first_name, first_name_cln, midl_name, midl_name_cln
+  ) %>% 
+  dplyr::filter(stringr::str_detect(
+    first_name_cln, 
+    "\\bDR\\b|\\bFATHER\\b|\\bIII\\b|\\bIV\\b|\\bJR\b|\\bMD\\b|\\bMISS\\b|\\bMR\\b|\\MRS\\b|\\bNMN\\b|\\bREV\\b|\\bSISTER\\b|\\bSR\\b")
+  ) %>% 
+  dplyr::distinct(first_name_cln, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, first_name, first_name_cln, midl_name, midl_name_cln
+  ) %>% 
+  dplyr::filter(stringr::str_length(first_name_cln) == 0) %>% 
+  dplyr::distinct(first_name_cln, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+### Postprocess all name variables
+
+-   map all spaces to empty strings (Remove variability of spacing.)
+-   add missing value indicator variables for all name variables
+
+```{r, raw_entity_data_clean_postprocess_names}
+```
+
+Apply and check function.
+
+```{r}
+# This is only a partial check
+
+# Before
+
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, first_name, first_name_cln, midl_name, midl_name_cln
+  ) %>% 
+  dplyr::filter(stringr::str_detect(first_name_cln, " ")) %>% 
+  dplyr::distinct(first_name_cln, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+
+# Apply
+
+dim(d)
+
+d <- d %>% raw_entity_data_clean_postprocess_names()
+
+dim(d)
+
+# After
+
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, first_name, first_name_cln, midl_name, midl_name_cln
+  ) %>% 
+  dplyr::filter(stringr::str_detect(first_name_cln, " ")) %>% 
+  dplyr::distinct(first_name_cln, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+# Examples
+
+Define a function to apply all the name cleaning actions.
+
+```{r, raw_entity_data_clean_all}
+```
+
+This function is equivalent to the incremental processing that occurred
+in the earlier chunks.
+
+Show some examples of the cleaned data.
+
+Quick distributions
+
+```{r}
+d %>% 
+  dplyr::select(ends_with("cln"), ends_with("_miss")) %>% 
+  skimr::skim()
+```
+
+## Age
+
+```{r}
+d %>% 
+  dplyr::select(age, age_cln, age_cln_miss) %>% 
+  dplyr::group_by(age_cln_miss) %>% 
+  dplyr::distinct(age, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 10) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+## Last name
+
+```{r}
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, last_name_cln_miss,
+    first_name, first_name_cln, first_name_cln_miss,
+    midl_name, midl_name_cln, midl_name_cln_miss
+  ) %>% 
+  dplyr::group_by(last_name_cln_miss) %>% 
+  dplyr::distinct(last_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 10) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+```{r}
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, last_name_cln_miss,
+    first_name, first_name_cln, first_name_cln_miss,
+    midl_name, midl_name_cln, midl_name_cln_miss
+  ) %>% 
+  dplyr::filter(last_name != last_name_cln) %>% 
+  dplyr::distinct(last_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+## First name
+
+```{r}
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, last_name_cln_miss,
+    first_name, first_name_cln, first_name_cln_miss,
+    midl_name, midl_name_cln, midl_name_cln_miss
+  ) %>% 
+  dplyr::group_by(first_name_cln_miss) %>% 
+  dplyr::distinct(first_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 10) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+```{r}
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, last_name_cln_miss,
+    first_name, first_name_cln, first_name_cln_miss,
+    midl_name, midl_name_cln, midl_name_cln_miss
+  ) %>% 
+  dplyr::filter(first_name != first_name_cln) %>% 
+  dplyr::distinct(first_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+```{r}
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, last_name_cln_miss,
+    first_name, first_name_cln, first_name_cln_miss,
+    midl_name, midl_name_cln, midl_name_cln_miss
+  ) %>% 
+  dplyr::filter(stringr::str_detect(first_name, "SISTER")) %>% 
+  dplyr::distinct(first_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+```{r}
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, last_name_cln_miss,
+    first_name, first_name_cln, first_name_cln_miss,
+    midl_name, midl_name_cln, midl_name_cln_miss
+  ) %>% 
+  dplyr::filter(first_name == "") %>% 
+  dplyr::distinct(first_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+## Middle name
+
+```{r}
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, last_name_cln_miss,
+    first_name, first_name_cln, first_name_cln_miss,
+    midl_name, midl_name_cln, midl_name_cln_miss
+  ) %>% 
+  dplyr::group_by(midl_name_cln_miss) %>% 
+  dplyr::distinct(midl_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 10) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+```{r}
+d %>% 
+  dplyr::select(
+    last_name, last_name_cln, last_name_cln_miss,
+    first_name, first_name_cln, first_name_cln_miss,
+    midl_name, midl_name_cln, midl_name_cln_miss
+  ) %>% 
+  dplyr::filter(midl_name != midl_name_cln) %>% 
+  dplyr::distinct(midl_name, .keep_all = TRUE) %>% 
+  dplyr::slice_sample(n = 20) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = cell_text(weight = "bold"), locations = cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+# Putting it all together
+
+Define a function to add a record ID variable.
+
+```{r, raw_entity_data_add_id}
+```
+
+Define a function to apply all the steps from reading the raw entity
+data through to creating the cleaned entity data. This will be used in
+the core pipeline.
+
+```{r, raw_entity_data_make_clean}
+```
+
+# Timing {.unnumbered}
+
+```{r echo=FALSE}
+tictoc::toc()
+```

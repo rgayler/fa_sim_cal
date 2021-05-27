@@ -22,4 +22,4 @@ output:
     toc_depth: 5
     theme: cosmo
     highlight: textmate
-    mathjax: "local"
+    # mathjax: "local"

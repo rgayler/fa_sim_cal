@@ -1,0 +1,156 @@
+---
+title: "[meta] Parse the dates"
+subtitle: "m_01_4_parse_dates"
+author: "Ross Gayler"
+date: "2021-05-15"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+  markdown: 
+    wrap: 72
+---
+
+```{r setup}
+# NOTE this notebook can be run manually or automatically by {targets}
+# So load the packages required by this notebook here
+# rather than relying on _targets.R to load them.
+
+# Set up the project environment, because {workflowr} knits each Rmd file 
+# in a new R session, and doesn't execute the project .Rprofile
+
+library(targets) # access data from the targets cache
+
+library(tictoc) # capture execution time
+library(here) # construct file paths relative to project root
+library(fs) # file system operations
+library(dplyr) # data wrangling
+library(gt) # table formatting
+library(stringr) # string matching
+library(vroom) # fast reading of delimited text files
+library(lubridate) # date parsing
+
+# start the execution time clock
+tictoc::tic("Computation time (excl. render)")
+
+# Get the path to the raw entity data file
+# This is a target managed by {targets}
+f_entity_raw_tsv <- tar_read(c_raw_entity_data_file)
+```
+
+```{r, include = FALSE, cache = FALSE}
+# Get all the functions used by {targets} 
+# so we can display and use them in this notebook
+# with a guarantee that they will be identical
+# here and when used by {targets}.
+
+# This is  work-around because tarchetypes::tar_knitr_deps()
+# fails if a call to here::here() is embedded in 
+# a call to knitr::read_chunk()
+knitr::read_chunk("R/functions.R")
+```
+
+# Introduction
+
+These meta notebooks document the development of functions that will be
+applied in the core pipeline.
+
+The aim of the m_01 set of meta notebooks is to work out how to read the
+raw entity data, drop excluded cases, discard irrelevant variables,
+apply any cleaning, and construct standardised names. This does not
+include construction of any modelling features. To be clear, the target
+(`c_raw_entity_data`) corresponding to the objective of this set of
+notebooks is the cleaned and standardised raw data, before constructing
+any modelling features.
+
+This notebook documents the process of parsing the dates from character
+strings. This is necessary because the subsequent analyses need dates
+rather than strings that look like dates.
+
+The subsequent notebooks in this set will develop the other functions
+needed to generate the cleaned and standardised data.
+
+# Read entity data
+
+Read the raw entity data file, drop the excluded rows, and drop the
+variables with no variation using the previously defined core pipeline
+functions, `raw_entity_data_read()`, `raw_entity_data_excl_status()`,
+`raw_entity_data_excl_test()`, and `raw_entity_data_drop_novar()`.
+
+```{r, raw_entity_data_read, echo = FALSE}
+```
+
+```{r, raw_entity_data_excl_status, echo = FALSE}
+```
+
+```{r, raw_entity_data_excl_test, echo = FALSE}
+```
+
+```{r, raw_entity_data_drop_novar, echo = FALSE}
+```
+
+```{r}
+# Show the data file name
+fs::path_file(f_entity_raw_tsv)
+
+d <- raw_entity_data_read(f_entity_raw_tsv) %>% 
+  raw_entity_data_excl_status() %>% 
+  raw_entity_data_excl_test() %>% 
+  raw_entity_data_drop_novar()
+
+dim(d)
+```
+
+# Dates
+
+Show some values for all the date columns.
+
+```{r}
+d %>% 
+  dplyr::select(ends_with("_dt")) %>% 
+  dplyr::group_by(is.na(cancellation_dt)) %>% 
+  dplyr::slice_sample(n = 10) %>% 
+  dplyr::ungroup() %>% 
+  dplyr::select(-starts_with("is.na")) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = gt::cell_text(weight = "bold"), locations = gt::cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   The dates appear to all be [ISO 8601
+    date-times](https://en.wikipedia.org/wiki/ISO_8601).
+-   Most of the cancellation dates are missing.
+
+Write a function to parse the date columns. We only need the date
+component of each date-time.
+
+```{r, raw_entity_data_parse_dates}
+```
+
+Test to see if all the dates are parsed and that missing strings map to
+missing dates.
+
+```{r}
+# get just the character date columns
+d_char <- d %>% 
+    dplyr::select(ends_with("_dt"))
+
+# parse the date columns
+d_date <- d_char %>% 
+  raw_entity_data_parse_dates()
+
+# check that the missing values are identically located in both frames
+all( is.na(d_char) == is.na(d_date) )
+```
+
+-   All missing values are identically located in both frames, so:
+
+    -   All nonmissing strings were successfully parsed (otherwise they
+        would be present in `d_char` and missing in `d_date`)
+    -   Missing character strings become missing dates
+
+# Timing {.unnumbered}
+
+```{r echo=FALSE}
+tictoc::toc()
+```

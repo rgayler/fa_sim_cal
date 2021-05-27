@@ -1,0 +1,212 @@
+---
+title: "[meta] Read the raw entity data"
+subtitle: "m_01_1_read_raw_entity_data"
+author: "Ross Gayler"
+date: "2021-05-14"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+  markdown: 
+    wrap: 72
+---
+
+```{r setup}
+# NOTE this notebook can be run manually or automatically by {targets}
+# So load the packages required by this notebook here
+# rather than relying on _targets.R to load them.
+
+# Set up the project environment, because {workflowr} knits each Rmd file 
+# in a new R session, and doesn't execute the project .Rprofile
+
+library(targets) # access data from the targets cache
+
+library(tictoc) # capture execution time
+library(here) # construct file paths relative to project root
+library(fs) # file system operations
+library(dplyr) # data wrangling
+library(vroom) # fast reading of delimited text files
+
+# start the execution time clock
+tictoc::tic("Computation time (excl. render)")
+
+# Get the path to the raw entity data file
+# This is a target managed by {targets}
+f_entity_raw_tsv <- tar_read(c_raw_entity_data_file)
+```
+
+```{r, include = FALSE, cache = FALSE}
+# Get all the functions used by {targets} 
+# so we can display and use them in this notebook
+# with a guarantee that they will be identical
+# here and when used by {targets}.
+
+# This is  work-around because tarchetypes::tar_knitr_deps()
+# fails if a call to here::here() is embedded in 
+# a call to knitr::read_chunk()
+knitr::read_chunk("R/functions.R")
+```
+
+# Introduction
+
+These meta notebooks document the development of functions that will be
+applied in the core pipeline.
+
+The aim of the `m_01` set of meta notebooks is to work out how to read
+the raw entity data, drop excluded cases, discard irrelevant variables,
+apply any cleaning, and construct standardised names. This does not
+include construction of any modelling features. To be clear, the target
+(`c_raw_entity_data`) corresponding to the objective of this set of
+notebooks is the cleaned and standardised raw data, before constructing
+any modelling features.
+
+This notebook documents the process of working out how to read the raw
+entity data. This is necessary because the documentation of data is
+often omits some essential detail.
+
+The subsequent notebooks in this set will develop the other functions
+needed to generate the cleaned and standardised data.
+
+## Entity data
+
+This project uses historical voter registration data from the [North
+Carolina State Board of Elections](https://www.ncsbe.gov/). This
+information is made publicly available in accordance with [North
+Carolina state
+law](https://s3.amazonaws.com/dl.ncsbe.gov/ReadMe_PUBLIC_DATA.txt). The
+[Voter Registration Data
+page](https://www.ncsbe.gov/results-data/voter-registration-data) links
+to an [online folder of Voter Registration
+snapshots](https://dl.ncsbe.gov/index.html?prefix=data/Snapshots/),
+which contains the snapshot data files and a [data dictionary
+file](https://s3.amazonaws.com/dl.ncsbe.gov/data/Snapshots/layout_VR_Snapshot.txt)
+describing the layout of the snapshot data files. At the time of writing
+the snapshot files cover the years 2005 to 2020 with at least one
+snapshot per year. The files are [ZIP
+compressed](https://en.wikipedia.org/wiki/ZIP_(file_format)) and
+relatively large, with the smallest being 572 MB after compression.
+
+The snapshots contain many columns that are irrelevant to this project
+(e.g. school district name) and/or prohibited under Australian privacy
+law (e.g. political affiliation, race). We do not read these unneeded
+columns from the snapshot file.
+
+We use only one snapshot file
+([VR_Snapshot_20051125.zip](https://s3.amazonaws.com/dl.ncsbe.gov/data/Snapshots/VR_Snapshot_20051125.zip))
+because this project does not investigate linkage of records across
+time. We chose the oldest snapshot (2005) because it is the smallest and
+the contents are the most out of date, minimising the current
+information made available. Note that this project will not generate any
+information that is not already directly, publicly available from NCSBE.
+
+# Display data dictionary
+
+The data dictionary is stored in the `data/` directory.
+
+```{css echo = FALSE}
+.small-out {
+  background-color: transparent;
+  font-size: 85%;
+}
+```
+
+```{r show_data_dict, class.output="small-out"}
+f_entity_raw_dd <- here::here("data", "layout_VR_Snapshot.txt") # data dictionary file
+
+readLines(f_entity_raw_dd) %>% writeLines()
+```
+
+# Read entity data
+
+The snapshot ZIP file was manually downloaded (572 MB), uncompressed
+(5.7 GB), then re-compressed in [XZ
+format](https://en.wikipedia.org/wiki/XZ_Utils) to minimise the size
+(248 MB). The compressed snapshot file and the data dictionary file are
+stored in the `data/` directory.
+
+## Character encoding
+
+These analysis notebooks are rendered to webpages by the [`knitr`](https://yihui.org/knitr/) package.
+This uses [`pandoc`](https://pandoc.org/) as a postprocessor, which [requires its input](https://pandoc.org/MANUAL.html) as [UTF-8](https://en.wikipedia.org/wiki/UTF-8) encoded character strings.
+In these notebooks we will occasionally display literal values from the voter registration snapshot file,
+so we will need to convert the voter registration data to UTF-8 encoding
+if it is not already encoded that way.
+
+The data dictionary indicates that the data is stored as characters but doesn't give any hints as to the [encoding](https://en.wikipedia.org/wiki/Character_encoding) used.
+I don't have any details on how the this data is collected at source and subsequently assembled into these snapshot files.
+However, I wouldn't be surprised if the voter registration is managed by the individual counties
+and for the smaller counties it might be managed by part-time employees using Microsoft Excel on old PCs
+running obsolete versions of Microsoft Windows.
+If this is the case it is unlikely that the voter registration data is encoded in UTF-8.
+
+Use the [`uchardet`](https://github.com/freedesktop/uchardet) to guess the encoding of the voter registration snapshot file.
+
+```{r}
+# The snapshot needs to be uncompressed for uchardet to read it
+# This probably only works on linux
+# xz and uchardet must be installed
+
+system(paste0("xz --decompress --stdout '", f_entity_raw_tsv, "' | uchardet"), intern = TRUE)
+```
+
+* The voter registration snapshot appears to be encoded as (`WINDOWS-1252`)[https://en.wikipedia.org/wiki/Windows-1252].
+This is not surprising as it is used by default for English in the legacy components of Microsoft Windows.
+
+The function to read the data will have to convert the encoding from `WINDOWS-1252` to `UTF-8`.
+
+## Read formatted data
+
+**The data is tab-separated**. The data dictionary says that the data
+file is tab separated, but the data dictionary gives column widths,
+which could be interpreted as implying the data is formatted as fixed
+width fields. Examining the uncompressed data with a text editor shows
+that the columns are tab separated.
+
+The field widths in the data dictionary are probably intended to be
+interpreted as maximum lengths. However, this interpretation is not
+accurate. Some fields contain values longer than the stated width.
+
+Inspection of the raw data with a text editor shows that the character
+fields are unquoted. However, **at least one character value contains an
+un-escaped double-quote character**, which has the potential to confuse
+the parsing if it is looking for quoted values.
+
+The column specifications are written by taking the column names and
+their order in the data dictionary as correct.
+
+Read the data file as character columns (i.e. treat numbers and dates as
+character strings), to simplify finding wrongly formatted input.
+
+```{r, raw_entity_data_read}
+```
+
+```{r}
+# Show the data file name
+fs::path_file(f_entity_raw_tsv)
+
+# Read the raw entity data
+d <- raw_entity_data_read(f_entity_raw_tsv)
+```
+
+Check the number of rows and columns read and take a quick look at the
+data.
+
+```{r}
+dplyr::glimpse(d)
+```
+
+-   Correct number of data rows read
+
+    -   External line count of input file = 8,003,294 (including header
+        row of column names)
+
+-   Correct number of columns read (checked against manual count of
+    columns in data dictionary)
+
+-   The initial values in each column seem plausible with respect to the
+    column descriptions
+
+# Timing {.unnumbered}
+
+```{r echo=FALSE}
+tictoc::toc()
+```
