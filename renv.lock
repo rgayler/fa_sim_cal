@@ -123,17 +123,17 @@
     },
     "bs4Dash": {
       "Package": "bs4Dash",
-      "Version": "0.5.0",
+      "Version": "2.0.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "9f36dfae17465b995101258e4016e8f8"
+      "Hash": "744dab3e36615797880e4ebc0ee9643d"
     },
     "bslib": {
       "Package": "bslib",
-      "Version": "0.2.5",
+      "Version": "0.2.5.1",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "e2049406d0e4f37de7b9f1a1a794eb8a"
+      "Hash": "2f069f3f42847231aef7baa49bed97b0"
     },
     "cachem": {
       "Package": "cachem",
@@ -263,10 +263,10 @@
     },
     "fansi": {
       "Package": "fansi",
-      "Version": "0.4.2",
+      "Version": "0.5.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "fea074fb67fe4c25d47ad09087da847d"
+      "Hash": "d447b40982c576a72b779f0a3b3da227"
     },
     "farver": {
       "Package": "farver",
@@ -288,6 +288,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "81c3244cab67468aac4c60550832655d"
+    },
+    "fresh": {
+      "Package": "fresh",
+      "Version": "0.2.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "fa54367040deb4537da49b7ac0ee5770"
     },
     "fs": {
       "Package": "fs",
@@ -795,10 +802,15 @@
     },
     "targets": {
       "Package": "targets",
-      "Version": "0.4.2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "a46df8ab3d40fd1627deeca2783df151"
+      "Version": "0.5.0.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "targets",
+      "RemoteUsername": "ropensci",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "6ca321dc35a30598397efee09a43e6f4d28a53b3",
+      "Hash": "aedafb7b7ce94be7bdc073fe9258c2af"
     },
     "tibble": {
       "Package": "tibble",
@@ -876,6 +888,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "06340eb63f5095463420837782c084c1"
+    },
+    "waiter": {
+      "Package": "waiter",
+      "Version": "0.2.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "a8742a4d14e77d6464614b47a1e9921e"
     },
     "whisker": {
       "Package": "whisker",
