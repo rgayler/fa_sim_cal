@@ -847,6 +847,13 @@
       "Repository": "CRAN",
       "Hash": "25b572f764f3c19fef9aac33b5724f3d"
     },
+    "tzdb": {
+      "Package": "tzdb",
+      "Version": "0.1.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "d60ee49eac3f3aaead137af987c92ddb"
+    },
     "utf8": {
       "Package": "utf8",
       "Version": "1.2.1",
@@ -884,10 +891,15 @@
     },
     "vroom": {
       "Package": "vroom",
-      "Version": "1.4.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "06340eb63f5095463420837782c084c1"
+      "Version": "1.4.0.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "vroom",
+      "RemoteUsername": "r-lib",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "41d6c2088ccc41d41d0dbc50492b46a19d1c3f35",
+      "Hash": "52073950024de7d452872170076714e0"
     },
     "waiter": {
       "Package": "waiter",

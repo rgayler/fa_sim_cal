@@ -41,7 +41,7 @@ list(
   # Path to raw entity data file
   tar_target(
     c_raw_entity_data_file,
-    here::here("data", "VR_20051125.txt.xz"),
+    here::here("data", "VR_Snapshot_20081104.txt.xz"),
     format = "file"
   ),
 
@@ -117,7 +117,8 @@ list(
 
       # Build the report
       workflowr::wflow_build(
-        here("analysis", "m_01_1_read_raw_entity_data.Rmd")
+        here("analysis", "m_01_1_read_raw_entity_data.Rmd"),
+        make = TRUE, update = FALSE, clean_fig_files = TRUE, delete_cache = TRUE # too much?
       )
 
       # Track the input Rmd file (and not the rendered HTML file).

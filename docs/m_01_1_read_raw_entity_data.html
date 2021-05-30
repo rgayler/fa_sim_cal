@@ -370,7 +370,7 @@ div.tocify {
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
 workflowr
-<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -380,7 +380,7 @@ workflowr
 </li>
 <li>
 <a data-toggle="tab" href="#checks">
-Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
 </a>
 </li>
 <li>
@@ -390,14 +390,14 @@ Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></sp
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-05-27
+<strong>Last updated:</strong> 2021-05-30
 </p>
 <p>
 <strong>Checks:</strong>
 <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-7
+6
 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
-0
+1
 </p>
 <p>
 <strong>Knit directory:</strong>
@@ -420,16 +420,21 @@ The <em>Past versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-<strong>R Markdown file:</strong> up-to-date
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+<strong>R Markdown file:</strong> uncommitted changes
 </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git repository, you
-know the exact version of the code that produced these results.</p>
+<p>The R Markdown file has unstaged changes.
+To know which version of the R Markdown file created these
+results, you’ll want to first commit it to the Git repo. If
+you’re still working on the analysis, you can ignore this
+warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and
+build the HTML.</p>
 </div>
 </div>
 </div>
@@ -518,20 +523,20 @@ makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreea6fb2e3554dac977062b37d69d0adb1d328baeb9targetblanka6fb2e3a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree3e13b685b037a446bc924bbecd292b8440cf1adftargetblank3e13b68a">
 <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/a6fb2e3554dac977062b37d69d0adb1d328baeb9" target="_blank">a6fb2e3</a>
+<strong>Repository version:</strong> <a href="https://github.com/rgayler/fa_sim_cal/tree/3e13b685b037a446bc924bbecd292b8440cf1adf" target="_blank">3e13b68</a>
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltreea6fb2e3554dac977062b37d69d0adb1d328baeb9targetblanka6fb2e3a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomrgaylerfasimcaltree3e13b685b037a446bc924bbecd292b8440cf1adftargetblank3e13b68a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and
 connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/a6fb2e3554dac977062b37d69d0adb1d328baeb9" target="_blank">a6fb2e3</a>.
+The results in this page were generated with repository version <a href="https://github.com/rgayler/fa_sim_cal/tree/3e13b685b037a446bc924bbecd292b8440cf1adf" target="_blank">3e13b68</a>.
 See the <em>Past versions</em> tab to see a history of the changes made to the
 R Markdown and HTML files.
 </p>
@@ -554,6 +559,18 @@ Ignored files:
     Ignored:    renv/library/
     Ignored:    renv/local/
     Ignored:    renv/staging/
+
+Untracked files:
+    Untracked:  data/utf16le.txt
+    Untracked:  test_read.R.txt
+
+Unstaged changes:
+    Modified:   .Rprofile
+    Modified:   R/functions.R
+    Modified:   _targets.R
+    Modified:   analysis/m_01_1_read_raw_entity_data.Rmd
+    Modified:   data/layout_VR_Snapshot.txt
+    Modified:   renv.lock
 
 </code></pre>
 <p>
@@ -603,16 +620,16 @@ Message
 Rmd
 </td>
 <td>
-<a href="https://github.com/rgayler/fa_sim_cal/blob/ab90fe6e4a497237dc300c11d3441a2b5855e0bb/analysis/m_01_1_read_raw_entity_data.Rmd" target="_blank">ab90fe6</a>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/b0c71dfcacc3dfa36a921d7834e4073f01af8ac4/analysis/m_01_1_read_raw_entity_data.Rmd" target="_blank">b0c71df</a>
 </td>
 <td>
 Ross Gayler
 </td>
 <td>
-2021-05-18
+2021-05-27
 </td>
 <td>
-WIP
+Use targets package to manage workflow
 </td>
 </tr>
 <tr>
@@ -620,16 +637,33 @@ WIP
 html
 </td>
 <td>
-<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/ab90fe6e4a497237dc300c11d3441a2b5855e0bb/docs/m_01_1_read_raw_entity_data.html" target="_blank">ab90fe6</a>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/b0c71dfcacc3dfa36a921d7834e4073f01af8ac4/docs/m_01_1_read_raw_entity_data.html" target="_blank">b0c71df</a>
 </td>
 <td>
 Ross Gayler
 </td>
 <td>
-2021-05-18
+2021-05-27
 </td>
 <td>
-WIP
+Use targets package to manage workflow
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/rgayler/fa_sim_cal/blob/0e893b2b6ac0165542d0bbdae0e09af26c155cf8/analysis/m_01_1_read_raw_entity_data.Rmd" target="_blank">0e893b2</a>
+</td>
+<td>
+Ross Gayler
+</td>
+<td>
+2021-05-27
+</td>
+<td>
+Use targets package to manage workflow
 </td>
 </tr>
 <tr>
@@ -637,135 +671,16 @@ WIP
 html
 </td>
 <td>
-<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/0bb37f01b5d27115531fc377a8ba14528bd16d46/docs/m_01_1_read_raw_entity_data.html" target="_blank">0bb37f0</a>
+<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/0e893b2b6ac0165542d0bbdae0e09af26c155cf8/docs/m_01_1_read_raw_entity_data.html" target="_blank">0e893b2</a>
 </td>
 <td>
 Ross Gayler
 </td>
 <td>
-2021-05-15
+2021-05-27
 </td>
 <td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/rgayler/fa_sim_cal/blob/54a80529dc734ceaf944327ec8eb256545d9107d/analysis/m_01_1_read_raw_entity_data.Rmd" target="_blank">54a8052</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2021-05-15
-</td>
-<td>
-wflow_publish("analysis/m_01_1*.Rmd")
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/rgayler/fa_sim_cal/blob/d7b5c395ca46f651d57d33d0a39b41a15e5d1570/analysis/m_01_1_read_raw_entity_data.Rmd" target="_blank">d7b5c39</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2021-05-15
-</td>
-<td>
-WIP
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/rgayler/fa_sim_cal/blob/e1b609b672901f81f28585c656a293f6e0e3504e/analysis/m_01_1_read_raw_entity_data.Rmd" target="_blank">e1b609b</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2021-05-14
-</td>
-<td>
-WIP
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/rgayler/fa_sim_cal/blob/410907839f4926bcfedb54e968a26028303b9b91/analysis/m_01_1_read_raw_entity_data.Rmd" target="_blank">4109078</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2021-05-13
-</td>
-<td>
-WIP
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/410907839f4926bcfedb54e968a26028303b9b91/docs/m_01_1_read_raw_entity_data.html" target="_blank">4109078</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2021-05-13
-</td>
-<td>
-WIP
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/rgayler/fa_sim_cal/blob/ebd787ee67b6a30a4fbd82d7a71c01358b56fd7a/analysis/m_01_1_read_raw_entity_data.Rmd" target="_blank">ebd787e</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2021-03-28
-</td>
-<td>
-WIP
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/rgayler/fa_sim_cal/ebd787ee67b6a30a4fbd82d7a71c01358b56fd7a/docs/m_01_1_read_raw_entity_data.html" target="_blank">ebd787e</a>
-</td>
-<td>
-Ross Gayler
-</td>
-<td>
-2021-03-28
-</td>
-<td>
-WIP
+Use targets package to manage workflow
 </td>
 </tr>
 </tbody>
@@ -797,9 +712,7 @@ Attaching package: &#39;dplyr&#39;</code></pre>
 <pre><code>The following objects are masked from &#39;package:base&#39;:
 
     intersect, setdiff, setequal, union</code></pre>
-<pre class="r"><code>library(vroom) # fast reading of delimited text files
-
-# start the execution time clock
+<pre class="r"><code># start the execution time clock
 tictoc::tic(&quot;Computation time (excl. render)&quot;)
 
 # Get the path to the raw entity data file
@@ -813,7 +726,7 @@ applied in the core pipeline.</p>
 the raw entity data, drop excluded cases, discard irrelevant variables,
 apply any cleaning, and construct standardised names. This does not
 include construction of any modelling features. To be clear, the target
-(<code>c_raw_entity_data</code>) corresponding to the objective of this set of
+(<code>c_clean_entity_data</code>) corresponding to the objective of this set of
 notebooks is the cleaned and standardised raw data, before constructing
 any modelling features.</p>
 <p>This notebook documents the process of working out how to read the raw
@@ -835,18 +748,21 @@ snapshots</a>,
 which contains the snapshot data files and a <a href="https://s3.amazonaws.com/dl.ncsbe.gov/data/Snapshots/layout_VR_Snapshot.txt">data dictionary
 file</a>
 describing the layout of the snapshot data files. At the time of writing
-the snapshot files cover the years 2005 to 2020 with at least one
+the snapshot files cover the years 2005 to 2021 with at least one
 snapshot per year. The files are <a href="https://en.wikipedia.org/wiki/ZIP_(file_format)">ZIP
 compressed</a> and
-relatively large, with the smallest being 572 MB after compression.</p>
+relatively large, with the smallest being 555 MB after compression, and
+the largest 1.1 GB.</p>
 <p>The snapshots contain many columns that are irrelevant to this project
 (e.g. school district name) and/or prohibited under Australian privacy
 law (e.g. political affiliation, race). We do not read these unneeded
 columns from the snapshot file.</p>
 <p>We use only one snapshot file
-(<a href="https://s3.amazonaws.com/dl.ncsbe.gov/data/Snapshots/VR_Snapshot_20051125.zip">VR_Snapshot_20051125.zip</a>)
+(<a href="https://s3.amazonaws.com/dl.ncsbe.gov/data/Snapshots/VR_Snapshot_20081104.zip">VR_Snapshot_20081104.zip</a>)
 because this project does not investigate linkage of records across
-time. We chose the oldest snapshot (2005) because it is the smallest and
+time. We chose the oldest snapshot (2008) where the North Carolina
+identification number (NCID) is available, because we want to use NCID
+as the “true” identity, it is the smallest file with NCID available, and
 the contents are the most out of date, minimising the current
 information made available. Note that this project will not generate any
 information that is not already directly, publicly available from NCSBE.</p>
@@ -869,8 +785,9 @@ readLines(f_entity_raw_dd) %&gt;% writeLines()</code></pre>
 * purpose: Layout for the VR_SNAPSHOT_YYYYMMDD file. This file contains a denormalized
 *          point-in-time snapshot of information for active and inactive voters 
 *          as-well-as removed voters going back for a period of ten years.
+* updated: 02/15/2021
 * format:  tab delimited column names in first row
-* updated: 06/28/2020
+* encoding: UTF-16 LE
 ******************************************************************************* */
 
 
@@ -962,45 +879,53 @@ dist_1_desc         char 30         Prosecutorial district name
 dist_2_abbrv            char  4         &lt;not used&gt;
 dist_2_desc         char 30         &lt;not used&gt;
 confidential_ind        char  1         Confidential indicator
-cancellation_dt         char 10         Cancellation date
+cancellation_dt         char 10         Date voter registration cancelled
 vtd_abbrv           char  6         Voter tabuluation district abbreviation 
 vtd_desc            char 30         Voter tabuluation district name 
-load_dt             char 10         Data load date
+load_dt             char 10         Date snapshot was processed for load
 age_group           char 35         Age group range
 -- ---------------------------------------------------------------------------------</code></pre>
 </div>
 <div id="read-entity-data" class="section level1" number="3">
 <h1><span class="header-section-number">3</span> Read entity data</h1>
-<p>The snapshot ZIP file was manually downloaded (572 MB), uncompressed
-(5.7 GB), then re-compressed in <a href="https://en.wikipedia.org/wiki/XZ_Utils">XZ
+<p>The snapshot ZIP file was manually downloaded (682 MB), uncompressed
+(8.8 GB), then re-compressed in <a href="https://en.wikipedia.org/wiki/XZ_Utils">XZ
 format</a> to minimise the size
-(248 MB). The compressed snapshot file and the data dictionary file are
+(332 MB). The compressed snapshot file and the data dictionary file are
 stored in the <code>data/</code> directory.</p>
 <div id="character-encoding" class="section level2" number="3.1">
 <h2><span class="header-section-number">3.1</span> Character encoding</h2>
-<p>These analysis notebooks are rendered to webpages by the <a href="https://yihui.org/knitr/"><code>knitr</code></a> package.
-This uses <a href="https://pandoc.org/"><code>pandoc</code></a> as a postprocessor, which <a href="https://pandoc.org/MANUAL.html">requires its input</a> as <a href="https://en.wikipedia.org/wiki/UTF-8">UTF-8</a> encoded character strings.
-In these notebooks we will occasionally display literal values from the voter registration snapshot file,
-so we will need to convert the voter registration data to UTF-8 encoding
-if it is not already encoded that way.</p>
-<p>The data dictionary indicates that the data is stored as characters but doesn’t give any hints as to the <a href="https://en.wikipedia.org/wiki/Character_encoding">encoding</a> used.
-I don’t have any details on how the this data is collected at source and subsequently assembled into these snapshot files.
-However, I wouldn’t be surprised if the voter registration is managed by the individual counties
-and for the smaller counties it might be managed by part-time employees using Microsoft Excel on old PCs
-running obsolete versions of Microsoft Windows.
-If this is the case it is unlikely that the voter registration data is encoded in UTF-8.</p>
-<p>Use the <a href="https://github.com/freedesktop/uchardet"><code>uchardet</code></a> to guess the encoding of the voter registration snapshot file.</p>
+<p>These analysis notebooks are rendered to webpages by the
+<a href="https://yihui.org/knitr/"><code>knitr</code></a> package. This uses
+<a href="https://pandoc.org/"><code>pandoc</code></a> as a postprocessor, which <a href="https://pandoc.org/MANUAL.html">requires its
+input</a> as
+<a href="https://en.wikipedia.org/wiki/UTF-8">UTF-8</a> encoded character strings.
+In these notebooks we will occasionally display literal values from the
+voter registration snapshot file, so we will need to convert the voter
+registration data to UTF-8 encoding if it is not already encoded that
+way.</p>
+<p>The data dictionary indicates that the data is <a href="https://en.wikipedia.org/wiki/Character_encoding">encoded</a> as <a href="https://en.wikipedia.org/wiki/UTF-16#Byte-order_encoding_schemes">UTF-16LE</a>
+I
+don’t have any details on how the this data is collected at source and
+subsequently assembled into these snapshot files. However, I wouldn’t be
+surprised if the voter registration is managed by the individual
+counties and for the smaller counties it might be managed by part-time
+employees using Microsoft Excel on old PCs running obsolete versions of
+Microsoft Windows. It’s saferto check the encoding.</p>
+<p>Use the <a href="https://github.com/freedesktop/uchardet"><code>uchardet</code></a> to guess
+the encoding of the voter registration snapshot file.</p>
 <pre class="r"><code># The snapshot needs to be uncompressed for uchardet to read it
 # This probably only works on linux
 # xz and uchardet must be installed
 
 system(paste0(&quot;xz --decompress --stdout &#39;&quot;, f_entity_raw_tsv, &quot;&#39; | uchardet&quot;), intern = TRUE)</code></pre>
-<pre><code>[1] &quot;WINDOWS-1252&quot;</code></pre>
+<pre><code>[1] &quot;UTF-16&quot;</code></pre>
 <ul>
-<li>The voter registration snapshot appears to be encoded as (<code>WINDOWS-1252</code>)[<a href="https://en.wikipedia.org/wiki/Windows-1252" class="uri">https://en.wikipedia.org/wiki/Windows-1252</a>].
-This is not surprising as it is used by default for English in the legacy components of Microsoft Windows.</li>
+<li>The voter registration snapshot appears to be encoded as
+<a href="https://en.wikipedia.org/wiki/UTF-16#Byte-order_encoding_schemes">UTF-16LE</a>.</li>
 </ul>
-<p>The function to read the data will have to convert the encoding from <code>WINDOWS-1252</code> to <code>UTF-8</code>.</p>
+<p>The function to read the data will have to convert the encoding from
+<code>UTF-16LE</code> to <code>UTF-8</code>.</p>
 </div>
 <div id="read-formatted-data" class="section level2" number="3.2">
 <h2><span class="header-section-number">3.2</span> Read formatted data</h2>
@@ -1022,76 +947,155 @@ their order in the data dictionary as correct.</p>
 character strings), to simplify finding wrongly formatted input.</p>
 <pre class="r"><code># Function to get the raw entity data
 raw_entity_data_read &lt;- function(
-  file_path # character - file path usable by vroom
+  file_path # character - input file path
+  # value - data frame
 ) {
-  vroom::vroom(
-    file_path,
-    # n_max = 1e4, # limit the rows for testing
-    col_select = c( # get all the columns that might conceivably be used
-      # the names and ordering are from the metadata file
-      snapshot_dt : voter_status_reason_desc, # 9 cols
-      last_name : street_sufx_cd, # 10 cols
-      unit_num : zip_code, # 4 cols
-      area_cd, phone_num, # 2 cols
-      sex_code : registr_dt, # 5 cols
-      cancellation_dt, load_dt # 2 cols
-    ), # total 32 cols
-    col_types = cols(
-      .default = col_character() # all cols as chars to allow for bad formatting
-    ),
-    delim = &quot;\t&quot;, # assume that fields are *only* delimited by tabs
-    col_names = TRUE, # use the column names on the first line of data
-    na = &quot;&quot;, # missing fields are empty string or whitespace only (see trim_ws argument)
-    quote = &quot;&quot;, # strings NEVER quoted. Read embedded double quote as just another character
-    comment = &quot;&quot;, # don&#39;t allow for comments
-    trim_ws = TRUE, # trim leading and trailing whitespace
-    escape_double = FALSE, # assume no escaped quotes
-    escape_backslash = FALSE , # assume no escaped backslashes
-    locale = locale(encoding = &quot;WINDOWS-1252&quot;) # tell vroom the encoding of the input file
-  ) # the returned value is encoded s UTF-8
+  xzfile(file_path, open = &quot;rt&quot;, encoding = &quot;UTF-16LE&quot;) %&gt;% # XZ compressed and UTF-16LE encoded
+    read.delim(
+      header = TRUE, # use the column names on the first line of data
+      sep = &quot;\t&quot;, # the fields are *only* delimited by tabs
+      colClasses = c( # which cols to keep as char, or skip (keep 33)
+        snapshot_dt = &quot;character&quot;,
+        county_id = &quot;character&quot;,
+        county_desc = &quot;character&quot;,
+        voter_reg_num = &quot;character&quot;,
+        ncid = &quot;character&quot;,
+        status_cd = &quot;character&quot;,
+        voter_status_desc = &quot;character&quot;,
+        reason_cd = &quot;character&quot;,
+        voter_status_reason_desc = &quot;character&quot;,
+        absent_ind = &quot;NULL&quot;,
+        name_prefx_cd = &quot;NULL&quot;,
+        last_name = &quot;character&quot;,
+        first_name = &quot;character&quot;,
+        midl_name = &quot;character&quot;,
+        name_sufx_cd = &quot;character&quot;,
+        house_num = &quot;character&quot;,
+        half_code = &quot;character&quot;,
+        street_dir = &quot;character&quot;,
+        street_name = &quot;character&quot;,
+        street_type_cd = &quot;character&quot;,
+        unit_designator = &quot;NULL&quot;,
+        unit_num = &quot;character&quot;,
+        res_city_desc = &quot;character&quot;,
+        state_cd = &quot;character&quot;,
+        zip_code = &quot;character&quot;,
+        mail_addr1 = &quot;NULL&quot;,
+        mail_addr2 = &quot;NULL&quot;,
+        mail_addr3 = &quot;NULL&quot;,
+        mail_addr4 = &quot;NULL&quot;,
+        mail_city = &quot;NULL&quot;,
+        mail_state = &quot;NULL&quot;,
+        mail_zipcode = &quot;NULL&quot;,
+        area_cd = &quot;character&quot;,
+        phone_num = &quot;character&quot;,
+        race_code = &quot;NULL&quot;,
+        race_desc = &quot;NULL&quot;,
+        ethnic_code = &quot;NULL&quot;,
+        ethnic_desc = &quot;NULL&quot;,
+        party_cd = &quot;NULL&quot;,
+        party_desc = &quot;NULL&quot;,
+        sex_code = &quot;character&quot;,
+        sex = &quot;character&quot;,
+        age = &quot;character&quot;,
+        birth_place = &quot;character&quot;,
+        registr_dt = &quot;character&quot;,
+        precinct_abbrv = &quot;NULL&quot;,
+        precinct_desc = &quot;NULL&quot;,
+        municipality_abbrv = &quot;NULL&quot;,
+        municipality_desc = &quot;NULL&quot;,
+        ward_abbrv = &quot;NULL&quot;,
+        ward_desc = &quot;NULL&quot;,
+        cong_dist_abbrv = &quot;NULL&quot;,
+        cong_dist_desc = &quot;NULL&quot;,
+        super_court_abbrv = &quot;NULL&quot;,
+        super_court_desc = &quot;NULL&quot;,
+        judic_dist_abbrv = &quot;NULL&quot;,
+        judic_dist_desc = &quot;NULL&quot;,
+        NC_senate_abbrv = &quot;NULL&quot;,
+        NC_senate_desc = &quot;NULL&quot;,
+        NC_house_abbrv = &quot;NULL&quot;,
+        NC_house_desc = &quot;NULL&quot;,
+        county_commiss_abbrv = &quot;NULL&quot;,
+        county_commiss_desc = &quot;NULL&quot;,
+        township_abbrv = &quot;NULL&quot;,
+        township_desc = &quot;NULL&quot;,
+        school_dist_abbrv = &quot;NULL&quot;,
+        school_dist_desc = &quot;NULL&quot;,
+        fire_dist_abbrv = &quot;NULL&quot;,
+        fire_dist_desc = &quot;NULL&quot;,
+        water_dist_abbrv = &quot;NULL&quot;,
+        water_dist_desc = &quot;NULL&quot;,
+        sewer_dist_abbrv = &quot;NULL&quot;,
+        sewer_dist_desc = &quot;NULL&quot;,
+        sanit_dist_abbrv = &quot;NULL&quot;,
+        sanit_dist_desc = &quot;NULL&quot;,
+        rescue_dist_abbrv = &quot;NULL&quot;,
+        rescue_dist_desc = &quot;NULL&quot;,
+        munic_dist_abbrv = &quot;NULL&quot;,
+        munic_dist_desc = &quot;NULL&quot;,
+        dist_1_abbrv = &quot;NULL&quot;,
+        dist_1_desc = &quot;NULL&quot;,
+        dist_2_abbrv = &quot;NULL&quot;,
+        dist_2_desc = &quot;NULL&quot;,
+        confidential_ind = &quot;character&quot;,
+        cancellation_dt = &quot;character&quot;,
+        vtd_abbrv = &quot;NULL&quot;,
+        vtd_desc = &quot;NULL&quot;,
+        load_dt = &quot;character&quot;,
+        age_group = &quot;NULL&quot;
+      ),
+      strip.white = TRUE, # trim leading and trailing whitespace
+      na.strings = &quot;&quot;, # missing fields are empty string or whitespace trimmed to empty
+      skipNul = TRUE, # remove embedded nulls
+      quote = &quot;&quot;, # strings NEVER quoted. Read embedded double quote as just another character
+      allowEscapes = FALSE, # don&#39;t allow C-style escapes (read as verbatim)
+      comment.char = &quot;&quot; # don&#39;t allow comments
+    ) # the returned value is encoded as UTF-8
 }</code></pre>
 <pre class="r"><code># Show the data file name
 fs::path_file(f_entity_raw_tsv)</code></pre>
-<pre><code>[1] &quot;VR_20051125.txt.xz&quot;</code></pre>
+<pre><code>[1] &quot;VR_Snapshot_20081104.txt.xz&quot;</code></pre>
 <pre class="r"><code># Read the raw entity data
 d &lt;- raw_entity_data_read(f_entity_raw_tsv)</code></pre>
 <p>Check the number of rows and columns read and take a quick look at the
 data.</p>
 <pre class="r"><code>dplyr::glimpse(d)</code></pre>
-<pre><code>Rows: 8,003,293
-Columns: 32
-$ snapshot_dt              &lt;chr&gt; &quot;2005-11-25 00:00:00&quot;, &quot;2005-11-25 00:00:00&quot;,…
-$ county_id                &lt;chr&gt; &quot;18&quot;, &quot;7&quot;, &quot;10&quot;, &quot;16&quot;, &quot;58&quot;, &quot;60&quot;, &quot;62&quot;, &quot;73&quot;…
-$ county_desc              &lt;chr&gt; &quot;CATAWBA&quot;, &quot;BEAUFORT&quot;, &quot;BRUNSWICK&quot;, &quot;CARTERET…
-$ voter_reg_num            &lt;chr&gt; &quot;0&quot;, &quot;000000000000&quot;, &quot;000000000000&quot;, &quot;0000000…
-$ ncid                     &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-$ status_cd                &lt;chr&gt; &quot;R&quot;, &quot;R&quot;, &quot;R&quot;, &quot;R&quot;, &quot;R&quot;, &quot;R&quot;, &quot;R&quot;, &quot;R&quot;, &quot;R&quot;, …
-$ voter_status_desc        &lt;chr&gt; &quot;REMOVED&quot;, &quot;REMOVED&quot;, &quot;REMOVED&quot;, &quot;REMOVED&quot;, &quot;…
-$ reason_cd                &lt;chr&gt; &quot;RL&quot;, &quot;R2&quot;, &quot;R2&quot;, &quot;RP&quot;, &quot;R2&quot;, &quot;RL&quot;, &quot;RP&quot;, &quot;RP…
-$ voter_status_reason_desc &lt;chr&gt; &quot;MOVED FROM COUNTY&quot;, &quot;DUPLICATE&quot;, &quot;DUPLICATE&quot;…
-$ last_name                &lt;chr&gt; &quot;AARON&quot;, &quot;THOMPSON&quot;, &quot;WILSON&quot;, &quot;LANGSTON&quot;, &quot;B…
-$ first_name               &lt;chr&gt; &quot;CHARLES&quot;, &quot;JESSICA&quot;, &quot;WILLIAM&quot;, &quot;VON&quot;, &quot;LIZZ…
-$ midl_name                &lt;chr&gt; &quot;F&quot;, &quot;RUTH&quot;, &quot;B&quot;, NA, &quot;IRENE&quot;, &quot;R&quot;, &quot;HUGHES&quot;,…
-$ name_sufx_cd             &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-$ house_num                &lt;chr&gt; &quot;0&quot;, &quot;961&quot;, &quot;0&quot;, &quot;264&quot;, &quot;1536&quot;, &quot;1431&quot;, &quot;171&quot;…
+<pre><code>Rows: 9,671,886
+Columns: 33
+$ snapshot_dt              &lt;chr&gt; &quot;2008-11-04&quot;, &quot;2008-11-04&quot;, &quot;2008-11-04&quot;, &quot;20…
+$ county_id                &lt;chr&gt; &quot;1&quot;, &quot;1&quot;, &quot;1&quot;, &quot;1&quot;, &quot;1&quot;, &quot;1&quot;, &quot;1&quot;, &quot;1&quot;, &quot;1&quot;, …
+$ county_desc              &lt;chr&gt; &quot;ALAMANCE&quot;, &quot;ALAMANCE&quot;, &quot;ALAMANCE&quot;, &quot;ALAMANCE…
+$ voter_reg_num            &lt;chr&gt; &quot;000000004700&quot;, &quot;000000006900&quot;, &quot;000000007550…
+$ ncid                     &lt;chr&gt; &quot;AA2055&quot;, &quot;AA2062&quot;, &quot;AA2066&quot;, &quot;AA2073&quot;, &quot;AA20…
+$ status_cd                &lt;chr&gt; &quot;A&quot;, &quot;A&quot;, &quot;R&quot;, &quot;A&quot;, &quot;R&quot;, &quot;R&quot;, &quot;R&quot;, &quot;R&quot;, &quot;A&quot;, …
+$ voter_status_desc        &lt;chr&gt; &quot;ACTIVE&quot;, &quot;ACTIVE&quot;, &quot;REMOVED&quot;, &quot;ACTIVE&quot;, &quot;REM…
+$ reason_cd                &lt;chr&gt; &quot;AV&quot;, &quot;AV&quot;, &quot;RD&quot;, &quot;AV&quot;, &quot;RD&quot;, &quot;RP&quot;, &quot;RL&quot;, &quot;RL…
+$ voter_status_reason_desc &lt;chr&gt; &quot;VERIFIED&quot;, &quot;VERIFIED&quot;, &quot;DECEASED&quot;, &quot;VERIFIED…
+$ last_name                &lt;chr&gt; &quot;ABERNATHY&quot;, &quot;ABERNATHY&quot;, &quot;ABERNETHY&quot;, &quot;ABNER…
+$ first_name               &lt;chr&gt; &quot;GEORGE&quot;, &quot;REGINA&quot;, &quot;CLARENCE&quot;, &quot;PATRICIA&quot;, &quot;…
+$ midl_name                &lt;chr&gt; &quot;WAYNE&quot;, &quot;GARCIA&quot;, &quot;LEE&quot;, &quot;ANN THOMAS&quot;, &quot;J(IN…
+$ name_sufx_cd             &lt;chr&gt; NA, NA, NA, NA, NA, &quot;JR&quot;, NA, NA, NA, NA, NA,…
+$ house_num                &lt;chr&gt; &quot;3207&quot;, &quot;706&quot;, &quot;226&quot;, &quot;2421&quot;, &quot;323&quot;, &quot;0&quot;, &quot;12…
 $ half_code                &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-$ street_dir               &lt;chr&gt; NA, NA, NA, NA, NA, &quot;E&quot;, NA, NA, NA, NA, NA, …
-$ street_name              &lt;chr&gt; &quot;ROUTE 4&quot;, &quot;TAYLOR&quot;, &quot;MIRROR LAKE&quot;, &quot;CARL GAR…
-$ street_type_cd           &lt;chr&gt; NA, &quot;RD&quot;, NA, &quot;RD&quot;, &quot;RD&quot;, &quot;ST&quot;, NA, NA, NA, &quot;…
+$ street_dir               &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ street_name              &lt;chr&gt; &quot;HIDDENWOOD&quot;, &quot;SYCAMORE&quot;, &quot;SILVERLAKE&quot;, &quot;BLAN…
+$ street_type_cd           &lt;chr&gt; &quot;LN&quot;, &quot;RD&quot;, &quot;DR&quot;, &quot;DR&quot;, NA, &quot;RD&quot;, &quot;AVE&quot;, &quot;DR&quot;…
 $ street_sufx_cd           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-$ unit_num                 &lt;chr&gt; &quot;147 BA&quot;, NA, NA, NA, NA, &quot;1&quot;, NA, NA, NA, NA…
-$ res_city_desc            &lt;chr&gt; &quot;CONOVER&quot;, &quot;CHOCOWINITY&quot;, &quot;BOILING SPRING LAK…
-$ state_cd                 &lt;chr&gt; &quot;NC&quot;, &quot;NC&quot;, &quot;NC&quot;, &quot;NC&quot;, &quot;NC&quot;, &quot;NC&quot;, &quot;NC&quot;, NA,…
-$ zip_code                 &lt;chr&gt; &quot;28613&quot;, &quot;27817&quot;, &quot;28461&quot;, &quot;28570&quot;, &quot;27892&quot;, …
-$ area_cd                  &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-$ phone_num                &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-$ sex_code                 &lt;chr&gt; &quot;M&quot;, &quot;F&quot;, &quot;U&quot;, &quot;M&quot;, &quot;F&quot;, &quot;F&quot;, &quot;M&quot;, &quot;U&quot;, &quot;U&quot;, …
-$ sex                      &lt;chr&gt; &quot;MALE&quot;, &quot;FEMALE&quot;, &quot;UNK&quot;, &quot;MALE&quot;, &quot;FEMALE&quot;, &quot;F…
-$ age                      &lt;chr&gt; &quot;62&quot;, &quot;26&quot;, &quot;0&quot;, &quot;58&quot;, &quot;63&quot;, &quot;30&quot;, &quot;93&quot;, &quot;0&quot;,…
-$ birth_place              &lt;chr&gt; NA, &quot;NC&quot;, NA, &quot;MI&quot;, NA, &quot;VA&quot;, &quot;NC&quot;, NA, NA, &quot;…
-$ registr_dt               &lt;chr&gt; &quot;1984-10-06 00:00:00&quot;, &quot;2000-07-31 00:00:00&quot;,…
-$ cancellation_dt          &lt;chr&gt; NA, &quot;2001-07-06 00:00:00&quot;, &quot;2001-02-05 00:00:…
-$ load_dt                  &lt;chr&gt; &quot;2014-07-15 22:21:54.150000000&quot;, &quot;2014-07-15 …</code></pre>
+$ unit_num                 &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ res_city_desc            &lt;chr&gt; &quot;BURLINGTON&quot;, &quot;GRAHAM&quot;, &quot;BURLINGTON&quot;, &quot;BURLIN…
+$ state_cd                 &lt;chr&gt; &quot;NC&quot;, &quot;NC&quot;, &quot;NC&quot;, &quot;NC&quot;, &quot;NC&quot;, &quot;NC&quot;, &quot;NC&quot;, &quot;NC…
+$ zip_code                 &lt;chr&gt; &quot;27215&quot;, &quot;27253&quot;, &quot;27215&quot;, &quot;27215&quot;, &quot;27215&quot;, …
+$ area_cd                  &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, &quot;…
+$ phone_num                &lt;chr&gt; &quot;5846119&quot;, &quot;2262036&quot;, &quot;2267322&quot;, &quot;2295238&quot;, &quot;…
+$ sex_code                 &lt;chr&gt; &quot;M&quot;, &quot;F&quot;, &quot;M&quot;, &quot;F&quot;, &quot;M&quot;, &quot;M&quot;, &quot;M&quot;, &quot;F&quot;, &quot;F&quot;, …
+$ sex                      &lt;chr&gt; &quot;MALE&quot;, &quot;FEMALE&quot;, &quot;MALE&quot;, &quot;FEMALE&quot;, &quot;MALE&quot;, &quot;…
+$ age                      &lt;chr&gt; &quot;61&quot;, &quot;58&quot;, &quot;102&quot;, &quot;65&quot;, &quot;88&quot;, &quot;59&quot;, &quot;68&quot;, &quot;4…
+$ birth_place              &lt;chr&gt; &quot;NC&quot;, &quot;NY&quot;, &quot;NC&quot;, &quot;NC&quot;, &quot;SC&quot;, &quot;NC&quot;, &quot;UT&quot;, &quot;NC…
+$ registr_dt               &lt;chr&gt; &quot;1974-10-04&quot;, &quot;1973-10-08&quot;, &quot;1968-04-20&quot;, &quot;19…
+$ confidential_ind         &lt;chr&gt; &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, &quot;N&quot;, …
+$ cancellation_dt          &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ load_dt                  &lt;chr&gt; &quot;2019-11-03&quot;, &quot;2019-11-03&quot;, &quot;2019-11-03&quot;, &quot;20…</code></pre>
 <ul>
 <li><p>Correct number of data rows read</p>
 <ul>
@@ -1107,7 +1111,7 @@ column descriptions</p></li>
 </div>
 <div id="timing" class="section level1 unnumbered">
 <h1>Timing</h1>
-<pre><code>Computation time (excl. render): 71.384 sec elapsed</code></pre>
+<pre><code>Computation time (excl. render): 286.936 sec elapsed</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1137,24 +1141,23 @@ attached base packages:
 [1] stats     graphics  grDevices datasets  utils     methods   base     
 
 other attached packages:
-[1] vroom_1.4.0   dplyr_1.0.6   fs_1.5.0      here_1.0.1    tictoc_1.0.1 
-[6] targets_0.4.2
+[1] dplyr_1.0.6        fs_1.5.0           here_1.0.1         tictoc_1.0.1      
+[5] targets_0.5.0.9000
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.6        pillar_1.6.1      compiler_4.1.0    bslib_0.2.5      
+ [1] Rcpp_1.0.6        pillar_1.6.1      compiler_4.1.0    bslib_0.2.5.1    
  [5] later_1.2.0       jquerylib_0.1.4   git2r_0.28.0      workflowr_1.6.2  
- [9] tools_4.1.0       bit_4.0.4         digest_0.6.27     jsonlite_1.7.2   
-[13] evaluate_0.14     lifecycle_1.0.0   tibble_3.1.2      pkgconfig_2.0.3  
-[17] rlang_0.4.11      igraph_1.2.6      rstudioapi_0.13   cli_2.5.0        
-[21] parallel_4.1.0    yaml_2.2.1        xfun_0.23         withr_2.4.2      
-[25] stringr_1.4.0     knitr_1.33        generics_0.1.0    vctrs_0.3.8      
-[29] sass_0.4.0        bit64_4.0.5       tidyselect_1.1.1  rprojroot_2.0.2  
-[33] data.table_1.14.0 glue_1.4.2        R6_2.5.0          processx_3.5.2   
-[37] fansi_0.4.2       rmarkdown_2.8     bookdown_0.22     purrr_0.3.4      
-[41] callr_3.7.0       magrittr_2.0.1    whisker_0.4       codetools_0.2-18 
-[45] ps_1.6.0          promises_1.2.0.1  ellipsis_0.3.2    htmltools_0.5.1.1
-[49] renv_0.13.2       httpuv_1.6.1      utf8_1.2.1        stringi_1.6.2    
-[53] crayon_1.4.1     </code></pre>
+ [9] tools_4.1.0       digest_0.6.27     jsonlite_1.7.2    evaluate_0.14    
+[13] lifecycle_1.0.0   tibble_3.1.2      pkgconfig_2.0.3   rlang_0.4.11     
+[17] igraph_1.2.6      rstudioapi_0.13   cli_2.5.0         yaml_2.2.1       
+[21] xfun_0.23         withr_2.4.2       stringr_1.4.0     knitr_1.33       
+[25] generics_0.1.0    vctrs_0.3.8       sass_0.4.0        tidyselect_1.1.1 
+[29] rprojroot_2.0.2   data.table_1.14.0 glue_1.4.2        R6_2.5.0         
+[33] processx_3.5.2    fansi_0.5.0       rmarkdown_2.8     bookdown_0.22    
+[37] purrr_0.3.4       callr_3.7.0       magrittr_2.0.1    whisker_0.4      
+[41] codetools_0.2-18  ps_1.6.0          promises_1.2.0.1  ellipsis_0.3.2   
+[45] htmltools_0.5.1.1 renv_0.13.2       httpuv_1.6.1      utf8_1.2.1       
+[49] stringi_1.6.2     crayon_1.4.1     </code></pre>
 </div>
 </div>
 

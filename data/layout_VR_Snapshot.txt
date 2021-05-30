@@ -3,8 +3,9 @@
 * purpose: Layout for the VR_SNAPSHOT_YYYYMMDD file. This file contains a denormalized
 *          point-in-time snapshot of information for active and inactive voters 
 *          as-well-as removed voters going back for a period of ten years.
+* updated: 02/15/2021
 * format:  tab delimited column names in first row
-* updated: 06/28/2020
+* encoding: UTF-16 LE
 ******************************************************************************* */
 
 
@@ -96,10 +97,10 @@ dist_1_desc			char 30         Prosecutorial district name
 dist_2_abbrv			char  4         <not used>
 dist_2_desc			char 30         <not used>
 confidential_ind		char  1         Confidential indicator
-cancellation_dt			char 10         Cancellation date
+cancellation_dt			char 10         Date voter registration cancelled
 vtd_abbrv			char  6         Voter tabuluation district abbreviation 
 vtd_desc			char 30         Voter tabuluation district name 
-load_dt				char 10         Data load date
+load_dt				char 10         Date snapshot was processed for load
 age_group			char 35         Age group range
 -- ---------------------------------------------------------------------------------
 

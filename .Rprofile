@@ -1,11 +1,12 @@
 ## Activate the renv package to manage the project's package library
 source("renv/activate.R")
 
-## Attach the libraries we will always need to work in the console
+## Attach the libraries we usually need to work in the console
 if(interactive())
   suppressPackageStartupMessages(
     {
       library(targets)
+      library(tarchetypes)
       library(workflowr)
       library(here)
     }
