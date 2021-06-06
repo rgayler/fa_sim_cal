@@ -41,7 +41,7 @@ list(
   # Path to raw entity data file
   tar_target(
     c_raw_entity_data_file,
-    here::here("data", "VR_Snapshot_20081104.txt.xz"),
+    here::here("data", "VR_Snapshot_20081104.xz"),
     format = "file"
   ),
 

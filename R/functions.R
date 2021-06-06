@@ -13,149 +13,151 @@
 
 # TARGET c_clean_entity_data ##################################################
 
-## ---- raw_entity_data_read_old
-
-# # Function to get the raw entity data
-# raw_entity_data_read <- function(
-#   file_path # character - file path usable by vroom
-# ) {
-#   vroom::vroom(
-#     file_path,
-#     # n_max = 1e4, # limit the rows for testing
-#     col_select = c( # get all the columns that might conceivably be used
-#       # the names and ordering are from the metadata file
-#       snapshot_dt : voter_status_reason_desc, # 9 cols
-#       last_name : street_sufx_cd, # 10 cols
-#       unit_num : zip_code, # 4 cols
-#       area_cd, phone_num, # 2 cols
-#       sex_code : registr_dt, # 5 cols
-#       cancellation_dt, load_dt # 2 cols
-#     ), # total 32 cols
-#     col_types = cols(
-#       .default = col_character() # all cols as chars to allow for bad formatting
-#     ),
-#     delim = "\t", # assume that fields are *only* delimited by tabs
-#     col_names = TRUE, # use the column names on the first line of data
-#     na = "", # missing fields are empty string or whitespace only (see trim_ws argument)
-#     quote = "", # strings NEVER quoted. Read embedded double quote as just another character
-#     comment = "", # don't allow for comments
-#     trim_ws = TRUE, # trim leading and trailing whitespace
-#     escape_double = FALSE, # assume no escaped quotes
-#     escape_backslash = FALSE, # assume no escaped backslashes
-#     locale = locale(encoding = "UTF-16LE") # tell vroom the encoding of the input file
-#   ) # the returned value is encoded as UTF-8
-# }
-
 ## ---- raw_entity_data_read
 
 # Function to get the raw entity data
+# Assumes the data is UTF-8 with embedded nulls deleted
+# The returned value is encoded as UTF-8
 raw_entity_data_read <- function(
-  file_path # character - input file path
+  file_path # character - file path usable by vroom
   # value - data frame
 ) {
-  xzfile(file_path, open = "rt", encoding = "UTF-16LE") %>% # XZ compressed and UTF-16LE encoded
-    read.delim(
-      header = TRUE, # use the column names on the first line of data
-      sep = "\t", # the fields are *only* delimited by tabs
-      colClasses = c( # which cols to keep as char, or skip (keep 33)
-        snapshot_dt = "character",
-        county_id = "character",
-        county_desc = "character",
-        voter_reg_num = "character",
-        ncid = "character",
-        status_cd = "character",
-        voter_status_desc = "character",
-        reason_cd = "character",
-        voter_status_reason_desc = "character",
-        absent_ind = "NULL",
-        name_prefx_cd = "NULL",
-        last_name = "character",
-        first_name = "character",
-        midl_name = "character",
-        name_sufx_cd = "character",
-        house_num = "character",
-        half_code = "character",
-        street_dir = "character",
-        street_name = "character",
-        street_type_cd = "character",
-        unit_designator = "NULL",
-        unit_num = "character",
-        res_city_desc = "character",
-        state_cd = "character",
-        zip_code = "character",
-        mail_addr1 = "NULL",
-        mail_addr2 = "NULL",
-        mail_addr3 = "NULL",
-        mail_addr4 = "NULL",
-        mail_city = "NULL",
-        mail_state = "NULL",
-        mail_zipcode = "NULL",
-        area_cd = "character",
-        phone_num = "character",
-        race_code = "NULL",
-        race_desc = "NULL",
-        ethnic_code = "NULL",
-        ethnic_desc = "NULL",
-        party_cd = "NULL",
-        party_desc = "NULL",
-        sex_code = "character",
-        sex = "character",
-        age = "character",
-        birth_place = "character",
-        registr_dt = "character",
-        precinct_abbrv = "NULL",
-        precinct_desc = "NULL",
-        municipality_abbrv = "NULL",
-        municipality_desc = "NULL",
-        ward_abbrv = "NULL",
-        ward_desc = "NULL",
-        cong_dist_abbrv = "NULL",
-        cong_dist_desc = "NULL",
-        super_court_abbrv = "NULL",
-        super_court_desc = "NULL",
-        judic_dist_abbrv = "NULL",
-        judic_dist_desc = "NULL",
-        NC_senate_abbrv = "NULL",
-        NC_senate_desc = "NULL",
-        NC_house_abbrv = "NULL",
-        NC_house_desc = "NULL",
-        county_commiss_abbrv = "NULL",
-        county_commiss_desc = "NULL",
-        township_abbrv = "NULL",
-        township_desc = "NULL",
-        school_dist_abbrv = "NULL",
-        school_dist_desc = "NULL",
-        fire_dist_abbrv = "NULL",
-        fire_dist_desc = "NULL",
-        water_dist_abbrv = "NULL",
-        water_dist_desc = "NULL",
-        sewer_dist_abbrv = "NULL",
-        sewer_dist_desc = "NULL",
-        sanit_dist_abbrv = "NULL",
-        sanit_dist_desc = "NULL",
-        rescue_dist_abbrv = "NULL",
-        rescue_dist_desc = "NULL",
-        munic_dist_abbrv = "NULL",
-        munic_dist_desc = "NULL",
-        dist_1_abbrv = "NULL",
-        dist_1_desc = "NULL",
-        dist_2_abbrv = "NULL",
-        dist_2_desc = "NULL",
-        confidential_ind = "character",
-        cancellation_dt = "character",
-        vtd_abbrv = "NULL",
-        vtd_desc = "NULL",
-        load_dt = "character",
-        age_group = "NULL"
-      ),
-      strip.white = TRUE, # trim leading and trailing whitespace
-      na.strings = "", # missing fields are empty string or whitespace trimmed to empty
-      skipNul = TRUE, # remove embedded nulls
-      quote = "", # strings NEVER quoted. Read embedded double quote as just another character
-      allowEscapes = FALSE, # don't allow C-style escapes (read as verbatim)
-      comment.char = "" # don't allow comments
-    ) # the returned value is encoded as UTF-8
+  vroom::vroom(
+    file_path,
+    # n_max = 1e4, # limit the rows for testing
+    col_select = c( # get all the columns that might conceivably be used
+      # the names and ordering are from the metadata file
+      snapshot_dt : voter_status_reason_desc, # 9 cols
+      last_name : street_sufx_cd, # 10 cols
+      unit_num : zip_code, # 4 cols
+      area_cd, phone_num, # 2 cols
+      sex_code : registr_dt, # 5 cols
+      cancellation_dt, load_dt # 2 cols
+    ), # total 32 cols
+    col_types = cols(
+      .default = col_character() # all cols as chars to allow for bad formatting
+    ),
+    delim = "\t", # assume that fields are *only* delimited by tabs
+    col_names = TRUE, # use the column names on the first line of data
+    trim_ws = TRUE, # trim leading and trailing whitespace
+    na = "", # missing fields are empty string or whitespace only (see trim_ws argument)
+    quote = "", # strings NEVER quoted. Read embedded double quote as just another character
+    comment = "", # don't allow comments
+    escape_double = FALSE, # assume no escaped quotes
+    escape_backslash = FALSE # assume no escaped backslashes
+  )
 }
+
+## ---- raw_entity_data_read_base
+
+# # Function to get the raw entity data
+# raw_entity_data_read <- function(
+#   file_path # character - input file path
+#   # value - data frame
+# ) {
+#   xzfile(file_path, open = "rt", encoding = "UTF-16LE") %>% # XZ compressed and UTF-16LE encoded
+#     read.delim(
+#       header = TRUE, # use the column names on the first line of data
+#       sep = "\t", # the fields are *only* delimited by tabs
+#       colClasses = c( # which cols to keep as char, or skip (keep 33)
+#         snapshot_dt = "character",
+#         county_id = "character",
+#         county_desc = "character",
+#         voter_reg_num = "character",
+#         ncid = "character",
+#         status_cd = "character",
+#         voter_status_desc = "character",
+#         reason_cd = "character",
+#         voter_status_reason_desc = "character",
+#         absent_ind = "NULL",
+#         name_prefx_cd = "NULL",
+#         last_name = "character",
+#         first_name = "character",
+#         midl_name = "character",
+#         name_sufx_cd = "character",
+#         house_num = "character",
+#         half_code = "character",
+#         street_dir = "character",
+#         street_name = "character",
+#         street_type_cd = "character",
+#         unit_designator = "NULL",
+#         unit_num = "character",
+#         res_city_desc = "character",
+#         state_cd = "character",
+#         zip_code = "character",
+#         mail_addr1 = "NULL",
+#         mail_addr2 = "NULL",
+#         mail_addr3 = "NULL",
+#         mail_addr4 = "NULL",
+#         mail_city = "NULL",
+#         mail_state = "NULL",
+#         mail_zipcode = "NULL",
+#         area_cd = "character",
+#         phone_num = "character",
+#         race_code = "NULL",
+#         race_desc = "NULL",
+#         ethnic_code = "NULL",
+#         ethnic_desc = "NULL",
+#         party_cd = "NULL",
+#         party_desc = "NULL",
+#         sex_code = "character",
+#         sex = "character",
+#         age = "character",
+#         birth_place = "character",
+#         registr_dt = "character",
+#         precinct_abbrv = "NULL",
+#         precinct_desc = "NULL",
+#         municipality_abbrv = "NULL",
+#         municipality_desc = "NULL",
+#         ward_abbrv = "NULL",
+#         ward_desc = "NULL",
+#         cong_dist_abbrv = "NULL",
+#         cong_dist_desc = "NULL",
+#         super_court_abbrv = "NULL",
+#         super_court_desc = "NULL",
+#         judic_dist_abbrv = "NULL",
+#         judic_dist_desc = "NULL",
+#         NC_senate_abbrv = "NULL",
+#         NC_senate_desc = "NULL",
+#         NC_house_abbrv = "NULL",
+#         NC_house_desc = "NULL",
+#         county_commiss_abbrv = "NULL",
+#         county_commiss_desc = "NULL",
+#         township_abbrv = "NULL",
+#         township_desc = "NULL",
+#         school_dist_abbrv = "NULL",
+#         school_dist_desc = "NULL",
+#         fire_dist_abbrv = "NULL",
+#         fire_dist_desc = "NULL",
+#         water_dist_abbrv = "NULL",
+#         water_dist_desc = "NULL",
+#         sewer_dist_abbrv = "NULL",
+#         sewer_dist_desc = "NULL",
+#         sanit_dist_abbrv = "NULL",
+#         sanit_dist_desc = "NULL",
+#         rescue_dist_abbrv = "NULL",
+#         rescue_dist_desc = "NULL",
+#         munic_dist_abbrv = "NULL",
+#         munic_dist_desc = "NULL",
+#         dist_1_abbrv = "NULL",
+#         dist_1_desc = "NULL",
+#         dist_2_abbrv = "NULL",
+#         dist_2_desc = "NULL",
+#         confidential_ind = "character",
+#         cancellation_dt = "character",
+#         vtd_abbrv = "NULL",
+#         vtd_desc = "NULL",
+#         load_dt = "character",
+#         age_group = "NULL"
+#       ),
+#       strip.white = TRUE, # trim leading and trailing whitespace
+#       na.strings = "", # missing fields are empty string or whitespace trimmed to empty
+#       skipNul = TRUE, # remove embedded nulls
+#       quote = "", # strings NEVER quoted. Read embedded double quote as just another character
+#       allowEscapes = FALSE, # don't allow C-style escapes (read as verbatim)
+#       comment.char = "" # don't allow comments
+#     ) # the returned value is encoded as UTF-8
+# }
 
 ## ---- raw_entity_data_excl_status
 

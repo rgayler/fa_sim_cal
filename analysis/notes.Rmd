@@ -60,8 +60,8 @@ about the frequencies of names in the population).
     -   As a fallback position, address and phone number can be used as
         discriminating attributes in the compatibility model.
 
--   Get the oldest available data (NCVR 2005 snapshot) to minimise it's
-    currency and privacy risk.
+-   Get the oldest available data with an assigned person ID (NCVR 2008
+    snapshot) to minimise it's size and currency.
 
 -   Drop objectionable NCVR attributes such as race and political
     affiliation.

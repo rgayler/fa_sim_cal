@@ -24,6 +24,7 @@ library(tictoc) # capture execution time
 library(here) # construct file paths relative to project root
 library(fs) # file system operations
 library(dplyr) # data wrangling
+library(vroom) # read data
 
 # start the execution time clock
 tictoc::tic("Computation time (excl. render)")
@@ -93,8 +94,8 @@ We use only one snapshot file
 ([VR_Snapshot_20081104.zip](https://s3.amazonaws.com/dl.ncsbe.gov/data/Snapshots/VR_Snapshot_20081104.zip))
 because this project does not investigate linkage of records across
 time. We chose the oldest snapshot (2008) where the North Carolina
-identification number (NCID) is available, because we want to use NCID
-as the "true" identity, it is the smallest file with NCID available, and
+identification number (NCID) is available, because: we want to use NCID
+as the "true" identity; it is the smallest file with NCID available; and
 the contents are the most out of date, minimising the current
 information made available. Note that this project will not generate any
 information that is not already directly, publicly available from NCSBE.
@@ -118,13 +119,19 @@ readLines(f_entity_raw_dd) %>% writeLines()
 
 # Read entity data
 
-The snapshot ZIP file was manually downloaded (682 MB), uncompressed
-(8.8 GB), then re-compressed in [XZ
+The snapshot ZIP file (682 MB compressed, 8.8 GB uncompressed) was
+manually downloaded, preprocessed to fix issues with encoding nd
+embedded nulls, then re-compressed in [XZ
 format](https://en.wikipedia.org/wiki/XZ_Utils) to minimise the size
-(332 MB). The compressed snapshot file and the data dictionary file are
-stored in the `data/` directory.
+(332 MB) for storage and publication. The compressed snapshot file and
+the data dictionary file are stored in the `data/` directory.
 
-## Character encoding
+The preprocessing steps take the downloaded ZIP file as input and were
+carried out as linux shell commands. The relevant code chunks below are
+not evaluated because the distributed version of this project will *not*
+include the ZIP file.
+
+## Preprocessing
 
 These analysis notebooks are rendered to webpages by the
 [`knitr`](https://yihui.org/knitr/) package. This uses
@@ -136,33 +143,58 @@ voter registration snapshot file, so we will need to convert the voter
 registration data to UTF-8 encoding if it is not already encoded that
 way.
 
-The data dictionary indicates that the data is [encoded](https://en.wikipedia.org/wiki/Character_encoding) as [UTF-16LE](https://en.wikipedia.org/wiki/UTF-16#Byte-order_encoding_schemes)
-I
-don't have any details on how the this data is collected at source and
+The data dictionary indicates that the data is
+[encoded](https://en.wikipedia.org/wiki/Character_encoding) as
+[UTF-16LE](https://en.wikipedia.org/wiki/UTF-16#Byte-order_encoding_schemes)
+I don't have any details on how the this data is collected at source and
 subsequently assembled into these snapshot files. However, I wouldn't be
 surprised if the voter registration is managed by the individual
 counties and for the smaller counties it might be managed by part-time
 employees using Microsoft Excel on old PCs running obsolete versions of
-Microsoft Windows. It's saferto check the encoding.
+Microsoft Windows. It's safer to check the encoding.
 
 Use the [`uchardet`](https://github.com/freedesktop/uchardet) to guess
 the encoding of the voter registration snapshot file.
 
-```{r}
+```{bash eval = FALSE}
 # The snapshot needs to be uncompressed for uchardet to read it
 # This probably only works on linux
-# xz and uchardet must be installed
+# unzip, uchardet, and wc must be installed
 
-system(paste0("xz --decompress --stdout '", f_entity_raw_tsv, "' | uchardet"), intern = TRUE)
+# Get the character encoding
+unzip -p data/VR_Snapshot_20081104.zip | uchardet
+#> UTF-16
+
+# Get the number of lines in the file (including header row)
+unzip -p data/VR_Snapshot_20081104.zip | wc -l
+#> 9671887
 ```
 
--   The voter registration snapshot appears to be encoded as
-    [UTF-16LE](https://en.wikipedia.org/wiki/UTF-16#Byte-order_encoding_schemes).
+-   The data file is encoded in UTF-16
 
-The function to read the data will have to convert the encoding from
-`UTF-16LE` to `UTF-8`.
+-   The data file contains 9,671,887 lines (including the header line)
 
-## Read formatted data
+While attempting to read the entity data file I discovered that about
+half the apparently empty fields contained an embedded null character. I
+don't know why, this is just how the data is provided. This can cause
+[problems](https://github.com/r-lib/vroom/issues/340) for some ways to
+read the data. There are ways to read this data in R, but I decided it
+was more robust to re-encode the characters and delete the nulls before
+reading it with R.
+
+```{bash eval = FALSE}
+# Preprocess the data file
+# This probably only works on linux
+# unzip, iconv, tr, and xz must be installed
+
+unzip -p data/VR_Snapshot_20081104.zip |     # uncompress
+iconv -f UTF-16LE -t UTF-8//TRANSLIT |       # convert encoding to UTF-8
+tr -d '\000' |                               # delete nulls
+xz --threads=0 >data/VR_Snapshot_20081104.xz # compress as XZ
+
+```
+
+## Read preprocessed data
 
 **The data is tab-separated**. The data dictionary says that the data
 file is tab separated, but the data dictionary gives column widths,
