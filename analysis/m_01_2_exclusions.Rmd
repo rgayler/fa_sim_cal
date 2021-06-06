@@ -24,9 +24,9 @@ library(tictoc) # capture execution time
 library(here) # construct file paths relative to project root
 library(fs) # file system operations
 library(dplyr) # data wrangling
+library(vroom) # read data
 library(gt) # table formatting
 library(stringr) # string matching
-library(vroom) # fast reading of delimited text files
 
 # start the execution time clock
 tictoc::tic("Computation time (excl. render)")
@@ -42,9 +42,8 @@ f_entity_raw_tsv <- tar_read(c_raw_entity_data_file)
 # with a guarantee that they will be identical
 # here and when used by {targets}.
 
-# This is  work-around because tarchetypes::tar_knitr_deps()
-# fails if a call to here::here() is embedded in 
-# a call to knitr::read_chunk()
+# See https://bookdown.org/yihui/rmarkdown-cookbook/read-chunk.html
+# The argument to read_chunk() *must* be a literal string
 knitr::read_chunk("R/functions.R")
 ```
 
@@ -82,8 +81,8 @@ databases often contain test records.
 
 I will exclude all the data rows that have any of these data quality
 issues. I will do this early in the pipeline to minimise the number of
-records processed and to avoid including these records in the subsequent
-quality analyses.
+records processed later in the pipeline and to avoid including these
+irrelevant records in the subsequent quality analyses.
 
 # Read entity data
 
@@ -99,6 +98,8 @@ fs::path_file(f_entity_raw_tsv)
 
 # Read the raw entity data
 d <- raw_entity_data_read(f_entity_raw_tsv)
+
+dim(d)
 ```
 
 # Voter status variables
@@ -223,11 +224,12 @@ nrow(d)
 
 # Test cases
 
-Initial poking through the data showed the words DUMMY, PRACTICE, TEST,
-THIS, THISIS, and THISISA as person names appeared to be associated with
-records that were subjectively judged as being likely to be test cases.
-Look for any records that contain those strings as a word (i.e. enclosed
-by word boundaries) in the person name columns.
+Initial poking through the data (before status exclusions were applied)
+showed the words DUMMY, PRACTICE, TEST, THIS, THISIS, and THISISA as
+person names appeared to be associated with records that were
+subjectively judged as being likely to be test cases. Look for any
+records that contain those strings as a word (i.e. enclosed by word
+boundaries) in the person name columns.
 
 ```{r}
 # define the target regular expression
@@ -262,7 +264,15 @@ d %>%
   )
 ```
 
--   Online search finds that "Test" is a known last name in the USA.
+-   Online search finds that "Test" appears to be a known last name in
+    the USA. (American online "person search" services are based on
+    administrative data sources like these, so if a test record gets
+    into the administrative data it will also be returned by the person
+    search service. Ultimately, deciding whether a record is a test case
+    requires a subjective assessment of the totality of information
+    available.)
+-   Online search finds that "This" appears to be a known last name in
+    the USA.
 -   The name "TEST, THIS" looks like a test case (with ACTIVE VERIFIED
     status).
 
