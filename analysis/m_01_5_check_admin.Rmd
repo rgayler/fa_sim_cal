@@ -24,9 +24,9 @@ library(tictoc) # capture execution time
 library(here) # construct file paths relative to project root
 library(fs) # file system operations
 library(dplyr) # data wrangling
+library(vroom) # read data
 library(gt) # table formatting
 library(stringr) # string matching
-library(vroom) # fast reading of delimited text files
 library(lubridate) # date parsing
 library(forcats) # manipulation of factors
 library(ggplot2) # graphics
@@ -45,9 +45,8 @@ f_entity_raw_tsv <- tar_read(c_raw_entity_data_file)
 # with a guarantee that they will be identical
 # here and when used by {targets}.
 
-# This is  work-around because tarchetypes::tar_knitr_deps()
-# fails if a call to here::here() is embedded in 
-# a call to knitr::read_chunk()
+# See https://bookdown.org/yihui/rmarkdown-cookbook/read-chunk.html
+# The argument to read_chunk() *must* be a literal string
 knitr::read_chunk("R/functions.R")
 ```
 
@@ -82,6 +81,7 @@ modelling.
 
 Define the "administrative" variables:
 
+-   `ncid` - North Carolina identification number (NCID) of voter
 -   `county_id` - County identification number
 -   `county_desc` - County description
 -   `voter_reg_num` - Voter registration number (unique by county)
@@ -89,7 +89,7 @@ Define the "administrative" variables:
 -   `cancellation_dt` - Cancellation date
 
 ```{r}
-vars_admin <- c("county_id", "county_desc", "voter_reg_num", "registr_dt", "cancellation_dt")  
+vars_admin <- c("ncid", "county_id", "county_desc", "voter_reg_num", "registr_dt", "cancellation_dt")  
 ```
 
 # Read entity data
@@ -126,6 +126,123 @@ d <- raw_entity_data_read(f_entity_raw_tsv) %>%
 
 dim(d)
 ```
+
+# ncid
+
+-   `ncid` - North Carolina identification number (NCID) of voter
+
+Look at a sample of values.
+
+```{r}
+d %>% 
+  dplyr::select(ncid) %>% 
+  dplyr::slice_sample(n = 10) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = gt::cell_text(weight = "bold"), locations = gt::cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+The NCID is supposed to uniquely identify persons. Therefore, multiple
+records with the same NCID should refer to the same person. I would
+expect ACTIVE & VERIFIED records to refer to distinct people, because if
+the state knew that two voter records corresponded to the same person I
+would expect one of the records to be deleted.
+
+Check whether NCID values are unique within the ACTIVE & VERIFIED
+records.
+
+```{r}
+# number of records
+n_rec <- nrow(d)
+n_rec
+
+# number of distinct NCID values
+n_ncid <- d$ncid %>% unique() %>% length()
+n_ncid
+
+# check whether the NCIDs are unique
+n_ncid == n_rec
+```
+
+-   There are a small number of records with the same NCID value
+
+Look at the duplicated NCID values.
+
+```{r}
+# find the duplicated NCID values
+d_dup <- d %>% 
+  dplyr::select(ncid) %>% 
+  dplyr::count(ncid) %>% 
+  dplyr::filter(n > 1)
+
+table(d_dup$n)
+```
+
+-   38 NCID values occur in exactly two records each.
+
+Look at records with the same NCID value.
+
+```{r}
+d %>% 
+  dplyr::inner_join(d_dup, by = "ncid") %>% 
+  dplyr::arrange(ncid, registr_dt, last_name, first_name, midl_name, age) %>% 
+  dplyr::group_by(ncid) %>% 
+  dplyr::select(
+    ncid, last_name, first_name, midl_name, name_sufx_cd, 
+    house_num, street_name, 
+    sex, age, birth_place,
+    registr_dt, county_id, voter_reg_num
+  ) %>% 
+  # dplyr::slice_sample(n = 10) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = gt::cell_text(weight = "bold"), locations = gt::cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   Some appear to be genuinely the same person
+
+    -   Female with change of last name and address (possibly adopting a
+        husband's last name on marriage)
+
+        -   LORI VAUGHN SMITH & LORI VAUGHN DIXON
+        -   FRANCES KAY NANCE & FRANCES KAY HODGES
+
+    -   Change of address only
+
+        -   ROSLYN LEE FORESTER
+        -   BLAKE PALMER BYERLY
+
+    -   Confusion over middle names
+
+        -   SARA ANN ROGERS & SARA HUGGINS ROGERS
+        -   NANCY JEAN KIMBALL & NANCY J KIMBALL
+
+    -   Change of address and different middle name
+
+        -   TRACY M TINKER & TRACY DIANE TINKER
+
+    -   Possible typo in age
+
+        -   TIFFANY G COVINGTON (36 & 46)
+
+    -   No obvious reason - `registr_dt` and `voter_reg_num` are close
+        of each other)
+
+        -   DIANA ALEASE BOYETTE
+
+        -   MERWYN ROYCE KING
+
+        -   NATHAN CRAIG HOFFMEIER
+
+        -   PEARL TURNER DOZIER
+
+        -   MICHAEL PAUL KENNEDY
+
+-   Some appear to be different people wrongly allocated the same NCID
+
+    -   MICHAEL MYRON CRISP SR & MICHAEL MYRON CRISP JR
 
 # county_id & county_desc
 
@@ -469,11 +586,13 @@ It is not clear what having a cancellation date means for records that
 are flagged as ACTIVE & VERIFIED. Perhaps they had been removed from the
 electoral roll in the past and subsequently reinstated.
 
-- Drop the cancellation date because of the high proportion of missing values, we won't use it in modelling, and it can't be checked against any external data source.
+-   Drop the cancellation date because of the high proportion of missing
+    values, we won't use it in modelling, and it can't be checked
+    against any external data source.
 
 # Drop unneeded variables
 
-Drop `county_id`, `registr_dt`, and  `cancellation_dt`.
+Drop `county_id`, `registr_dt`, and `cancellation_dt`.
 
 ```{r, raw_entity_data_drop_admin}
 ```

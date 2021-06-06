@@ -24,9 +24,9 @@ library(tictoc) # capture execution time
 library(here) # construct file paths relative to project root
 library(fs) # file system operations
 library(dplyr) # data wrangling
+library(vroom) # read data
 library(gt) # table formatting
 library(stringr) # string matching
-library(vroom) # fast reading of delimited text files
 library(skimr) # compact summary of each variable
 
 # start the execution time clock
@@ -43,9 +43,8 @@ f_entity_raw_tsv <- tar_read(c_raw_entity_data_file)
 # with a guarantee that they will be identical
 # here and when used by {targets}.
 
-# This is  work-around because tarchetypes::tar_knitr_deps()
-# fails if a call to here::here() is embedded in 
-# a call to knitr::read_chunk()
+# See https://bookdown.org/yihui/rmarkdown-cookbook/read-chunk.html
+# The argument to read_chunk() *must* be a literal string
 knitr::read_chunk("R/functions.R")
 ```
 
@@ -107,10 +106,6 @@ skimr::skim(d)
 The most useful column to look at in the skim tables is `n_unique`. This
 shows the number of unique values of the variable.
 
-The following variable is entirely missing values:
-
--   `ncid` - North Carolina identification number (NCID) of voter
-
 The following variables have exactly one unique nonmissing value:
 
 -   `snapshot_dt` - Date of snapshot
@@ -124,7 +119,7 @@ of selecting ACTIVE & VERIFIED records:
 -   `reason_cd` Reason code for voter registration status
 -   `voter_status_reason_desc` Reason code description
 
-Those seven variables can not possibly be useful for analyses. Write a
+Those six variables can not possibly be useful for analyses. Write a
 function to drop them from the data.
 
 ```{r, raw_entity_data_drop_novar}

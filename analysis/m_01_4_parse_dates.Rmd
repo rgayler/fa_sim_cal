@@ -24,9 +24,9 @@ library(tictoc) # capture execution time
 library(here) # construct file paths relative to project root
 library(fs) # file system operations
 library(dplyr) # data wrangling
+library(vroom) # read data
 library(gt) # table formatting
 library(stringr) # string matching
-library(vroom) # fast reading of delimited text files
 library(lubridate) # date parsing
 
 # start the execution time clock
@@ -43,9 +43,8 @@ f_entity_raw_tsv <- tar_read(c_raw_entity_data_file)
 # with a guarantee that they will be identical
 # here and when used by {targets}.
 
-# This is  work-around because tarchetypes::tar_knitr_deps()
-# fails if a call to here::here() is embedded in 
-# a call to knitr::read_chunk()
+# See https://bookdown.org/yihui/rmarkdown-cookbook/read-chunk.html
+# The argument to read_chunk() *must* be a literal string
 knitr::read_chunk("R/functions.R")
 ```
 
@@ -121,8 +120,8 @@ d %>%
     date-times](https://en.wikipedia.org/wiki/ISO_8601).
 -   Most of the cancellation dates are missing.
 
-Write a function to parse the date columns. We only need the date
-component of each date-time.
+Write a function to parse the date columns. We only need dates, not
+date-times.
 
 ```{r, raw_entity_data_parse_dates}
 ```

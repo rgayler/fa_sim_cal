@@ -143,7 +143,8 @@ list(
 
       # Build the report
       workflowr::wflow_build(
-        here("analysis", "m_01_2_exclusions.Rmd")
+        here("analysis", "m_01_2_exclusions.Rmd"),
+        make = TRUE, update = FALSE, clean_fig_files = TRUE, delete_cache = TRUE # too much?
       )
 
       # Track the input Rmd file (and not the rendered HTML file).
@@ -169,7 +170,8 @@ list(
 
       # Build the report
       workflowr::wflow_build(
-        here("analysis", "m_01_3_drop_novar.Rmd")
+        here("analysis", "m_01_3_drop_novar.Rmd"),
+        make = TRUE, update = FALSE, clean_fig_files = TRUE, delete_cache = TRUE # too much?
       )
 
       # Track the input Rmd file (and not the rendered HTML file).
@@ -196,7 +198,8 @@ list(
 
       # Build the report
       workflowr::wflow_build(
-        here("analysis", "m_01_4_parse_dates.Rmd")
+        here("analysis", "m_01_4_parse_dates.Rmd"),
+        make = TRUE, update = FALSE, clean_fig_files = TRUE, delete_cache = TRUE # too much?
       )
 
       # Track the input Rmd file (and not the rendered HTML file).
@@ -224,7 +227,8 @@ list(
 
       # Build the report
       workflowr::wflow_build(
-        here("analysis", "m_01_5_check_admin.Rmd")
+        here("analysis", "m_01_5_check_admin.Rmd"),
+        make = TRUE, update = FALSE, clean_fig_files = TRUE, delete_cache = TRUE # too much?
       )
 
       # Track the input Rmd file (and not the rendered HTML file).
@@ -252,7 +256,8 @@ list(
 
       # Build the report
       workflowr::wflow_build(
-        here("analysis", "m_01_6_check_resid.Rmd")
+        here("analysis", "m_01_6_check_resid.Rmd"),
+        make = TRUE, update = FALSE, clean_fig_files = TRUE, delete_cache = TRUE # too much?
       )
 
       # Track only the input Rmd file
@@ -281,7 +286,8 @@ list(
 
       # Build the report
       workflowr::wflow_build(
-        here("analysis", "m_01_7_check_demog.Rmd")
+        here("analysis", "m_01_7_check_demog.Rmd"),
+        make = TRUE, update = FALSE, clean_fig_files = TRUE, delete_cache = TRUE # too much?
       )
 
       # Track only the input Rmd file
@@ -310,7 +316,8 @@ list(
 
       # Build the report
       workflowr::wflow_build(
-        here("analysis", "m_01_8_check_name.Rmd")
+        here("analysis", "m_01_8_check_name.Rmd"),
+        make = TRUE, update = FALSE, clean_fig_files = TRUE, delete_cache = TRUE # too much?
       )
 
       # Track only the input Rmd file
@@ -335,15 +342,16 @@ list(
         raw_entity_data_parse_dates,
         raw_entity_data_drop_admin,
         raw_entity_data_drop_demog,
-        # raw_entity_data_clean_age, raw_entity_data_clean_preprocess_char, raw_entity_data_clean_all_names,
-        # raw_entity_data_clean_last_name, raw_entity_data_clean_middle_name, raw_entity_data_clean_first_name,
-        # raw_entity_data_clean_postprocess_names, raw_entity_data_clean_all,
+        raw_entity_data_clean_age, raw_entity_data_clean_preprocess_char, raw_entity_data_clean_all_names,
+        raw_entity_data_clean_last_name, raw_entity_data_clean_middle_name, raw_entity_data_clean_first_name,
+        raw_entity_data_clean_postprocess_names, raw_entity_data_clean_all,
         raw_entity_data_make_clean
       )
 
       # Build the report
       workflowr::wflow_build(
-        here("analysis", "m_01_9_clean_vars.Rmd")
+        here("analysis", "m_01_9_clean_vars.Rmd"),
+        make = TRUE, update = FALSE, clean_fig_files = TRUE, delete_cache = TRUE # too much?
       )
 
       # Track only the input Rmd file
