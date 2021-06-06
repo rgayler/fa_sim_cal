@@ -101,6 +101,18 @@ raw_entity_data_parse_dates <- function(
     )
 }
 
+## ---- raw_entity_data_exclude_dup_ncid
+
+# Function to exclude duplicated NCID records
+raw_entity_data_exclude_dup_ncid <- function(
+  d # data frame - raw entity data
+) {
+  d %>%
+    dplyr::group_by(ncid) %>%
+    dplyr::arrange(registr_dt, voter_reg_num, .by_group = TRUE) %>%
+    dplyr::slice_max(n = 1, with_ties = FALSE)
+}
+
 ## ---- raw_entity_data_drop_admin
 
 # Function to drop unneeded admin variables

@@ -81,15 +81,15 @@ modelling.
 
 Define the "administrative" variables:
 
--   `ncid` - North Carolina identification number (NCID) of voter
 -   `county_id` - County identification number
 -   `county_desc` - County description
 -   `voter_reg_num` - Voter registration number (unique by county)
+-   `ncid` - North Carolina identification number (NCID) of voter
 -   `registr_dt` - Voter registration date
 -   `cancellation_dt` - Cancellation date
 
 ```{r}
-vars_admin <- c("ncid", "county_id", "county_desc", "voter_reg_num", "registr_dt", "cancellation_dt")  
+vars_admin <- c("county_id", "county_desc", "voter_reg_num", "ncid", "registr_dt", "cancellation_dt")  
 ```
 
 # Read entity data
@@ -126,123 +126,6 @@ d <- raw_entity_data_read(f_entity_raw_tsv) %>%
 
 dim(d)
 ```
-
-# ncid
-
--   `ncid` - North Carolina identification number (NCID) of voter
-
-Look at a sample of values.
-
-```{r}
-d %>% 
-  dplyr::select(ncid) %>% 
-  dplyr::slice_sample(n = 10) %>% 
-  gt::gt() %>% 
-  gt::opt_row_striping() %>% 
-  gt::tab_style(style = gt::cell_text(weight = "bold"), locations = gt::cells_column_labels()) %>% 
-  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
-```
-
-The NCID is supposed to uniquely identify persons. Therefore, multiple
-records with the same NCID should refer to the same person. I would
-expect ACTIVE & VERIFIED records to refer to distinct people, because if
-the state knew that two voter records corresponded to the same person I
-would expect one of the records to be deleted.
-
-Check whether NCID values are unique within the ACTIVE & VERIFIED
-records.
-
-```{r}
-# number of records
-n_rec <- nrow(d)
-n_rec
-
-# number of distinct NCID values
-n_ncid <- d$ncid %>% unique() %>% length()
-n_ncid
-
-# check whether the NCIDs are unique
-n_ncid == n_rec
-```
-
--   There are a small number of records with the same NCID value
-
-Look at the duplicated NCID values.
-
-```{r}
-# find the duplicated NCID values
-d_dup <- d %>% 
-  dplyr::select(ncid) %>% 
-  dplyr::count(ncid) %>% 
-  dplyr::filter(n > 1)
-
-table(d_dup$n)
-```
-
--   38 NCID values occur in exactly two records each.
-
-Look at records with the same NCID value.
-
-```{r}
-d %>% 
-  dplyr::inner_join(d_dup, by = "ncid") %>% 
-  dplyr::arrange(ncid, registr_dt, last_name, first_name, midl_name, age) %>% 
-  dplyr::group_by(ncid) %>% 
-  dplyr::select(
-    ncid, last_name, first_name, midl_name, name_sufx_cd, 
-    house_num, street_name, 
-    sex, age, birth_place,
-    registr_dt, county_id, voter_reg_num
-  ) %>% 
-  # dplyr::slice_sample(n = 10) %>% 
-  gt::gt() %>% 
-  gt::opt_row_striping() %>% 
-  gt::tab_style(style = gt::cell_text(weight = "bold"), locations = gt::cells_column_labels()) %>% 
-  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
-```
-
--   Some appear to be genuinely the same person
-
-    -   Female with change of last name and address (possibly adopting a
-        husband's last name on marriage)
-
-        -   LORI VAUGHN SMITH & LORI VAUGHN DIXON
-        -   FRANCES KAY NANCE & FRANCES KAY HODGES
-
-    -   Change of address only
-
-        -   ROSLYN LEE FORESTER
-        -   BLAKE PALMER BYERLY
-
-    -   Confusion over middle names
-
-        -   SARA ANN ROGERS & SARA HUGGINS ROGERS
-        -   NANCY JEAN KIMBALL & NANCY J KIMBALL
-
-    -   Change of address and different middle name
-
-        -   TRACY M TINKER & TRACY DIANE TINKER
-
-    -   Possible typo in age
-
-        -   TIFFANY G COVINGTON (36 & 46)
-
-    -   No obvious reason - `registr_dt` and `voter_reg_num` are close
-        of each other)
-
-        -   DIANA ALEASE BOYETTE
-
-        -   MERWYN ROYCE KING
-
-        -   NATHAN CRAIG HOFFMEIER
-
-        -   PEARL TURNER DOZIER
-
-        -   MICHAEL PAUL KENNEDY
-
--   Some appear to be different people wrongly allocated the same NCID
-
-    -   MICHAEL MYRON CRISP SR & MICHAEL MYRON CRISP JR
 
 # county_id & county_desc
 
@@ -351,13 +234,13 @@ d$voter_reg_num %>% unique() %>% length()
 d$voter_reg_num %>% as.integer() %>% summary()
 ```
 
--   \~1.8M unique values
+-   \~2.3M unique values
 
     -   Much less than the number of rows, so the numbers are reused
 
 -   Never missing
 
--   Integer 1 .. \~401M (as strings)
+-   Integer 1 .. \~1,000M (as strings)
 
 -   12-digit integers with leading zeroes
 
@@ -378,6 +261,191 @@ nrow(d) ==
 ```
 
 -   `county_id` $\times$ `voter_reg_num` is unique, as claimed
+
+# ncid
+
+-   `ncid` - North Carolina identification number (NCID) of voter
+
+Look at a sample of values.
+
+```{r}
+d %>% 
+  dplyr::select(ncid) %>% 
+  dplyr::slice_sample(n = 10) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = gt::cell_text(weight = "bold"), locations = gt::cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+The NCID is supposed to uniquely identify persons. Therefore, multiple
+records with the same NCID should refer to the same person. I would
+expect ACTIVE & VERIFIED records to refer to distinct people, because if
+the state knew that two voter records corresponded to the same person I
+would expect one of the records to be deleted.
+
+Check whether NCID values are unique within the ACTIVE & VERIFIED
+records.
+
+```{r}
+# number of records
+n_rec <- nrow(d)
+n_rec
+
+# number of distinct NCID values
+n_ncid <- d$ncid %>% unique() %>% length()
+n_ncid
+
+# check whether the NCIDs are unique
+n_ncid == n_rec
+```
+
+-   There are a small number of records with the same NCID value
+
+Look at the duplicated NCID values.
+
+```{r}
+# find the duplicated NCID values
+d_dup <- d %>% 
+  dplyr::select(ncid) %>% 
+  dplyr::count(ncid) %>% 
+  dplyr::filter(n > 1)
+
+# get the distribution of duplication counts
+table(d_dup$n)
+```
+
+-   38 NCID values occur in exactly two records each.
+
+Look at records with the same NCID value.
+
+```{r}
+d %>% 
+  dplyr::inner_join(d_dup, by = "ncid") %>% 
+  dplyr::arrange(ncid, registr_dt, last_name, first_name, midl_name, age) %>% 
+  dplyr::group_by(ncid) %>% 
+  dplyr::select(
+    ncid, last_name, first_name, midl_name, name_sufx_cd, 
+    house_num, street_name, 
+    sex, age, birth_place,
+    registr_dt, county_id, voter_reg_num
+  ) %>% 
+  # dplyr::slice_sample(n = 10) %>% 
+  gt::gt() %>% 
+  gt::opt_row_striping() %>% 
+  gt::tab_style(style = gt::cell_text(weight = "bold"), locations = gt::cells_column_labels()) %>% 
+  gt::fmt_missing(columns = everything(), missing_text = "<NA>")
+```
+
+-   Some appear to be genuinely the same person
+
+    -   Female with change of last name and address (possibly adopting a
+        husband's last name on marriage)
+
+        -   LORI VAUGHN SMITH & LORI VAUGHN DIXON
+        -   FRANCES KAY NANCE & FRANCES KAY HODGES
+
+    -   Female with change of last (and possibly middle) names (possibly
+        adopting/hyphenating husband's last name on marriage)
+
+        -   CANDACE NICOLE TAYLOR & CANDACE TAYLOR SHAW
+        -   AMBER KRISTINA GOETZ & AMBER KRISTINA GOETZ-BOUCHARD
+
+    -   Change of address only
+
+        -   ROSLYN LEE FORESTER
+        -   BLAKE PALMER BYERLY
+        -   HANNAH ELIZABETH AYUSO
+        -   COSIMAN LEVAR SCALES
+        -   MELONIE ALLEN MURRAY
+        -   JONAS DAVID JONES JR
+        -   SARAH RUTH TEETER
+        -   BENJAMIN ANDREW HASTINGS
+        -   EPIPHANY XIANN ESPINOSA
+        -   GREGORY THOMAS MAURO
+        -   CATHERINE ANNA NOVAK
+        -   JAMES MILLER BLAKENEY II
+        -   JENNIFER CAROL GRANGER
+        -   NICHOLAS JAMES BECKER
+
+    -   Confusion over middle names
+        (different/abbreviated/mis-spelled/missing)
+
+        -   SARA ANN ROGERS & SARA HUGGINS ROGERS
+        -   NANCY JEAN KIMBALL & NANCY J KIMBALL
+        -   WILLIAM LAWRENCE BROWN & WILLIAM L BROWN
+        -   PATRICK THEODORE MURRAY & PATRICK THEEODORE MURRAY
+        -   JONATHAN BRANDON GADDY & JONATHAN GADDY
+        -   ELISHA MARIE WEBSTER & ELISHA WEBSTER
+
+    -   Change of address and different middle name
+
+        -   TRACY M TINKER & TRACY DIANE TINKER
+
+    -   Possible typo in age
+
+        -   TIFFANY G COVINGTON (36 & 46)
+
+    -   No obvious reason - `registr_dt` and `voter_reg_num` are close
+
+        -   DIANA ALEASE BOYETTE
+        -   MERWYN ROYCE KING
+        -   NATHAN CRAIG HOFFMEIER
+        -   PEARL TURNER DOZIER
+        -   MICHAEL PAUL KENNEDY
+        -   JING QU
+        -   ROBERT STANLEY WILLIAMS
+        -   ANNA MAXWELL BROOME
+        -   JESSICA ASHLEY MCQUADE
+        -   
+
+-   Some appear to be different people wrongly allocated the same NCID
+
+    -   Father and son with identical names at same address
+
+        -   MICHAEL MYRON CRISP SR & MICHAEL MYRON CRISP JR
+        -   JAMES ROBERT WADDELL II & JAMES ROBERT WADDELL III
+
+    -   Not obvious why they have been assigned the same NCID
+
+        -   BRENDA REYNOLDS NORMAN & BRENDA DIANNE TRANSOU
+
+Interpretations:
+
+-   The process is fallible
+
+    -   E.g. counties are not coordinated with respect to change of
+        address
+    -   The database does not represent a single consistent view (there
+        are multiple ACTIVE & VERIFIED records for the same person)
+    -   Some obviously different records have been given the same NCID
+    -   There are quite probably records corresponding to the same
+        person that have not been assigned the same NCID
+
+For the purposes of this project we want the database to only contain
+unique persons, so we need to eliminate one of the records for NCIDs with two records.
+Do this by choosing the record with the most recent registration date and if they both have the same registration date then chose the record with the higher voter registration number.
+
+Define a function to remove the duplicate records.
+
+
+```{r, raw_entity_data_exclude_dup_ncid}
+```
+
+Look at the number of records before and after applying the exclusion.
+
+```{r}
+# before
+nrow(d)
+
+# apply exclusion
+x <- d %>% 
+  raw_entity_data_exclude_dup_ncid()
+
+# after
+nrow(x)
+```
+
 
 # registr_dt
 
