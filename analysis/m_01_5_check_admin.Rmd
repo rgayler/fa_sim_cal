@@ -439,13 +439,14 @@ Look at the number of records before and after applying the exclusion.
 nrow(d)
 
 # apply exclusion
-x <- d %>% 
+d <- d %>% 
   raw_entity_data_exclude_dup_ncid()
 
 # after
-nrow(x)
+nrow(d)
 ```
 
+- The expected number of rows have been deleted
 
 # registr_dt
 
@@ -454,11 +455,17 @@ nrow(x)
 ```{r}
 # summary of distribution of registration date interpreted as a date
 d$registr_dt %>% summary()
+```
 
+-  Some registration dates are implausibly early
+-  Some registration dates are millenia in the future
+-   Never missing
+
+```{r}
 # Get records apparently registered after the snapshot was taken (2005-11-25)
 # The snapshot date is taken from earlier analyses before it was dropped
 x <- d %>% 
-  dplyr::filter(registr_dt > lubridate::ymd("2005-11-25")) # after snapshot date
+  dplyr::filter(registr_dt > lubridate::ymd("2008-11-4")) # after snapshot date
 
 # Number of records apparently registered after the snapshot was taken
 nrow(x)
@@ -476,23 +483,18 @@ x %>%
   gt::fmt_missing(columns = everything(), missing_text = "<NA>")
 ```
 
--   Never missing
 
--   18 records have registration date after the snapshot date
-
+-   14 records have registration date after the snapshot date
     -   Range from a couple of years to millennia in the future
     -   Presumably these are typos
-
--   Some records have very early registration dates
-
 -   There is nothing obviously odd about the cases with registration
-    date after the snapshot date. The problem is proibabably just in the
+    date after the snapshot date. The problem is probably just in the
     registration date.
 
 Investigate the early registration dates.
 
 First form a view on how early is too early by finding the maximum age
-and assuming registration at 21 years of age.
+and assuming registration at 18 years of age.
 
 ```{r}
 # summary of distribution of age interpreted as an integer

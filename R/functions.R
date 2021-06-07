@@ -110,7 +110,8 @@ raw_entity_data_exclude_dup_ncid <- function(
   d %>%
     dplyr::group_by(ncid) %>%
     dplyr::arrange(registr_dt, voter_reg_num, .by_group = TRUE) %>%
-    dplyr::slice_max(n = 1, with_ties = FALSE)
+    dplyr::slice_head(n = 1) %>%
+    dplyr::ungroup()
 }
 
 ## ---- raw_entity_data_drop_admin
@@ -363,6 +364,7 @@ raw_entity_data_make_clean <- function(
     raw_entity_data_excl_test() %>%
     raw_entity_data_drop_novar() %>%
     raw_entity_data_parse_dates() %>%
+    raw_entity_data_exclude_dup_ncid() %>%
     raw_entity_data_drop_admin() %>%
     raw_entity_data_drop_demog() %>%
     raw_entity_data_clean_all() %>%
